@@ -5,14 +5,14 @@ import Foundation
 import OpenAPIKit
 import SymbolKit
 
-// Function to parse OpenAPI file
+//function to parse OpenAPI file
 func parseOpenAPI(from filePath: String) throws -> OpenAPI.Document {
     let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
     let document = try JSONDecoder().decode(OpenAPI.Document.self, from: data)
     return document
 }
 
-// Function to create SymbolGraph from OpenAPI document
+//function to create SymbolGraph from OpenAPI document
 func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
     var symbols: [SymbolGraph.Symbol] = []
     var relationships: [SymbolGraph.Relationship] = []
@@ -44,8 +44,8 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         )
         symbols.append(structSymbol)
 
-        // For simplicity, we'll just create placeholder properties
-        // In a real implementation, you would extract properties from the schema
+        //created placeholder properties
+        //you would extract properties from the schema
         let propertyNames = ["id", "name", "description"]
         for propertyName in propertyNames {
             let propertyIdentifier = "\(structIdentifier).\(propertyName)"
@@ -82,13 +82,13 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         }
     }
 
-    // Map operations (e.g., from paths) to function symbols
+    //maping operations
     for (path, _) in document.paths {
         // For simplicity, we'll just create a function for each path
         let operationId = "get\(path.rawValue.replacingOccurrences(of: "/", with: "_"))"
         let functionIdentifier = "f:\(operationId)"
 
-        // Create function symbol for the operation
+        //created function symbol for the operation
         let functionSymbol = SymbolGraph.Symbol(
             identifier: SymbolGraph.Symbol.Identifier(
                 precise: functionIdentifier,
@@ -111,7 +111,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         )
         symbols.append(functionSymbol)
 
-        // Create placeholder parameters
+        //created placeholder parameters
         let paramNames = ["id", "query"]
         for paramName in paramNames {
             let paramIdentifier = "v:\(operationId).\(paramName)"
@@ -147,7 +147,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
                 ))
         }
 
-        // Create placeholder responses
+        //created placeholder responses
         let responseEnumIdentifier = "e:\(operationId)Responses"
         let responseEnumSymbol = SymbolGraph.Symbol(
             identifier: SymbolGraph.Symbol.Identifier(
@@ -171,7 +171,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         )
         symbols.append(responseEnumSymbol)
 
-        // Create placeholder response cases
+        //create placeholder response cases
         let statusCodes = ["200", "400", "500"]
         for statusCode in statusCodes {
             let caseIdentifier = "\(responseEnumIdentifier).\(statusCode)"
@@ -215,7 +215,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
             ))
     }
 
-    // Create the SymbolGraph
+    //created the SymbolGraph
     let metadata = SymbolGraph.Metadata(
         formatVersion: SymbolGraph.SemanticVersion(major: 1, minor: 0, patch: 0),
         generator: "OpenAPItoSymbolGraph"
@@ -240,7 +240,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
     return graph
 }
 
-// Main execution
+//execution
 guard CommandLine.arguments.count > 1 else {
     print("Usage: openapi-to-symbolgraph <path-to-openapi.json>")
     exit(1)
