@@ -1,6 +1,19 @@
 # OpenAPI Integration with DocC
 
-This tool converts OpenAPI specifications into Swift-DocC compatible documentation by generating SymbolGraph files.
+This project aims to create a tool that automatically converts OpenAPI specifications into Swift-DocC compatible documentation. By bridging OpenAPI and Swift-DocC through SymbolGraph files, we'll enable seamless documentation generation for REST APIs within the Swift ecosystem.
+
+## Technical Details
+Problem Statement
+Currently, Swift developers maintaining REST APIs need to manually document their APIs in DocC while separately maintaining OpenAPI specifications. This creates duplicate work and potential inconsistencies between API specifications and documentation.
+
+## Proposed Solution
+Create a command-line tool that:
+Parses OpenAPI specifications (JSON/YAML)
+Converts API endpoints and schemas into DocC-compatible SymbolGraph files
+Generates comprehensive API documentation using Swift-DocC
+
+## Architecture
+OpenAPI Spec → Parser → Intermediate Representation → SymbolGraph Generator → DocC Integration
 
 ## Features
 
