@@ -1,4 +1,4 @@
-# ``MyAPI``
+# ``API``
 
 A sample API for testing OpenAPI to SymbolGraph conversion.
 

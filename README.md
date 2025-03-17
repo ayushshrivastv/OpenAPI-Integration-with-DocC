@@ -41,7 +41,7 @@ This will generate a `symbolgraph.json` file that can be used with DocC for docu
 
 - `Sources/`: Contains the main Swift source code
 - `test/`: Contains test files and sample OpenAPI specifications
-- `MyAPI.docc/`: Contains DocC documentation catalog
+- `API.docc/`: Contains DocC documentation catalog
 
 ## Requirements
 

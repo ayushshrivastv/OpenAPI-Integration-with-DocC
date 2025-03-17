@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>com.example.API</string>
+    <key>CFBundleName</key>
+    <string>API</string>
+    <key>CFBundleVersion</key>
+    <string>1.0.0</string>
+    <key>CFBundleDisplayName</key>
+    <string>API Documentation</string>
+    <key>DefaultCodeListingLanguage</key>
+    <string>swift</string>
+    <key>DefaultLanguage</key>
+    <string>en-US</string>
+    <key>DocSetPlatformFamily</key>
+    <string>api</string>
+    <key>Title</key>
+    <string>API Documentation</string>
+</dict>
+</plist> 
