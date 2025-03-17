@@ -222,7 +222,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
     )
 
     let module = SymbolGraph.Module(
-        name: "MyAPI",
+        name: "API",
         platform: SymbolGraph.Platform(
             architecture: "x86_64",
             vendor: "apple",
