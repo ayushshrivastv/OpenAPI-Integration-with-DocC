@@ -2,12 +2,14 @@
 
 This project aims to create a tool that automatically converts OpenAPI specifications into Swift-DocC compatible documentation. By bridging OpenAPI and Swift-DocC through SymbolGraph files, we'll enable seamless documentation generation for REST APIs within the Swift ecosystem.
 
- The project is still in its very early stage, and I’m actively working on improving it.
+The project is still in its very early stage, and I’m actively working on improving it.
 
 Google Summer of Code @Swift project to integrate OpenAPI Integration with Swift-DocC: Automated API Documentation Generation.
 
 ## Technical Details
-Problem Statement
+**Problem Statement**
+
+
 Currently, Swift developers maintaining REST APIs need to manually document their APIs in DocC while separately maintaining OpenAPI specifications. This creates duplicate work and potential inconsistencies between API specifications and documentation.
 
 ## Proposed Solution
@@ -27,19 +29,69 @@ OpenAPI Spec → Parser → Intermediate Representation → SymbolGraph Generato
 
 ## Installation
 
+### Prerequisites
+- Xcode 14.0 or later
+- Swift 5.7+
+- macOS 11.0+
+
+### Steps
+
+1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/OpenAPI-integration-with-DocC.git
+```
+
+2. Navigate to the project directory:
+```bash
 cd OpenAPI-integration-with-DocC
+```
+
+3. Build the project:
+```bash
 swift build
+```
+
+4. (Optional) Run tests:
+```bash
+swift test
 ```
 
 ## Usage
 
+### Basic Usage
+
+Convert an OpenAPI specification to SymbolGraph:
 ```bash
-swift run openapi-to-symbolgraph path/to/openapi.json
+swift run openapi-to-symbolgraph path/to/openapi.json --output path/to/output
 ```
 
-This will generate a `symbolgraph.json` file that can be used with DocC for documentation generation.
+### Converting to DocC
+
+1. Generate the SymbolGraph file:
+```bash
+swift run openapi-to-symbolgraph input.json --output symbols
+```
+
+2. Convert to DocC documentation:
+```bash
+swift run docc convert symbols/symbolgraph.json --output-path ./docs
+```
+![Screenshot 2025-03-17 at 1 59 30 PM](https://github.com/user-attachments/assets/5d7be2f3-5e2a-4d7e-b143-779748dcff23)
+
+![2e8f1a628c69dcaafc08ad6f8bad785ceae2cc02_2_1380x300](https://github.com/user-attachments/assets/5649425f-6b4c-4417-9f3e-342edbabc4ae)
+
+
+### Examples
+
+#### Basic Usage
+```bash
+# Convert a simple API specification
+swift run openapi-to-symbolgraph api.json --output ./symbols
+```
+
+
+![Screenshot 2025-03-17 at 1 57 27 PM](https://github.com/user-attachments/assets/dbb60011-201a-4b72-bbdb-d9b91e11489f)
+
 
 ## Project Structure
 
