@@ -82,13 +82,13 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         }
     }
 
-    // Map operations (e.g., from paths) to function symbols
+    //map operations
     for (path, _) in document.paths {
-        // For simplicity, we'll just create a function for each path
+        //for simplicity, we'll just create a function for each path
         let operationId = "get\(path.rawValue.replacingOccurrences(of: "/", with: "_"))"
         let functionIdentifier = "f:\(operationId)"
 
-        // Create function symbol for the operation
+        //create function symbol for the operation
         let functionSymbol = SymbolGraph.Symbol(
             identifier: SymbolGraph.Symbol.Identifier(
                 precise: functionIdentifier,
@@ -111,7 +111,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         )
         symbols.append(functionSymbol)
 
-        // Create placeholder parameters
+        //created placeholder parameters
         let paramNames = ["id", "query"]
         for paramName in paramNames {
             let paramIdentifier = "v:\(operationId).\(paramName)"
