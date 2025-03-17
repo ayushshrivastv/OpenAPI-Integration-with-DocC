@@ -147,7 +147,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
                 ))
         }
 
-        // Create placeholder responses
+        //created placeholder responses
         let responseEnumIdentifier = "e:\(operationId)Responses"
         let responseEnumSymbol = SymbolGraph.Symbol(
             identifier: SymbolGraph.Symbol.Identifier(
@@ -171,7 +171,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         )
         symbols.append(responseEnumSymbol)
 
-        // Create placeholder response cases
+        //created placeholder response cases
         let statusCodes = ["200", "400", "500"]
         for statusCode in statusCodes {
             let caseIdentifier = "\(responseEnumIdentifier).\(statusCode)"
@@ -215,7 +215,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
             ))
     }
 
-    // Create the SymbolGraph
+    //created the SymbolGraph
     let metadata = SymbolGraph.Metadata(
         formatVersion: SymbolGraph.SemanticVersion(major: 1, minor: 0, patch: 0),
         generator: "OpenAPItoSymbolGraph"
@@ -240,7 +240,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
     return graph
 }
 
-// Main execution
+//main execution
 guard CommandLine.arguments.count > 1 else {
     print("Usage: openapi-to-symbolgraph <path-to-openapi.json>")
     exit(1)
