@@ -2,13 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleIdentifier</key>
-    <string>com.example.MyAPI</string>
     <key>CFBundleName</key>
-    <string>MyAPI</string>
+    <string>API Documentation</string>
+    <key>CFBundleDisplayName</key>
+    <string>API Documentation</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.example.API</string>
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
-    <key>CFBundleDisplayName</key>
-    <string>MyAPI Documentation</string>
 </dict>
 </plist> 
