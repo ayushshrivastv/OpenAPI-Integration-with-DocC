@@ -5,23 +5,23 @@ import Foundation
 import OpenAPIKit
 import SymbolKit
 
-// Function to parse OpenAPI file
+//function to parse OpenAPI file
 func parseOpenAPI(from filePath: String) throws -> OpenAPI.Document {
     let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
     let document = try JSONDecoder().decode(OpenAPI.Document.self, from: data)
     return document
 }
 
-// Function to create SymbolGraph from OpenAPI document
+//function to create SymbolGraph from OpenAPI document
 func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
     var symbols: [SymbolGraph.Symbol] = []
     var relationships: [SymbolGraph.Relationship] = []
 
-    // Map schemas (e.g., from components/schemas) to struct symbols
+    //maping schemas
     for (schemaName, _) in document.components.schemas {
         let structIdentifier = "s:\(schemaName.rawValue)"
 
-        // Create struct symbol for the schema
+        //created struct symbol for the schema
         let structSymbol = SymbolGraph.Symbol(
             identifier: SymbolGraph.Symbol.Identifier(
                 precise: structIdentifier,
@@ -44,8 +44,8 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         )
         symbols.append(structSymbol)
 
-        // For simplicity, we'll just create placeholder properties
-        // In a real implementation, you would extract properties from the schema
+        //we'll just create placeholder properties
+        //we can extract properties from the schema
         let propertyNames = ["id", "name", "description"]
         for propertyName in propertyNames {
             let propertyIdentifier = "\(structIdentifier).\(propertyName)"
