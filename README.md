@@ -2,6 +2,8 @@
 
 This project aims to create a tool that automatically converts OpenAPI specifications into Swift-DocC compatible documentation. By bridging OpenAPI and Swift-DocC through SymbolGraph files, we'll enable seamless documentation generation for REST APIs within the Swift ecosystem.
 
+ The project is still in its very early stage, and I’m actively working on improving it.
+
 Google Summer of Code @Swift project to integrate OpenAPI Integration with Swift-DocC: Automated API Documentation Generation.
 
 ## Technical Details
