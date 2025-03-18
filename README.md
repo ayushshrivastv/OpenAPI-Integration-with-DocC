@@ -13,7 +13,13 @@ Google Summer of Code @Swift project to integrate OpenAPI Integration with Swift
 Currently, Swift developers maintaining REST APIs need to manually document their APIs in DocC while separately maintaining OpenAPI specifications. This creates duplicate work and potential inconsistencies between API specifications and documentation.
 
 ## Proposed Solution
-Create a command-line tool that:
+Command line tool to simplify API documentation for Swift developers. It parses OpenAPI JSON/YAML files using OpenAPIKit Swift Library, transforms schemas and endpoints into DocC ready SymbolGraph files with createSymbolGraph, and outputs “symbolgraph.json.” Users then execute docc convert symbolgraph.json --output-path docs to create HTML docs, enhanced by a static “API.docc/” catalog for custom pages. For GSoC, I’ll extend support for complex schemas like nested objects and arrays, automate DocC conversion, and add live previews, ensuring effortless, consistent API documentation from OpenAPI specs.
+
+`swift run openapi-to-symbolgraph <path-to-openapi.json>`: Runs your tool to parse and generate “symbolgraph.json.”
+
+
+`docc convert symbolgraph.json --output-path docs`: Converts the SymbolGraph into HTML documentation.
+
 Parses OpenAPI specifications (JSON/YAML)
 Converts API endpoints and schemas into DocC-compatible SymbolGraph files
 Generates comprehensive API documentation using Swift-DocC
