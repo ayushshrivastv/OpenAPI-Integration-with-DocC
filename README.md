@@ -55,28 +55,17 @@ swift build
 ```bash
 swift test
 ```
-
-## Usage
-
-### Basic Usage
-
-Convert an OpenAPI specification to SymbolGraph:
-```bash
-swift run openapi-to-symbolgraph path/to/openapi.json --output path/to/output
-```
-
 ### Converting to DocC
 
 1. Generate the SymbolGraph file:
 ```bash
-swift run openapi-to-symbolgraph input.json --output symbols
+swift run openapi-to-symbolgraph test/sample-api.json --output
 ```
 
 2. Convert to DocC documentation:
 ```bash
 swift run docc convert symbols/symbolgraph.json --output-path ./docs
 ```
-![Screenshot 2025-03-17 at 1 59 30 PM](https://github.com/user-attachments/assets/5d7be2f3-5e2a-4d7e-b143-779748dcff23)
 
 ![2e8f1a628c69dcaafc08ad6f8bad785ceae2cc02_2_1380x300](https://github.com/user-attachments/assets/5649425f-6b4c-4417-9f3e-342edbabc4ae)
 
