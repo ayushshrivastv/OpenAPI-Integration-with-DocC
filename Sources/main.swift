@@ -257,7 +257,4 @@ do {
     let jsonData = try encoder.encode(symbolGraph)
     try jsonData.write(to: URL(fileURLWithPath: "symbolgraph.json"))
     print("SymbolGraph saved to symbolgraph.json")
-} catch {
-    print("Error: \(error)")
-    exit(1)
-}
+
