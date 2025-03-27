@@ -17,9 +17,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "OpenAPItoSymbolGraph",
-            dependencies: [
-                .product(name: "OpenAPIKit", package: "OpenAPIKit"),
-                .product(name: "SymbolKit", package: "swift-docc-symbolkit"),
+            
             ]
         )
     ]
