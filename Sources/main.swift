@@ -17,11 +17,37 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
     var symbols: [SymbolGraph.Symbol] = []
     var relationships: [SymbolGraph.Relationship] = []
 
-    //maping schemas
-    for (schemaName, _) in document.components.schemas {
-        let structIdentifier = "s:\(schemaName.rawValue)"
+    // Create API namespace symbol
+    let apiIdentifier = "s:API"
+    let apiSymbol = SymbolGraph.Symbol(
+        identifier: SymbolGraph.Symbol.Identifier(
+            precise: apiIdentifier,
+            interfaceLanguage: "swift"
+        ),
+        names: SymbolGraph.Symbol.Names(
+            title: "API",
+            navigator: nil,
+            subHeading: nil,
+            prose: "API namespace containing all endpoints and models"
+        ),
+        pathComponents: ["API"],
+        docComment: SymbolGraph.LineList([
+            SymbolGraph.LineList.Line(text: "A sample API for testing OpenAPI to SymbolGraph conversion.", range: nil)
+        ]),
+        accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+        kind: SymbolGraph.Symbol.Kind(
+            rawIdentifier: "swift.module",
+            displayName: "Module"
+        ),
+        mixins: [:]
+    )
+    symbols.append(apiSymbol)
 
-        //created struct symbol for the schema
+    // Map schemas
+    for (schemaName, schema) in document.components.schemas {
+        let structIdentifier = "s:API.\(schemaName.rawValue)"
+
+        // Create struct symbol for the schema
         let structSymbol = SymbolGraph.Symbol(
             identifier: SymbolGraph.Symbol.Identifier(
                 precise: structIdentifier,
@@ -33,7 +59,7 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
                 subHeading: nil,
                 prose: "Schema for \(schemaName.rawValue)"
             ),
-            pathComponents: [schemaName.rawValue],
+            pathComponents: ["API", schemaName.rawValue],
             docComment: nil,
             accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
             kind: SymbolGraph.Symbol.Kind(
@@ -44,177 +70,180 @@ func createSymbolGraph(from document: OpenAPI.Document) -> SymbolGraph {
         )
         symbols.append(structSymbol)
 
-        //we'll just create placeholder properties
-        //we can extract properties from the schema
-        let propertyNames = ["id", "name", "description"]
-        for propertyName in propertyNames {
-            let propertyIdentifier = "\(structIdentifier).\(propertyName)"
-
-            let propertySymbol = SymbolGraph.Symbol(
-                identifier: SymbolGraph.Symbol.Identifier(
-                    precise: propertyIdentifier,
-                    interfaceLanguage: "swift"
-                ),
-                names: SymbolGraph.Symbol.Names(
-                    title: propertyName,
-                    navigator: nil,
-                    subHeading: nil,
-                    prose: "Property \(propertyName)"
-                ),
-                pathComponents: [schemaName.rawValue, propertyName],
-                docComment: nil,
-                accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
-                kind: SymbolGraph.Symbol.Kind(
-                    rawIdentifier: "swift.property",
-                    displayName: "Property"
-                ),
-                mixins: [:]
-            )
-            symbols.append(propertySymbol)
-
-            relationships.append(
-                SymbolGraph.Relationship(
-                    source: structIdentifier,
-                    target: propertyIdentifier,
-                    kind: .memberOf,
-                    targetFallback: nil
-                ))
-        }
-    }
-    //map operations
-    for (path, _) in document.paths {
-        //for simplicity, we'll just create a function for each path
-        let operationId = "get\(path.rawValue.replacingOccurrences(of: "/", with: "_"))"
-        let functionIdentifier = "f:\(operationId)"
-
-        //create function symbol for the operation
-        let functionSymbol = SymbolGraph.Symbol(
-            identifier: SymbolGraph.Symbol.Identifier(
-                precise: functionIdentifier,
-                interfaceLanguage: "swift"
-            ),
-            names: SymbolGraph.Symbol.Names(
-                title: operationId,
-                navigator: nil,
-                subHeading: nil,
-                prose: "Operation for \(path.rawValue)"
-            ),
-            pathComponents: [operationId],
-            docComment: nil,
-            accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
-            kind: SymbolGraph.Symbol.Kind(
-                rawIdentifier: "swift.func",
-                displayName: "Function"
-            ),
-            mixins: [:]
-        )
-        symbols.append(functionSymbol)
-
-        //created placeholder parameters
-        let paramNames = ["id", "query"]
-        for paramName in paramNames {
-            let paramIdentifier = "v:\(operationId).\(paramName)"
-
-            let paramSymbol = SymbolGraph.Symbol(
-                identifier: SymbolGraph.Symbol.Identifier(
-                    precise: paramIdentifier,
-                    interfaceLanguage: "swift"
-                ),
-                names: SymbolGraph.Symbol.Names(
-                    title: paramName,
-                    navigator: nil,
-                    subHeading: nil,
-                    prose: "Parameter \(paramName)"
-                ),
-                pathComponents: [operationId, paramName],
-                docComment: nil,
-                accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
-                kind: SymbolGraph.Symbol.Kind(
-                    rawIdentifier: "swift.var",
-                    displayName: "Parameter"
-                ),
-                mixins: [:]
-            )
-            symbols.append(paramSymbol)
-
-            relationships.append(
-                SymbolGraph.Relationship(
-                    source: functionIdentifier,
-                    target: paramIdentifier,
-                    kind: .memberOf,
-                    targetFallback: nil
-                ))
-        }
-
-        //created placeholder responses
-        let responseEnumIdentifier = "e:\(operationId)Responses"
-        let responseEnumSymbol = SymbolGraph.Symbol(
-            identifier: SymbolGraph.Symbol.Identifier(
-                precise: responseEnumIdentifier,
-                interfaceLanguage: "swift"
-            ),
-            names: SymbolGraph.Symbol.Names(
-                title: "\(operationId)Responses",
-                navigator: nil,
-                subHeading: nil,
-                prose: "Possible responses for \(operationId)"
-            ),
-            pathComponents: ["\(operationId)Responses"],
-            docComment: nil,
-            accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
-            kind: SymbolGraph.Symbol.Kind(
-                rawIdentifier: "swift.enum",
-                displayName: "Enumeration"
-            ),
-            mixins: [:]
-        )
-        symbols.append(responseEnumSymbol)
-
-        //created placeholder response cases
-        let statusCodes = ["200", "400", "500"]
-        for statusCode in statusCodes {
-            let caseIdentifier = "\(responseEnumIdentifier).\(statusCode)"
-            let caseSymbol = SymbolGraph.Symbol(
-                identifier: SymbolGraph.Symbol.Identifier(
-                    precise: caseIdentifier,
-                    interfaceLanguage: "swift"
-                ),
-                names: SymbolGraph.Symbol.Names(
-                    title: statusCode,
-                    navigator: nil,
-                    subHeading: nil,
-                    prose: "Response \(statusCode)"
-                ),
-                pathComponents: ["\(operationId)Responses", statusCode],
-                docComment: nil,
-                accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
-                kind: SymbolGraph.Symbol.Kind(
-                    rawIdentifier: "swift.enum.case",
-                    displayName: "Case"
-                ),
-                mixins: [:]
-            )
-            symbols.append(caseSymbol)
-
-            relationships.append(
-                SymbolGraph.Relationship(
-                    source: responseEnumIdentifier,
-                    target: caseIdentifier,
-                    kind: .memberOf,
-                    targetFallback: nil
-                ))
-        }
-
+        // Add relationship to API namespace
         relationships.append(
             SymbolGraph.Relationship(
-                source: functionIdentifier,
-                target: responseEnumIdentifier,
-                kind: .defaultImplementationOf,
+                source: apiIdentifier,
+                target: structIdentifier,
+                kind: .memberOf,
                 targetFallback: nil
             ))
+
+        // Extract properties from the schema
+        if let properties = schema.objectContext?.properties {
+            for (propertyName, property) in properties {
+                let propertyIdentifier = "\(structIdentifier).\(propertyName)"
+
+                let propertySymbol = SymbolGraph.Symbol(
+                    identifier: SymbolGraph.Symbol.Identifier(
+                        precise: propertyIdentifier,
+                        interfaceLanguage: "swift"
+                    ),
+                    names: SymbolGraph.Symbol.Names(
+                        title: propertyName,
+                        navigator: nil,
+                        subHeading: nil,
+                        prose: property.description ?? "Property \(propertyName)"
+                    ),
+                    pathComponents: ["API", schemaName.rawValue, propertyName],
+                    docComment: nil,
+                    accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+                    kind: SymbolGraph.Symbol.Kind(
+                        rawIdentifier: "swift.property",
+                        displayName: "Property"
+                    ),
+                    mixins: [:]
+                )
+                symbols.append(propertySymbol)
+
+                relationships.append(
+                    SymbolGraph.Relationship(
+                        source: structIdentifier,
+                        target: propertyIdentifier,
+                        kind: .memberOf,
+                        targetFallback: nil
+                    ))
+            }
+        }
     }
 
-    //created the SymbolGraph
+    // Map operations
+    for (path, pathItem) in document.paths {
+        guard let pathItemValue = pathItem.value as? OpenAPI.PathItem else { continue }
+        
+        // Handle GET operation
+        if let getOp = pathItemValue.get {
+            let operationId = getOp.operationId ?? "get\(path.rawValue.replacingOccurrences(of: "/", with: "_"))"
+            let functionIdentifier = "f:API.\(operationId)"
+            
+            // Create function symbol for the operation
+            let functionSymbol = SymbolGraph.Symbol(
+                identifier: SymbolGraph.Symbol.Identifier(
+                    precise: functionIdentifier,
+                    interfaceLanguage: "swift"
+                ),
+                names: SymbolGraph.Symbol.Names(
+                    title: operationId,
+                    navigator: nil,
+                    subHeading: nil,
+                    prose: getOp.summary ?? "GET operation for \(path.rawValue)"
+                ),
+                pathComponents: ["API", operationId],
+                docComment: nil,
+                accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+                kind: SymbolGraph.Symbol.Kind(
+                    rawIdentifier: "swift.func",
+                    displayName: "Function"
+                ),
+                mixins: [:]
+            )
+            symbols.append(functionSymbol)
+
+            // Add relationship to API namespace
+            relationships.append(
+                SymbolGraph.Relationship(
+                    source: apiIdentifier,
+                    target: functionIdentifier,
+                    kind: .memberOf,
+                    targetFallback: nil
+                ))
+
+            // Create parameters
+            for parameter in getOp.parameters {
+                let paramName: String
+                let paramDescription: String?
+                
+                switch parameter {
+                case .a(let param):
+                    paramName = param.name ?? "unknown"
+                    paramDescription = param.description
+                case .b(let ref):
+                    paramName = ref.name
+                    paramDescription = nil
+                }
+                
+                let paramIdentifier = "v:API.\(operationId).\(paramName)"
+
+                let paramSymbol = SymbolGraph.Symbol(
+                    identifier: SymbolGraph.Symbol.Identifier(
+                        precise: paramIdentifier,
+                        interfaceLanguage: "swift"
+                    ),
+                    names: SymbolGraph.Symbol.Names(
+                        title: paramName,
+                        navigator: nil,
+                        subHeading: nil,
+                        prose: paramDescription ?? "Parameter \(paramName)"
+                    ),
+                    pathComponents: ["API", operationId, paramName],
+                    docComment: nil,
+                    accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+                    kind: SymbolGraph.Symbol.Kind(
+                        rawIdentifier: "swift.var",
+                        displayName: "Parameter"
+                    ),
+                    mixins: [:]
+                )
+                symbols.append(paramSymbol)
+
+                relationships.append(
+                    SymbolGraph.Relationship(
+                        source: functionIdentifier,
+                        target: paramIdentifier,
+                        kind: .memberOf,
+                        targetFallback: nil
+                    ))
+            }
+
+            // Create response types
+            for (statusCode, _) in getOp.responses {
+                let responseTypeIdentifier = "e:API.\(operationId).Response\(statusCode)"
+                let responseTypeSymbol = SymbolGraph.Symbol(
+                    identifier: SymbolGraph.Symbol.Identifier(
+                        precise: responseTypeIdentifier,
+                        interfaceLanguage: "swift"
+                    ),
+                    names: SymbolGraph.Symbol.Names(
+                        title: "Response\(statusCode)",
+                        navigator: nil,
+                        subHeading: nil,
+                        prose: "Response for status code \(statusCode)"
+                    ),
+                    pathComponents: ["API", operationId, "Response\(statusCode)"],
+                    docComment: nil,
+                    accessLevel: SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+                    kind: SymbolGraph.Symbol.Kind(
+                        rawIdentifier: "swift.enum",
+                        displayName: "Enumeration"
+                    ),
+                    mixins: [:]
+                )
+                symbols.append(responseTypeSymbol)
+
+                relationships.append(
+                    SymbolGraph.Relationship(
+                        source: functionIdentifier,
+                        target: responseTypeIdentifier,
+                        kind: .defaultImplementationOf,
+                        targetFallback: nil
+                    ))
+            }
+        }
+        
+        // Similar blocks for POST, PUT, DELETE etc. can be added here
+    }
+
+    // Create the SymbolGraph
     let metadata = SymbolGraph.Metadata(
         formatVersion: SymbolGraph.SemanticVersion(major: 1, minor: 0, patch: 0),
         generator: "OpenAPItoSymbolGraph"
