@@ -20,7 +20,7 @@ The project is in active development, with a working Proof of Concept (PoC) gene
 ## Live Documentation
 View the generated DocC documentation for a sample User API at:
 
-https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/docs
+[https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/docs](https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/)
 
 
 ![Screenshot 2025-04-05 at 4 57 22 AM](https://github.com/user-attachments/assets/9ee9e418-45da-478e-a15e-80d6605a3d30)
