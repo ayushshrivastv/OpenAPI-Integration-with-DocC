@@ -1,15 +1,282 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenAPI Integration with DocC</title>
-    <meta http-equiv="refresh" content="0; url=docs/index.html">
-    <link rel="canonical" href="docs/index.html">
+    <link rel="icon" href="/OpenAPI-integration-with-DocC/favicon.ico">
+    <style>
+        :root {
+            --swift-orange: #f05138;
+            --text-color: #333;
+            --bg-color: #fff;
+            --secondary-bg: #f5f5f7;
+            --border-color: #e6e6e6;
+            --link-color: #0070c9;
+            --heading-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            --body-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            font-family: var(--body-font);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        nav li {
+            margin-left: 30px;
+        }
+        
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        nav a:hover {
+            color: var(--swift-orange);
+        }
+        
+        .hero {
+            background-color: var(--secondary-bg);
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: var(--heading-font);
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--swift-orange);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            background-color: #d83a20;
+        }
+        
+        .btn-secondary {
+            background-color: #007aff;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #0062cc;
+        }
+        
+        .features {
+            padding: 80px 0;
+            background-color: var(--bg-color);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 30px;
+            border-radius: 8px;
+            background-color: var(--secondary-bg);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature h3 {
+            font-family: var(--heading-font);
+            font-size: 24px;
+            margin: 20px 0 15px;
+        }
+        
+        .feature p {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            color: var(--swift-orange);
+        }
+        
+        footer {
+            background-color: var(--secondary-bg);
+            padding: 40px 0;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        footer a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer-links {
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            margin: 0 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            nav li {
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px auto;
+                max-width: 250px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <p>Redirecting to documentation...</p>
-    <script>
-        window.location.href = "docs/index.html";
-    </script>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <img src="docs/favicon.svg" alt="Logo">
+                <span>OpenAPI-DocC</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC">GitHub</a></li>
+                    <li><a href="docs/index.html">Documentation</a></li>
+                    <li><a href="https://swift.org/documentation/docc/">DocC Resources</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>OpenAPI Integration with DocC</h1>
+            <p>Generate beautiful documentation for your API using Swift's DocC documentation compiler. Transform OpenAPI specifications into comprehensive, interactive documentation.</p>
+            <a href="docs/index.html" class="btn">View Documentation</a>
+            <a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC" class="btn btn-secondary">View on GitHub</a>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">📄</div>
+                    <h3>OpenAPI Integration</h3>
+                    <p>Seamlessly convert OpenAPI specifications into interactive documentation using DocC's powerful rendering engine.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Searchable Content</h3>
+                    <p>Full-text search capabilities for all your API endpoints, parameters, and schemas.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Responsive Design</h3>
+                    <p>Documentation looks great on all devices, from desktop to mobile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC">GitHub</a>
+                <a href="docs/index.html">Documentation</a>
+                <a href="https://swift.org/documentation/docc/">DocC Resources</a>
+            </div>
+            <p>&copy; 2024 OpenAPI Integration with DocC. Built using Swift DocC.</p>
+        </div>
+    </footer>
 </body>
 </html> 
