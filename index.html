@@ -7,14 +7,34 @@
     <link rel="icon" href="/OpenAPI-integration-with-DocC/favicon.ico">
     <style>
         :root {
+            /* Light theme (default) */
             --swift-orange: #f05138;
             --text-color: #333;
+            --secondary-text: #666;
             --bg-color: #fff;
             --secondary-bg: #f5f5f7;
             --border-color: #e6e6e6;
             --link-color: #0070c9;
+            --feature-bg: #f5f5f7;
+            --feature-shadow: rgba(0, 0, 0, 0.05);
+            --swift-gray: #828282;
             --heading-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
             --body-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            --theme-switch-bg: #e9e9e9;
+            --theme-switch-border: #d3d3d3;
+        }
+
+        [data-theme="dark"] {
+            --text-color: #f5f5f7;
+            --secondary-text: #a1a1a6;
+            --bg-color: #1a1a1a;
+            --secondary-bg: #2c2c2e;
+            --border-color: #3a3a3c;
+            --link-color: #0a84ff;
+            --feature-bg: #2c2c2e;
+            --feature-shadow: rgba(0, 0, 0, 0.3);
+            --theme-switch-bg: #444;
+            --theme-switch-border: #555;
         }
         
         body {
@@ -24,6 +44,7 @@
             color: var(--text-color);
             background-color: var(--bg-color);
             line-height: 1.5;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .container {
@@ -36,6 +57,10 @@
             background-color: var(--bg-color);
             border-bottom: 1px solid var(--border-color);
             padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         
         .header-content {
@@ -51,11 +76,17 @@
             text-decoration: none;
             display: flex;
             align-items: center;
+            transition: color 0.3s ease;
         }
         
         .logo img {
-            height: 30px;
+            height: 36px;
             margin-right: 10px;
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
         }
         
         nav ul {
@@ -74,16 +105,51 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s ease;
+            font-size: 16px;
         }
         
         nav a:hover {
             color: var(--swift-orange);
         }
         
+        .theme-switcher {
+            margin-left: 30px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .theme-select {
+            display: flex;
+            background-color: var(--theme-switch-bg);
+            border-radius: 20px;
+            padding: 3px;
+            width: 120px;
+            border: 1px solid var(--theme-switch-border);
+        }
+        
+        .theme-option {
+            flex: 1;
+            text-align: center;
+            padding: 5px 0;
+            cursor: pointer;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .theme-option.active {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
         .hero {
             background-color: var(--secondary-bg);
             padding: 80px 0;
             text-align: center;
+            transition: background-color 0.3s ease;
         }
         
         h1 {
@@ -92,13 +158,16 @@
             font-weight: 700;
             margin-bottom: 20px;
             color: var(--text-color);
+            transition: color 0.3s ease;
         }
         
         .hero p {
             font-size: 20px;
             max-width: 800px;
             margin: 0 auto 30px;
-            color: #666;
+            color: var(--secondary-text);
+            line-height: 1.6;
+            transition: color 0.3s ease;
         }
         
         .btn {
@@ -106,7 +175,7 @@
             background-color: var(--swift-orange);
             color: white;
             padding: 12px 30px;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             transition: background-color 0.2s ease;
@@ -118,64 +187,83 @@
         }
         
         .btn-secondary {
-            background-color: #007aff;
+            background-color: var(--link-color);
         }
         
         .btn-secondary:hover {
-            background-color: #0062cc;
+            opacity: 0.9;
         }
         
         .features {
             padding: 80px 0;
             background-color: var(--bg-color);
+            transition: background-color 0.3s ease;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-color);
+            transition: color 0.3s ease;
         }
         
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 40px;
-            margin-top: 50px;
+            margin-top: 20px;
         }
         
         .feature {
             text-align: center;
             padding: 30px;
-            border-radius: 8px;
-            background-color: var(--secondary-bg);
-            transition: transform 0.3s ease;
+            border-radius: 12px;
+            background-color: var(--feature-bg);
+            box-shadow: 0 4px 12px var(--feature-shadow);
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
         }
         
         .feature:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 24px var(--feature-shadow);
         }
         
         .feature h3 {
             font-family: var(--heading-font);
             font-size: 24px;
             margin: 20px 0 15px;
+            color: var(--text-color);
+            transition: color 0.3s ease;
         }
         
         .feature p {
             font-size: 16px;
-            color: #666;
+            color: var(--secondary-text);
+            transition: color 0.3s ease;
         }
         
         .feature-icon {
-            font-size: 40px;
+            font-size: 48px;
             color: var(--swift-orange);
+            margin-bottom: 10px;
         }
         
         footer {
             background-color: var(--secondary-bg);
             padding: 40px 0;
             text-align: center;
-            color: #666;
+            color: var(--secondary-text);
             font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-top: 1px solid var(--border-color);
         }
         
         footer a {
             color: var(--link-color);
             text-decoration: none;
+            transition: color 0.3s ease;
         }
         
         footer a:hover {
@@ -189,19 +277,41 @@
         .footer-links a {
             margin: 0 15px;
         }
+
+        .swift-logo {
+            display: block;
+            margin: 0 auto 30px;
+            height: 40px;
+        }
+
+        .copyright {
+            color: var(--swift-gray);
+            font-size: 13px;
+            transition: color 0.3s ease;
+        }
         
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
             }
             
-            nav ul {
+            .nav-container {
+                flex-direction: column;
                 margin-top: 20px;
             }
             
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            
             nav li {
-                margin-left: 15px;
-                margin-right: 15px;
+                margin: 5px 15px;
+            }
+            
+            .theme-switcher {
+                margin: 10px 0 0;
             }
             
             h1 {
@@ -217,6 +327,10 @@
                 margin: 10px auto;
                 max-width: 250px;
             }
+            
+            .section-title {
+                font-size: 30px;
+            }
         }
     </style>
 </head>
@@ -227,13 +341,22 @@
                 <img src="docs/favicon.svg" alt="Logo">
                 <span>OpenAPI-DocC</span>
             </a>
-            <nav>
-                <ul>
-                    <li><a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC">GitHub</a></li>
-                    <li><a href="docs/index.html">Documentation</a></li>
-                    <li><a href="https://swift.org/documentation/docc/">DocC Resources</a></li>
-                </ul>
-            </nav>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC">GitHub</a></li>
+                        <li><a href="docs/index.html">Documentation</a></li>
+                        <li><a href="https://swift.org/documentation/docc/">DocC Resources</a></li>
+                    </ul>
+                </nav>
+                <div class="theme-switcher">
+                    <div class="theme-select">
+                        <div class="theme-option" data-theme="light">Light</div>
+                        <div class="theme-option active" data-theme="auto">Auto</div>
+                        <div class="theme-option" data-theme="dark">Dark</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
     
@@ -248,6 +371,7 @@
     
     <section class="features">
         <div class="container">
+            <h2 class="section-title">Features</h2>
             <div class="features-grid">
                 <div class="feature">
                     <div class="feature-icon">📄</div>
@@ -270,13 +394,81 @@
     
     <footer>
         <div class="container">
+            <img class="swift-logo" src="docs/favicon.svg" alt="OpenAPI DocC Logo" width="40">
             <div class="footer-links">
                 <a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC">GitHub</a>
                 <a href="docs/index.html">Documentation</a>
                 <a href="https://swift.org/documentation/docc/">DocC Resources</a>
             </div>
-            <p>&copy; 2024 OpenAPI Integration with DocC. Built using Swift DocC.</p>
+            <p class="copyright">&copy; 2024 OpenAPI Integration with DocC. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // Theme switcher functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeOptions = document.querySelectorAll('.theme-option');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+                setActiveOption(savedTheme);
+            } else {
+                // Default to auto (system preference)
+                applyTheme('auto');
+                setActiveOption('auto');
+            }
+            
+            // Add click event listeners to theme options
+            themeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    applyTheme(theme);
+                    setActiveOption(theme);
+                    localStorage.setItem('theme', theme);
+                });
+            });
+            
+            // Apply theme
+            function applyTheme(theme) {
+                if (theme === 'auto') {
+                    // Check system preference
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        htmlElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        htmlElement.removeAttribute('data-theme');
+                    }
+                    
+                    // Listen for system preference changes
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        if (localStorage.getItem('theme') === 'auto') {
+                            if (e.matches) {
+                                htmlElement.setAttribute('data-theme', 'dark');
+                            } else {
+                                htmlElement.removeAttribute('data-theme');
+                            }
+                        }
+                    });
+                } else if (theme === 'dark') {
+                    htmlElement.setAttribute('data-theme', 'dark');
+                } else {
+                    htmlElement.removeAttribute('data-theme');
+                }
+            }
+            
+            // Set active option in UI
+            function setActiveOption(theme) {
+                themeOptions.forEach(option => {
+                    if (option.getAttribute('data-theme') === theme) {
+                        option.classList.add('active');
+                    } else {
+                        option.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html> 
