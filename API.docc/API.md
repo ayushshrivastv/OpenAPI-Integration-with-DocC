@@ -14,5 +14,5 @@ This documentation is generated from an OpenAPI specification using the OpenAPI 
 
 ### Endpoints
 
-- ``get_users``
-- ``get_users_{userId}`` 
+- ``getUsers``
+- ``getUserById`` 
