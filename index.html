@@ -19,8 +19,8 @@
             --apple-button-hover: #0077ed;
             --apple-feature-card: rgba(255, 255, 255, 0.8);
             --apple-card-shadow: rgba(0, 0, 0, 0.04);
-            --heading-font: -apple-system-headline, ui-sans-serif, system-ui, sans-serif, "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial;
-            --body-font: -apple-system-body, ui-sans-serif, system-ui, sans-serif, "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial;
+            --heading-font: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+            --body-font: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
             --theme-switch-bg: #f5f5f7;
             --theme-switch-border: #d2d2d7;
         }
@@ -56,8 +56,6 @@
             letter-spacing: -0.022em;
             transition: background-color 0.5s ease, color 0.5s ease;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
         
         .container {
@@ -166,11 +164,10 @@
         
         .hero {
             text-align: center;
-            padding: 180px 0 120px;
+            padding: 120px 0 80px;
             background-color: var(--apple-bg);
             transition: background-color 0.5s ease;
             overflow: hidden;
-            position: relative;
         }
         
         h1 {
@@ -179,17 +176,17 @@
             line-height: 1.07143;
             font-weight: 600;
             letter-spacing: -0.005em;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             color: var(--apple-text);
             transition: color 0.5s ease;
         }
         
         .hero p {
-            font-size: 27px;
+            font-size: 23px;
             line-height: 1.381;
             font-weight: 400;
             letter-spacing: 0.004em;
-            max-width: 760px;
+            max-width: 600px;
             margin: 0 auto 40px;
             color: var(--apple-secondary-text);
             transition: color 0.5s ease;
@@ -199,7 +196,7 @@
             display: inline-block;
             background-color: var(--apple-button-bg);
             color: white;
-            padding: 12px 28px;
+            padding: 12px 22px;
             border-radius: 980px;
             text-decoration: none;
             font-size: 17px;
@@ -214,7 +211,6 @@
         
         .btn:hover {
             background-color: var(--apple-button-hover);
-            transform: scale(1.02);
         }
         
         .btn-secondary {
@@ -228,15 +224,14 @@
         }
         
         .highlights {
-            padding: 140px 0;
+            padding: 100px 0;
             background-color: var(--apple-bg);
             transition: background-color 0.5s ease;
-            position: relative;
         }
         
         .section-title {
             text-align: center;
-            margin-bottom: 100px;
+            margin-bottom: 80px;
             font-family: var(--heading-font);
             font-size: 48px;
             line-height: 1.08349;
@@ -248,14 +243,14 @@
         
         .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
         }
         
         .highlight {
             text-align: center;
-            padding: 50px 30px;
-            border-radius: 30px;
+            padding: 40px 20px;
+            border-radius: 20px;
             background-color: var(--apple-secondary-bg);
             transition: transform 0.5s ease, background-color 0.5s ease;
             overflow: hidden;
@@ -268,7 +263,7 @@
         }
         
         .highlight:hover {
-            transform: translateY(-10px);
+            transform: scale(1.02);
         }
         
         .highlight h3 {
@@ -277,7 +272,7 @@
             line-height: 1.14286;
             font-weight: 600;
             letter-spacing: 0.007em;
-            margin: 20px 0 16px;
+            margin: 20px 0 10px;
             color: var(--apple-text);
             transition: color 0.5s ease;
         }
@@ -293,14 +288,13 @@
         
         .highlight-icon {
             font-size: 56px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         
         .features {
-            padding: 140px 0;
+            padding: 100px 0;
             background-color: var(--apple-secondary-bg);
             transition: background-color 0.5s ease;
-            position: relative;
         }
         
         [data-theme="dark"] .features {
@@ -309,13 +303,13 @@
         
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
         
         .feature {
             background-color: var(--apple-bg);
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 4px 30px var(--apple-card-shadow);
             transition: transform 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease;
@@ -326,12 +320,12 @@
         }
         
         .feature:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px var(--apple-card-shadow);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px var(--apple-card-shadow);
         }
         
         .feature-content {
-            padding: 40px 30px;
+            padding: 30px;
             text-align: center;
         }
         
@@ -341,7 +335,7 @@
             line-height: 1.16667;
             font-weight: 600;
             letter-spacing: 0.009em;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
             color: var(--apple-text);
             transition: color 0.5s ease;
         }
@@ -356,13 +350,13 @@
         }
         
         .feature-icon {
-            font-size: 48px;
-            margin-bottom: 24px;
+            font-size: 40px;
+            margin-bottom: 20px;
         }
         
         footer {
             background-color: var(--apple-bg);
-            padding: 60px 0 30px;
+            padding: 20px 0;
             text-align: center;
             color: var(--apple-secondary-text);
             font-size: 12px;
@@ -384,18 +378,17 @@
         }
         
         .footer-links {
-            margin-bottom: 30px;
+            margin-bottom: 10px;
         }
         
         .footer-links a {
             margin: 0 15px;
-            font-size: 14px;
         }
 
         .footer-logo {
             display: block;
-            margin: 0 auto 30px;
-            height: 50px;
+            margin: 0 auto 20px;
+            height: 40px;
         }
 
         .copyright {
@@ -409,25 +402,16 @@
             margin: 0 auto;
         }
 
-        .hero-image-container {
-            position: relative;
-            margin: 60px auto 0;
-            max-width: 600px;
-        }
-
         .hero-image {
             max-width: 100%;
             height: auto;
+            margin: 40px auto 0;
+            transition: transform 0.5s ease;
             display: block;
-            margin: 0 auto;
-            transition: transform 0.8s ease;
-            animation: float 6s ease-in-out infinite;
         }
         
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
+        .hero-image:hover {
+            transform: scale(1.02);
         }
         
         @media only screen and (max-width: 768px) {
@@ -463,81 +447,61 @@
             }
             
             .hero {
-                padding: 100px 0 80px;
+                padding: 60px 0 40px;
             }
             
             .hero p {
-                font-size: 22px;
+                font-size: 19px;
             }
             
             .btn {
                 display: block;
-                margin: 16px auto;
+                margin: 10px auto;
                 max-width: 250px;
             }
             
             .section-title {
                 font-size: 32px;
-                margin-bottom: 60px;
+                margin-bottom: 40px;
             }
 
             .highlights, .features {
-                padding: 80px 0;
-            }
-            
-            .highlights-grid, .features-grid {
-                grid-template-columns: 1fr;
+                padding: 60px 0;
             }
         }
 
-        /* Subtle animations */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
+        /* Mirroring Apple's animation style */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .hero h1 {
-            animation: fadeUp 0.8s ease-out forwards;
+        .hero h1, .hero p, .btn, .hero-image, .highlight, .feature {
+            animation: fadeIn 0.8s ease-out forwards;
         }
 
         .hero p {
-            animation: fadeUp 0.8s ease-out forwards;
             animation-delay: 0.2s;
-            opacity: 0;
         }
 
         .btn {
-            animation: fadeUp 0.8s ease-out forwards;
             animation-delay: 0.4s;
-            opacity: 0;
         }
 
-        .hero-image-container {
-            animation: fadeUp 0.8s ease-out forwards;
+        .hero-image {
             animation-delay: 0.6s;
-            opacity: 0;
         }
 
-        .highlight, .feature {
-            opacity: 0;
+        .highlight:nth-child(1), .feature:nth-child(1) {
+            animation-delay: 0.2s;
         }
 
-        /* Intersection Observer styles */
-        .fade-in {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        .highlight:nth-child(2), .feature:nth-child(2) {
+            animation-delay: 0.4s;
         }
-        
-        /* Add system font stack with SF Pro dynamic scaling */
-        @supports (font: -apple-system-body) {
-            body {
-                font: -apple-system-body;
-            }
-            
-            h1, h2, h3, .section-title {
-                font: -apple-system-headline;
-            }
+
+        .highlight:nth-child(3), .feature:nth-child(3) {
+            animation-delay: 0.6s;
         }
     </style>
 </head>
@@ -573,9 +537,7 @@
             <p>Transform OpenAPI specifications into beautiful, interactive documentation.</p>
             <a href="docs/index.html" class="btn">View Documentation</a>
             <a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC" class="btn btn-secondary">View on GitHub</a>
-            <div class="hero-image-container">
-                <img src="docs/favicon.svg" alt="OpenAPI DocC graphic representation" class="hero-image" width="240">
-            </div>
+            <img src="docs/favicon.svg" alt="OpenAPI DocC graphic representation" class="hero-image" width="240">
         </div>
     </section>
     
@@ -633,7 +595,7 @@
     
     <footer>
         <div class="container">
-            <img class="footer-logo" src="docs/favicon.svg" alt="OpenAPI DocC Logo" width="50">
+            <img class="footer-logo" src="docs/favicon.svg" alt="OpenAPI DocC Logo" width="40">
             <div class="footer-links">
                 <a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC">GitHub</a>
                 <a href="docs/index.html">Documentation</a>
@@ -708,22 +670,6 @@
                     }
                 });
             }
-            
-            // Intersection Observer for animations
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                    }
-                });
-            }, {
-                threshold: 0.2
-            });
-            
-            // Observe all highlights and features
-            document.querySelectorAll('.highlight, .feature').forEach(el => {
-                observer.observe(el);
-            });
         });
     </script>
 </body>
