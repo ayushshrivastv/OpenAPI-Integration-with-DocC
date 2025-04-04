@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,80 +8,94 @@
     <style>
         :root {
             /* Light theme (default) */
-            --swift-orange: #f05138;
-            --text-color: #333;
-            --secondary-text: #666;
-            --bg-color: #fff;
-            --secondary-bg: #f5f5f7;
-            --border-color: #e6e6e6;
-            --link-color: #0070c9;
-            --feature-bg: #f5f5f7;
-            --feature-shadow: rgba(0, 0, 0, 0.05);
-            --swift-gray: #828282;
-            --heading-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-            --body-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-            --theme-switch-bg: #e9e9e9;
-            --theme-switch-border: #d3d3d3;
+            --apple-text: #1d1d1f;
+            --apple-secondary-text: #86868b;
+            --apple-bg: #fff;
+            --apple-secondary-bg: #f5f5f7;
+            --apple-blue: #0066cc;
+            --apple-link: #0066cc;
+            --apple-border: #d2d2d7;
+            --apple-button-bg: #0071e3;
+            --apple-button-hover: #0077ed;
+            --apple-feature-card: rgba(255, 255, 255, 0.8);
+            --apple-card-shadow: rgba(0, 0, 0, 0.04);
+            --heading-font: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+            --body-font: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+            --theme-switch-bg: #f5f5f7;
+            --theme-switch-border: #d2d2d7;
         }
 
         [data-theme="dark"] {
-            --text-color: #f5f5f7;
-            --secondary-text: #a1a1a6;
-            --bg-color: #1a1a1a;
-            --secondary-bg: #2c2c2e;
-            --border-color: #3a3a3c;
-            --link-color: #0a84ff;
-            --feature-bg: #2c2c2e;
-            --feature-shadow: rgba(0, 0, 0, 0.3);
-            --theme-switch-bg: #444;
-            --theme-switch-border: #555;
+            --apple-text: #f5f5f7;
+            --apple-secondary-text: #a1a1a6;
+            --apple-bg: #000000;
+            --apple-secondary-bg: #1d1d1f;
+            --apple-blue: #2997ff;
+            --apple-link: #2997ff;
+            --apple-border: #424245;
+            --apple-button-bg: #0071e3;
+            --apple-button-hover: #0077ed;
+            --apple-feature-card: rgba(29, 29, 31, 0.8);
+            --apple-card-shadow: rgba(255, 255, 255, 0.04);
+            --theme-switch-bg: #1d1d1f;
+            --theme-switch-border: #424245;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
             font-family: var(--body-font);
-            margin: 0;
-            padding: 0;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-            line-height: 1.5;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            color: var(--apple-text);
+            background-color: var(--apple-bg);
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            -webkit-font-smoothing: antialiased;
         }
         
         .container {
-            max-width: 1200px;
+            width: 100%;
+            max-width: 980px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 22px;
         }
         
         header {
-            background-color: var(--bg-color);
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--apple-border);
             position: sticky;
             top: 0;
-            z-index: 100;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            z-index: 9999;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
         }
         
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 44px;
         }
         
         .logo {
-            font-size: 24px;
+            font-size: 21px;
             font-weight: 600;
-            color: var(--text-color);
+            color: var(--apple-text);
             text-decoration: none;
             display: flex;
             align-items: center;
-            transition: color 0.3s ease;
+            transition: color 0.5s ease;
         }
         
         .logo img {
-            height: 36px;
-            margin-right: 10px;
+            height: 20px;
+            margin-right: 8px;
         }
         
         .nav-container {
@@ -97,23 +111,25 @@
         }
         
         nav li {
-            margin-left: 30px;
+            margin-left: 24px;
         }
         
         nav a {
-            color: var(--text-color);
+            color: var(--apple-text);
             text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-            font-size: 16px;
+            font-size: 12px;
+            letter-spacing: -0.01em;
+            transition: color 0.3s ease;
+            opacity: 0.8;
         }
         
         nav a:hover {
-            color: var(--swift-orange);
+            opacity: 1;
+            color: var(--apple-blue);
         }
         
         .theme-switcher {
-            margin-left: 30px;
+            margin-left: 24px;
             position: relative;
             display: flex;
             align-items: center;
@@ -122,148 +138,239 @@
         .theme-select {
             display: flex;
             background-color: var(--theme-switch-bg);
-            border-radius: 20px;
-            padding: 3px;
-            width: 120px;
+            border-radius: 18px;
+            padding: 2px;
+            width: 100px;
             border: 1px solid var(--theme-switch-border);
         }
         
         .theme-option {
             flex: 1;
             text-align: center;
-            padding: 5px 0;
+            padding: 4px 0;
             cursor: pointer;
-            border-radius: 18px;
-            font-size: 12px;
-            font-weight: 500;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 400;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .theme-option.active {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: var(--apple-bg);
+            color: var(--apple-text);
+            font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .hero {
-            background-color: var(--secondary-bg);
-            padding: 80px 0;
             text-align: center;
-            transition: background-color 0.3s ease;
+            padding: 120px 0 80px;
+            background-color: var(--apple-bg);
+            transition: background-color 0.5s ease;
+            overflow: hidden;
         }
         
         h1 {
             font-family: var(--heading-font);
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-color);
-            transition: color 0.3s ease;
+            font-size: 56px;
+            line-height: 1.07143;
+            font-weight: 600;
+            letter-spacing: -0.005em;
+            margin-bottom: 8px;
+            color: var(--apple-text);
+            transition: color 0.5s ease;
         }
         
         .hero p {
-            font-size: 20px;
-            max-width: 800px;
-            margin: 0 auto 30px;
-            color: var(--secondary-text);
-            line-height: 1.6;
-            transition: color 0.3s ease;
+            font-size: 23px;
+            line-height: 1.381;
+            font-weight: 400;
+            letter-spacing: 0.004em;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            color: var(--apple-secondary-text);
+            transition: color 0.5s ease;
         }
         
         .btn {
             display: inline-block;
-            background-color: var(--swift-orange);
+            background-color: var(--apple-button-bg);
             color: white;
-            padding: 12px 30px;
-            border-radius: 8px;
+            padding: 12px 22px;
+            border-radius: 980px;
             text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.2s ease;
+            font-size: 17px;
+            line-height: 1.17648;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            transition: all 0.3s ease;
             margin: 0 10px;
+            text-align: center;
+            min-width: 160px;
         }
         
         .btn:hover {
-            background-color: #d83a20;
+            background-color: var(--apple-button-hover);
         }
         
         .btn-secondary {
-            background-color: var(--link-color);
+            background-color: transparent;
+            color: var(--apple-blue);
         }
         
         .btn-secondary:hover {
-            opacity: 0.9;
+            background-color: transparent;
+            text-decoration: underline;
         }
         
-        .features {
-            padding: 80px 0;
-            background-color: var(--bg-color);
-            transition: background-color 0.3s ease;
+        .highlights {
+            padding: 100px 0;
+            background-color: var(--apple-bg);
+            transition: background-color 0.5s ease;
         }
         
         .section-title {
             text-align: center;
-            margin-bottom: 50px;
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--text-color);
-            transition: color 0.3s ease;
+            margin-bottom: 80px;
+            font-family: var(--heading-font);
+            font-size: 48px;
+            line-height: 1.08349;
+            font-weight: 600;
+            letter-spacing: -0.003em;
+            color: var(--apple-text);
+            transition: color 0.5s ease;
+        }
+        
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .highlight {
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 20px;
+            background-color: var(--apple-secondary-bg);
+            transition: transform 0.5s ease, background-color 0.5s ease;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="dark"] .highlight {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .highlight:hover {
+            transform: scale(1.02);
+        }
+        
+        .highlight h3 {
+            font-family: var(--heading-font);
+            font-size: 28px;
+            line-height: 1.14286;
+            font-weight: 600;
+            letter-spacing: 0.007em;
+            margin: 20px 0 10px;
+            color: var(--apple-text);
+            transition: color 0.5s ease;
+        }
+        
+        .highlight p {
+            font-size: 17px;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            color: var(--apple-secondary-text);
+            transition: color 0.5s ease;
+        }
+        
+        .highlight-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+        
+        .features {
+            padding: 100px 0;
+            background-color: var(--apple-secondary-bg);
+            transition: background-color 0.5s ease;
+        }
+        
+        [data-theme="dark"] .features {
+            background-color: #000;
         }
         
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 20px;
+            gap: 30px;
         }
         
         .feature {
-            text-align: center;
-            padding: 30px;
-            border-radius: 12px;
-            background-color: var(--feature-bg);
-            box-shadow: 0 4px 12px var(--feature-shadow);
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--apple-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 30px var(--apple-card-shadow);
+            transition: transform 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        
+        [data-theme="dark"] .feature {
+            background-color: var(--apple-secondary-bg);
         }
         
         .feature:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px var(--feature-shadow);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px var(--apple-card-shadow);
+        }
+        
+        .feature-content {
+            padding: 30px;
+            text-align: center;
         }
         
         .feature h3 {
             font-family: var(--heading-font);
             font-size: 24px;
-            margin: 20px 0 15px;
-            color: var(--text-color);
-            transition: color 0.3s ease;
+            line-height: 1.16667;
+            font-weight: 600;
+            letter-spacing: 0.009em;
+            margin-bottom: 10px;
+            color: var(--apple-text);
+            transition: color 0.5s ease;
         }
         
         .feature p {
-            font-size: 16px;
-            color: var(--secondary-text);
-            transition: color 0.3s ease;
+            font-size: 17px;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            color: var(--apple-secondary-text);
+            transition: color 0.5s ease;
         }
         
         .feature-icon {
-            font-size: 48px;
-            color: var(--swift-orange);
-            margin-bottom: 10px;
+            font-size: 40px;
+            margin-bottom: 20px;
         }
         
         footer {
-            background-color: var(--secondary-bg);
-            padding: 40px 0;
+            background-color: var(--apple-bg);
+            padding: 20px 0;
             text-align: center;
-            color: var(--secondary-text);
-            font-size: 14px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border-top: 1px solid var(--border-color);
+            color: var(--apple-secondary-text);
+            font-size: 12px;
+            line-height: 1.33337;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            border-top: 1px solid var(--apple-border);
         }
         
         footer a {
-            color: var(--link-color);
+            color: var(--apple-blue);
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: color 0.5s ease;
         }
         
         footer a:hover {
@@ -271,55 +378,80 @@
         }
         
         .footer-links {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         
         .footer-links a {
             margin: 0 15px;
         }
 
-        .swift-logo {
+        .footer-logo {
             display: block;
-            margin: 0 auto 30px;
+            margin: 0 auto 20px;
             height: 40px;
         }
 
         .copyright {
-            color: var(--swift-gray);
-            font-size: 13px;
-            transition: color 0.3s ease;
+            color: var(--apple-secondary-text);
+            font-size: 12px;
+            line-height: 1.33337;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            transition: color 0.5s ease;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero-image {
+            max-width: 100%;
+            height: auto;
+            margin: 40px auto 0;
+            transition: transform 0.5s ease;
+            display: block;
         }
         
-        @media (max-width: 768px) {
+        .hero-image:hover {
+            transform: scale(1.02);
+        }
+        
+        @media only screen and (max-width: 768px) {
             .header-content {
+                height: auto;
+                padding: 10px 0;
                 flex-direction: column;
             }
             
             .nav-container {
                 flex-direction: column;
+                width: 100%;
                 margin-top: 20px;
             }
             
             nav ul {
                 flex-wrap: wrap;
                 justify-content: center;
+                width: 100%;
                 margin-bottom: 20px;
             }
             
             nav li {
-                margin: 5px 15px;
+                margin: 5px 10px;
             }
             
             .theme-switcher {
-                margin: 10px 0 0;
+                margin: 10px 0 5px;
             }
             
             h1 {
-                font-size: 36px;
+                font-size: 40px;
+            }
+            
+            .hero {
+                padding: 60px 0 40px;
             }
             
             .hero p {
-                font-size: 18px;
+                font-size: 19px;
             }
             
             .btn {
@@ -329,8 +461,47 @@
             }
             
             .section-title {
-                font-size: 30px;
+                font-size: 32px;
+                margin-bottom: 40px;
             }
+
+            .highlights, .features {
+                padding: 60px 0;
+            }
+        }
+
+        /* Mirroring Apple's animation style */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1, .hero p, .btn, .hero-image, .highlight, .feature {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .hero p {
+            animation-delay: 0.2s;
+        }
+
+        .btn {
+            animation-delay: 0.4s;
+        }
+
+        .hero-image {
+            animation-delay: 0.6s;
+        }
+
+        .highlight:nth-child(1), .feature:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .highlight:nth-child(2), .feature:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .highlight:nth-child(3), .feature:nth-child(3) {
+            animation-delay: 0.6s;
         }
     </style>
 </head>
@@ -352,8 +523,8 @@
                 <div class="theme-switcher">
                     <div class="theme-select">
                         <div class="theme-option" data-theme="light">Light</div>
-                        <div class="theme-option active" data-theme="auto">Auto</div>
-                        <div class="theme-option" data-theme="dark">Dark</div>
+                        <div class="theme-option" data-theme="auto">Auto</div>
+                        <div class="theme-option active" data-theme="dark">Dark</div>
                     </div>
                 </div>
             </div>
@@ -363,30 +534,60 @@
     <section class="hero">
         <div class="container">
             <h1>OpenAPI Integration with DocC</h1>
-            <p>Generate beautiful documentation for your API using Swift's DocC documentation compiler. Transform OpenAPI specifications into comprehensive, interactive documentation.</p>
+            <p>Transform OpenAPI specifications into beautiful, interactive documentation.</p>
             <a href="docs/index.html" class="btn">View Documentation</a>
             <a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC" class="btn btn-secondary">View on GitHub</a>
+            <img src="docs/favicon.svg" alt="OpenAPI DocC graphic representation" class="hero-image" width="240">
         </div>
     </section>
     
+    <section class="highlights">
+        <div class="container">
+            <h2 class="section-title">A new era for API documentation.</h2>
+            <div class="highlights-grid">
+                <div class="highlight">
+                    <div class="highlight-icon">📄</div>
+                    <h3>OpenAPI Integration</h3>
+                    <p>Convert specifications into stunning interactive documentation with a single command.</p>
+                </div>
+                <div class="highlight">
+                    <div class="highlight-icon">📱</div>
+                    <h3>Cross-platform</h3>
+                    <p>Documentation that looks beautiful on any device, from desktop to mobile.</p>
+                </div>
+                <div class="highlight">
+                    <div class="highlight-icon">🔍</div>
+                    <h3>Searchable Content</h3>
+                    <p>Find any endpoint, parameter, or schema with powerful search capabilities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="features">
         <div class="container">
             <h2 class="section-title">Features</h2>
             <div class="features-grid">
                 <div class="feature">
-                    <div class="feature-icon">📄</div>
-                    <h3>OpenAPI Integration</h3>
-                    <p>Seamlessly convert OpenAPI specifications into interactive documentation using DocC's powerful rendering engine.</p>
+                    <div class="feature-content">
+                        <div class="feature-icon">🛠</div>
+                        <h3>Developer Experience</h3>
+                        <p>Built by developers, for developers. Simple integration with existing workflows.</p>
+                    </div>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon">🔍</div>
-                    <h3>Searchable Content</h3>
-                    <p>Full-text search capabilities for all your API endpoints, parameters, and schemas.</p>
+                    <div class="feature-content">
+                        <div class="feature-icon">⚡️</div>
+                        <h3>Lightning Fast</h3>
+                        <p>Generate documentation in seconds, even for complex API specifications.</p>
+                    </div>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon">📱</div>
-                    <h3>Responsive Design</h3>
-                    <p>Documentation looks great on all devices, from desktop to mobile.</p>
+                    <div class="feature-content">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Auto-updating</h3>
+                        <p>Documentation stays in sync with your API as it evolves.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -394,13 +595,13 @@
     
     <footer>
         <div class="container">
-            <img class="swift-logo" src="docs/favicon.svg" alt="OpenAPI DocC Logo" width="40">
+            <img class="footer-logo" src="docs/favicon.svg" alt="OpenAPI DocC Logo" width="40">
             <div class="footer-links">
                 <a href="https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC">GitHub</a>
                 <a href="docs/index.html">Documentation</a>
                 <a href="https://swift.org/documentation/docc/">DocC Resources</a>
             </div>
-            <p class="copyright">&copy; 2024 OpenAPI Integration with DocC. All rights reserved.</p>
+            <p class="copyright">Copyright © 2024 OpenAPI Integration with DocC. All rights reserved. Built using Swift DocC and OpenAPI.</p>
         </div>
     </footer>
 
@@ -410,15 +611,16 @@
             const themeOptions = document.querySelectorAll('.theme-option');
             const htmlElement = document.documentElement;
             
-            // Check for saved theme preference or respect OS preference
+            // Set default to dark theme
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
                 applyTheme(savedTheme);
                 setActiveOption(savedTheme);
             } else {
-                // Default to auto (system preference)
-                applyTheme('auto');
-                setActiveOption('auto');
+                // Default to dark
+                applyTheme('dark');
+                setActiveOption('dark');
+                localStorage.setItem('theme', 'dark');
             }
             
             // Add click event listeners to theme options
