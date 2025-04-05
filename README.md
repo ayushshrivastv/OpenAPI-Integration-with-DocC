@@ -36,7 +36,7 @@ Command line tool to simplify API documentation for Swift developers. It parses 
 
 `docc convert symbolgraph.json --output-path docs`: Converts the SymbolGraph into HTML documentation.
 
-## Benefits to the Swift Ecosystem  Improved 
+## Benefits to the Swift Ecosystem  
 
 Consistency: By generating DocC documentation directly from OpenAPI specs, the tool eliminates discrepancies between API definitions and code documentation. 
 
