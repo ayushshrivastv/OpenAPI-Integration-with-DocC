@@ -12,6 +12,13 @@ Google Summer of Code @Swift project to integrate OpenAPI Integration with Swift
 
 Currently, Swift developers maintaining REST APIs need to manually document their APIs in DocC while separately maintaining OpenAPI specifications. This creates duplicate work and potential inconsistencies between API specifications and documentation.
 
+## Contributing to OpenAPI Integration with DocC
+
+The Swift Forums are the best place to get help with OpenAPI Integration with DocC and discuss future plans.
+
+As an Open Source Project, we value any contribution made to this tool. Please see the contributing guide for more information on how to contribute and build OpenAPI from source.
+
+
 ## Project Status
 The project is in active development, with a working Proof of Concept (PoC) generating DocC documentation. Check out the live example below!
 
