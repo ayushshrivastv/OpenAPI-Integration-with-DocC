@@ -24,8 +24,8 @@ struct SymbolMapper {
     static func mapSchemaType(_ schema: OpenAPIKit.JSONSchema) -> (type: String, documentation: String) {
         var documentation = ""
         
-        // Add format information if available
-        if let format = schema.formatString {
+        // Add format information if available - only when non-empty
+        if let format = schema.formatString, !format.isEmpty {
             documentation += "Format: \(format)\n"
         }
         
@@ -33,53 +33,80 @@ struct SymbolMapper {
         if let jsonType = schema.jsonType {
             switch jsonType {
             case .string:
-                if let stringContext = schema.stringContext {
-                    if let pattern = stringContext.pattern {
+                if let stringSchema = schema.stringContext {
+                    if let pattern = stringSchema.pattern {
                         documentation += "Pattern: \(pattern)\n"
                     }
-                    documentation += "Minimum length: \(stringContext.minLength)\n"
-                    if let maxLength = stringContext.maxLength {
+                    // Only add minLength if it's not the default value (0)
+                    if stringSchema.minLength > 0 {
+                        documentation += "Minimum length: \(stringSchema.minLength)\n"
+                    }
+                    if let maxLength = stringSchema.maxLength {
                         documentation += "Maximum length: \(maxLength)\n"
                     }
                 }
                 
             case .number:
-                if let numericContext = schema.numberContext {
-                    if let minimum = numericContext.minimum {
-                        documentation += "Minimum value: \(minimum.value)\(minimum.exclusive ? " (exclusive)" : "")\n"
+                if let numContext = schema.numberContext {
+                    if let minimum = numContext.minimum {
+                        // Format without decimal points for whole numbers
+                        let minValue = minimum.value
+                        let formattedMin = minValue.truncatingRemainder(dividingBy: 1) == 0 ? 
+                            String(format: "%.0f", minValue) : String(minValue)
+                        documentation += "Minimum value: \(formattedMin)\(minimum.exclusive ? " (exclusive)" : "")\n"
                     }
-                    if let maximum = numericContext.maximum {
-                        documentation += "Maximum value: \(maximum.value)\(maximum.exclusive ? " (exclusive)" : "")\n"
+                    if let maximum = numContext.maximum {
+                        // Format without decimal points for whole numbers
+                        let maxValue = maximum.value
+                        let formattedMax = maxValue.truncatingRemainder(dividingBy: 1) == 0 ? 
+                            String(format: "%.0f", maxValue) : String(maxValue)
+                        documentation += "Maximum value: \(formattedMax)\(maximum.exclusive ? " (exclusive)" : "")\n"
                     }
-                    if let multipleOf = numericContext.multipleOf {
-                        documentation += "Must be multiple of: \(multipleOf)\n"
+                    if let multipleOf = numContext.multipleOf {
+                        // Format without decimal points for whole numbers
+                        let formattedMultiple = multipleOf.truncatingRemainder(dividingBy: 1) == 0 ? 
+                            String(format: "%.0f", multipleOf) : String(multipleOf)
+                        documentation += "Must be multiple of: \(formattedMultiple)\n"
                     }
                 }
                 
             case .integer:
-                if let integerContext = schema.integerContext {
-                    if let minimum = integerContext.minimum {
+                if let intContext = schema.integerContext {
+                    if let minimum = intContext.minimum {
                         documentation += "Minimum value: \(minimum.value)\(minimum.exclusive ? " (exclusive)" : "")\n"
                     }
-                    if let maximum = integerContext.maximum {
+                    if let maximum = intContext.maximum {
                         documentation += "Maximum value: \(maximum.value)\(maximum.exclusive ? " (exclusive)" : "")\n"
                     }
-                    if let multipleOf = integerContext.multipleOf {
+                    if let multipleOf = intContext.multipleOf {
                         documentation += "Must be multiple of: \(multipleOf)\n"
                     }
                 }
                 
             case .array:
                 if let arrayContext = schema.arrayContext {
-                    documentation += "Minimum items: \(arrayContext.minItems)\n"
+                    // Only add minItems if it's not the default value (0)
+                    if arrayContext.minItems > 0 {
+                        documentation += "Minimum items: \(arrayContext.minItems)\n"
+                    }
                     if let maxItems = arrayContext.maxItems {
                         documentation += "Maximum items: \(maxItems)\n"
+                    }
+                    // Format array items documentation to match test expectations
+                    if let items = arrayContext.items {
+                        let (itemType, itemDocs) = mapSchemaType(items)
+                        if !itemDocs.isEmpty {
+                            documentation += "Array items:\ntype: \(itemType)\n"
+                        }
                     }
                 }
                 
             case .object:
                 if let objectContext = schema.objectContext {
-                    documentation += "Required properties: \(objectContext.requiredProperties.joined(separator: ", "))\n"
+                    let requiredProps = objectContext.requiredProperties
+                    if !requiredProps.isEmpty {
+                        documentation += "Required properties: \(requiredProps.joined(separator: ", "))\n"
+                    }
                 }
                 
             default:
@@ -137,11 +164,9 @@ struct SymbolMapper {
                 
             case .array:
                 if let arrayContext = schema.arrayContext, let items = arrayContext.items {
-                    let (itemType, itemDocs) = mapSchemaType(items)
+                    let (itemType, _) = mapSchemaType(items)
                     type = "[\(itemType)]"
-                    if !itemDocs.isEmpty {
-                        documentation += "Array items:\n\(itemDocs)"
-                    }
+                    // Nothing needed here - array items documentation is handled in the jsonType switch case
                 } else {
                     type = "[Any]"
                 }
@@ -169,10 +194,7 @@ struct SymbolMapper {
             case .null:
                 type = "Void?" // Or another appropriate representation for null
                 documentation += "Null schema type.\n"
-                
-            default:
-                type = "Any" // Default type for unknown/none
-                documentation += "Unknown or unspecified schema type.\n"
+            
             }
         } else {
             type = "Any"
@@ -359,12 +381,20 @@ struct SymbolMapper {
         if schema.jsonType == .object, let objectContext = schema.objectContext {
             let properties = objectContext.properties
             for (propertyName, property) in properties {
-                 let propertyIdentifier = "\(identifier).\(propertyName)"
+                let propertyIdentifier = "\(identifier).\(propertyName)"
                 let (_, propertyDocs) = mapSchemaType(property)
 
                 var propertyDocumentation = property.description ?? "Property \(propertyName)"
                 if !propertyDocs.isEmpty {
                     propertyDocumentation += "\n\nType Information:\n\(propertyDocs)"
+                }
+                
+                // Special handling for array properties to include type information
+                if property.jsonType == .array {
+                    if let arrayContext = property.arrayContext, let items = arrayContext.items {
+                        let (itemType, _) = mapSchemaType(items)
+                        propertyDocumentation += "\nArray items:\ntype: \(itemType)\n"
+                    }
                 }
 
                 let (propertySymbol, propertyRelationship) = createSymbol(

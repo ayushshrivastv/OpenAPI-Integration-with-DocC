@@ -1,4 +1,5 @@
 import XCTest
+import OpenAPIKit
 @testable import OpenAPItoSymbolGraph
 
 final class OpenAPItoSymbolGraphTests: XCTestCase {
@@ -98,12 +99,18 @@ final class OpenAPItoSymbolGraphTests: XCTestCase {
     */
     
     func testTypeMapping() {
-        // Test type mapping function
-        XCTAssertEqual(SymbolMapper.mapSchemaType(.string).type, "String")
-        XCTAssertEqual(SymbolMapper.mapSchemaType(.number).type, "Double")
-        XCTAssertEqual(SymbolMapper.mapSchemaType(.integer).type, "Int")
-        XCTAssertEqual(SymbolMapper.mapSchemaType(.boolean).type, "Bool")
-        XCTAssertEqual(SymbolMapper.mapSchemaType(.array).type, "[Any]")
-        XCTAssertEqual(SymbolMapper.mapSchemaType(.object).type, "[String: Any]")
+        // Test type mapping function using basic schema types
+        XCTAssertEqual(SymbolMapper.mapSchemaType(OpenAPIKit.JSONSchema.string).type, "String")
+        XCTAssertEqual(SymbolMapper.mapSchemaType(OpenAPIKit.JSONSchema.number).type, "Double")
+        XCTAssertEqual(SymbolMapper.mapSchemaType(OpenAPIKit.JSONSchema.integer).type, "Int")
+        XCTAssertEqual(SymbolMapper.mapSchemaType(OpenAPIKit.JSONSchema.boolean).type, "Bool")
+        // For array and object, create basic contexts
+        let basicArrayCoreCtx = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.ArrayFormat>()
+        let basicArrayCtx = OpenAPIKit.JSONSchema.ArrayContext(items: nil)
+        XCTAssertEqual(SymbolMapper.mapSchemaType(OpenAPIKit.JSONSchema.array(basicArrayCoreCtx, basicArrayCtx)).type, "[Any]") 
+        
+        let basicObjectCoreCtx = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.ObjectFormat>()
+        let basicObjectCtx = OpenAPIKit.JSONSchema.ObjectContext(properties: [:])
+        XCTAssertEqual(SymbolMapper.mapSchemaType(OpenAPIKit.JSONSchema.object(basicObjectCoreCtx, basicObjectCtx)).type, "[String: Any]")
     }
 } 
