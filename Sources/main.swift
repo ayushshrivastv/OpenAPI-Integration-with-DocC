@@ -282,7 +282,7 @@ do {
 
     let symbolGraph = createSymbolGraph(from: openAPIDocument)
     let encoder = JSONEncoder()
-    encoder.outputFormatting = .prettyPrinted  // For readable JSON
+    encoder.outputFormatting = .prettyPrinted  
     let jsonData = try encoder.encode(symbolGraph)
     try jsonData.write(to: URL(fileURLWithPath: "symbolgraph.json"))
     print("SymbolGraph saved to symbolgraph.json")
