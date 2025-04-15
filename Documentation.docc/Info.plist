@@ -3,16 +3,12 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleIdentifier</key>
-    <string>com.example.API</string>
+    <string>com.example.openapi-to-symbolgraph</string>
     <key>CFBundleName</key>
-    <string>API</string>
+    <string>OpenAPI Documentation</string>
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
-    <key>CFBundleDisplayName</key>
-    <string>REST API Example</string>
-    <key>CDDefaultCodeListingLanguage</key>
-    <string>swift</string>
-    <key>CDDefaultModuleKind</key>
-    <string>Library</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
 </dict>
 </plist> 

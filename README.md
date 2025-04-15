@@ -1,132 +1,100 @@
 # OpenAPI Integration with DocC
 
-This project aims to create a tool that automatically converts OpenAPI specifications into Swift-DocC compatible documentation. By bridging OpenAPI and Swift-DocC through SymbolGraph files, we'll enable seamless documentation generation for REST APIs within the Swift ecosystem.
+This project provides tools and examples for integrating OpenAPI specifications with Apple's DocC documentation system. It allows developers to create beautiful, interactive documentation for REST APIs that matches the style and quality of Swift API documentation.
 
-The project is still in its very early stage, and I’m actively working on improving it.
+## Overview
 
-Google Summer of Code @Swift project to integrate OpenAPI Integration with Swift-DocC: Automated API Documentation Generation.
+OpenAPI is the industry standard for documenting HTTP services, but Swift developers are already familiar with DocC for their Swift and Objective-C API documentation. This project bridges that gap by converting OpenAPI specifications into a format that DocC can understand and render.
 
-## Technical Details
-**Problem Statement**
+## Key Features
 
+- Convert OpenAPI 3.1.0 specifications to DocC-compatible format
+- Generate beautiful API documentation
+- Provide a consistent documentation experience for Swift developers
+- Support for documenting endpoints, schemas, parameters, and more
 
-Currently, Swift developers maintaining REST APIs need to manually document their APIs in DocC while separately maintaining OpenAPI specifications. This creates duplicate work and potential inconsistencies between API specifications and documentation.
+## Getting Started
 
-## Contributing to OpenAPI Integration with DocC
+### Prerequisites
 
-The Swift Forums are the best place to get help with OpenAPI Integration with DocC and discuss future plans.
+- Xcode 15.0 or later
+- Swift 6.0 or later
+- Python 3 (for local documentation serving)
 
-As an Open Source Project, we value any contribution made to this tool. Please see the contributing guide for more information on how to contribute and build OpenAPI from source.
+### Installation
 
-
-## Project Status
-The project is in active development, with a working Proof of Concept (PoC) generating DocC documentation. Check out the live example below!
-
-![Screenshot 2025-04-05 at 4 55 57 AM](https://github.com/user-attachments/assets/3b5bfca6-7e6f-42a6-981a-039daeee0538)
-
-## Live Documentation
-View the generated DocC documentation for a sample User API at:
-
-[https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/docs](https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/)
-
-
-![Screenshot 2025-04-05 at 4 57 22 AM](https://github.com/user-attachments/assets/9ee9e418-45da-478e-a15e-80d6605a3d30)
-![Screenshot 2025-04-05 at 5 03 39 AM](https://github.com/user-attachments/assets/b590979f-8a44-4a95-a7be-a416166a5305)
-![Screenshot 2025-04-05 at 5 07 27 AM](https://github.com/user-attachments/assets/35e1be6d-154e-4ad8-86a0-2724fd742fba)
-
-
-## Proposed Solution
-Command line tool to simplify API documentation for Swift developers. It parses OpenAPI JSON/YAML files using OpenAPIKit Swift Library, transforms schemas and endpoints into DocC ready SymbolGraph files with createSymbolGraph, and outputs “symbolgraph.json.” Users then execute docc convert symbolgraph.json --output-path docs to create HTML docs, enhanced by a static “API.docc/” catalog for custom pages. For GSoC, I’ll extend support for complex schemas like nested objects and arrays, automate DocC conversion, and add live previews, ensuring effortless, consistent API documentation from OpenAPI specs.
-
-`swift run openapi-to-symbolgraph <path-to-openapi.json>`: Runs your tool to parse and generate “symbolgraph.json.”
-
-
-`docc convert symbolgraph.json --output-path docs`: Converts the SymbolGraph into HTML documentation.
-
-## Benefits to the Swift Ecosystem  
-
-Consistency: By generating DocC documentation directly from OpenAPI specs, the tool eliminates discrepancies between API definitions and code documentation. 
-
-Reduced Workload: Developers will save a lot of time that they would have spent manually documenting APIs in DocC. This is a problem that I’ve seen mentioned in industry reports, like Chase’s March 2024 Medium post (Using Apple’s OpenAPI Generator to Make and Mock Network Calls in SwiftUI). This tool directly addresses this issue. 
-
-
-Parses OpenAPI specifications (JSON/YAML)
-Converts API endpoints and schemas into DocC-compatible SymbolGraph files
-Generates comprehensive API documentation using Swift-DocC
-
-### Steps
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/OpenAPI-integration-with-DocC.git
-```
-
-2. Navigate to the project directory:
-```bash
+git clone https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC.git
 cd OpenAPI-integration-with-DocC
-```
-
-3. Build the project:
-```bash
 swift build
 ```
 
-4. (Optional) Run tests:
-```bash
-swift test
-```
-### Converting to DocC
+### Usage
 
-1. Generate the SymbolGraph file:
+1. Convert your OpenAPI specification to a SymbolGraph:
+
 ```bash
-swift run openapi-to-symbolgraph test/sample-api.json --output
+swift run openapi-to-symbolgraph path/to/your/api.yaml --output-path api.symbolgraph.json
 ```
 
-2. Convert to DocC documentation:
+2. Create a DocC documentation catalog (see `API.docc` as an example)
+
+3. Generate the documentation:
+
 ```bash
-swift run docc convert symbols/symbolgraph.json --output-path ./docs
+xcrun docc convert YourAPI.docc --fallback-display-name YourAPI --fallback-bundle-identifier com.example.YourAPI --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs
 ```
 
-![2e8f1a628c69dcaafc08ad6f8bad785ceae2cc02_2_1380x300](https://github.com/user-attachments/assets/5649425f-6b4c-4417-9f3e-342edbabc4ae)
+## Viewing the Documentation
 
-## Project Structure
+### Online Documentation
 
-- `Sources/`: Contains the main Swift source code
-- `test/`: Contains test files and sample OpenAPI specifications
-- `API.docc/`: Contains DocC documentation catalog
+The latest documentation is automatically deployed to GitHub Pages and can be viewed at:
 
-## Requirements
+[https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/](https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/)
 
-- Swift 5.7+
-- macOS 11.0+
+### Local Documentation Server
 
-## Architecture
-OpenAPI Spec → Parser → Intermediate Representation → SymbolGraph Generator → DocC Integration
+You can serve the documentation locally using one of these methods:
 
-## Features
+#### Using the helper script:
 
-- Parses OpenAPI JSON/YAML specifications
-- Generates DocC-compatible SymbolGraph files
-- Creates documentation structure for API endpoints and schemas
+```bash
+./serve-docs.sh
+```
 
-## Installation
+#### Using Python 3 directly:
 
-### Prerequisites
-- Xcode 14.0 or later
-- Swift 5.7+
-- macOS 11.0+
+```bash
+python3 -m http.server 8000 --directory docs
+```
 
-## Dependencies
+Then open your browser to http://localhost:8000
 
-- [OpenAPIKit](https://github.com/mattpolzin/OpenAPIKit.git)
-- [Swift DocC SymbolKit](https://github.com/swiftlang/swift-docc-symbolkit.git)
+## Example
+
+Check out the `DocsExample` directory for a working example of a REST API documented with DocC. It showcases how endpoints, schemas, and examples appear in the DocC format.
+
+## How It Works
+
+1. The OpenAPI specification is parsed using `OpenAPIKit`
+2. The specification is converted to a SymbolGraph, which is the format DocC uses for documentation
+3. DocC processes the SymbolGraph and generates the documentation
+4. The documentation can be served as a static website or deployed to GitHub Pages
+
+## GitHub Pages Deployment
+
+This repository is configured to automatically deploy documentation to GitHub Pages whenever changes are pushed to the main branch. The deployment process:
+
+1. Uses the GitHub Actions workflow defined in `.github/workflows/pages.yml`
+2. Takes the contents of the `docs` directory
+3. Deploys them to GitHub Pages
+4. Makes the documentation available at the URL: [https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/](https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/)
 
 ## Contributing
-I welcome feedback and contributions! Please open an issue or pull request on GitHub. For GSoC, I’m collaborating with mentors Sofia Rodríguez, Si Beaumont, and Honza Dvorsky.
 
-## Acknowledgements
-Special thanks to the Swift.org community and my GSoC mentors for their guidance.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
