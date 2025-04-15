@@ -23,12 +23,91 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      
+      - name: Prepare public directory
+        run: |
+          # Create public directory
+          mkdir -p public
+          
+          # Copy documentation files
+          cp -r docs/* public/
+          
+          # Copy sample files and make them accessible
+          cp -r DocsExample public/
+          cp api.yaml public/
+          cp -r API.docc public/
+          
+          # Create README with instructions and note about source
+          cat > public/README.md << 'EOF'
+          # The DocsExample directory within the repository (ayushshrivastv/OpenAPI-integration-with-DocC/DocsExample) is the source for this example.
+
+          ## Building and Viewing Documentation Locally
+
+          1. Convert OpenAPI specification to SymbolGraph:
+             ```
+             swift run openapi-to-symbolgraph api.yaml --output-path api.symbolgraph.json
+             ```
+
+          2. Generate DocC documentation:
+             ```
+             xcrun docc convert API.docc --fallback-display-name API --fallback-bundle-identifier com.example.API --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs
+             ```
+
+          3. View the documentation locally:
+             ```
+             python -m http.server 8000 --directory docs
+             ```
+
+          4. Open your browser to http://localhost:8000
+          EOF
+          
+          # Create a simple index page if one doesn't exist
+          if [ ! -f public/index.html ]; then
+            cat > public/index.html << 'EOF'
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>OpenAPI Integration with DocC</title>
+                <style>
+                    body { font-family: -apple-system, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+                    h1, h2 { color: #0066cc; }
+                    .card { background: #f5f5f7; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+                    a { color: #0066cc; text-decoration: none; }
+                    a:hover { text-decoration: underline; }
+                </style>
+            </head>
+            <body>
+                <h1>OpenAPI Integration with DocC</h1>
+                <p>Tools and examples for integrating OpenAPI specifications with Apple's DocC documentation system.</p>
+                
+                <div class="card">
+                    <h2>Sample Files</h2>
+                    <p>The DocsExample directory within the repository (ayushshrivastv/OpenAPI-integration-with-DocC/DocsExample) is the source for this example.</p>
+                    <ul>
+                        <li><a href="./DocsExample/index.html">View Example Documentation</a></li>
+                        <li><a href="./api.yaml">OpenAPI Specification (api.yaml)</a></li>
+                        <li><a href="./API.docc">DocC Documentation Catalog (API.docc)</a></li>
+                        <li><a href="./README.md">Build Instructions</a></li>
+                    </ul>
+                </div>
+            </body>
+            </html>
+            EOF
+          else
+            # If there's an existing index.html, add a note about the location of examples
+            sed -i 's/<\/body>/<div style="margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px;"><p>The DocsExample directory within the repository (ayushshrivastv\/OpenAPI-integration-with-DocC\/DocsExample) is the source for this example.<\/p><p>Sample files are available: <a href="\/DocsExample">DocsExample<\/a>, <a href="\/api.yaml">api.yaml<\/a>, <a href="\/API.docc">API.docc<\/a>, <a href="\/README.md">README.md<\/a><\/p><\/div><\/body>/g' public/index.html || true
+          fi
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './docs'
+          path: './public'
+      
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4
