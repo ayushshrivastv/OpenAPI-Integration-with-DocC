@@ -9,14 +9,10 @@
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
     <key>CFBundleDisplayName</key>
-    <string>API Documentation</string>
-    <key>DefaultCodeListingLanguage</key>
+    <string>REST API Example</string>
+    <key>CDDefaultCodeListingLanguage</key>
     <string>swift</string>
-    <key>DefaultLanguage</key>
-    <string>en-US</string>
-    <key>DocSetPlatformFamily</key>
-    <string>api</string>
-    <key>Title</key>
-    <string>API Documentation</string>
+    <key>CDDefaultModuleKind</key>
+    <string>Library</string>
 </dict>
 </plist> 
