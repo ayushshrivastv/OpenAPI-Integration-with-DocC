@@ -20,7 +20,7 @@
     {
       "kind" : "memberOf",
       "source" : "s:API",
-      "target" : "f:API.listUsers",
+      "target" : "f:API.getUserById",
       "targetFallback" : null
     },
     {
@@ -32,19 +32,13 @@
     {
       "kind" : "memberOf",
       "source" : "s:API",
-      "target" : "f:API.getUserById",
+      "target" : "f:API.listUsers",
       "targetFallback" : null
     },
     {
       "kind" : "memberOf",
       "source" : "s:API",
       "target" : "s:API.User",
-      "targetFallback" : null
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "s:API.User",
-      "target" : "s:API.User.email",
       "targetFallback" : null
     },
     {
@@ -58,88 +52,15 @@
       "source" : "s:API.User",
       "target" : "s:API.User.name",
       "targetFallback" : null
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "s:API.User",
+      "target" : "s:API.User.email",
+      "targetFallback" : null
     }
   ],
   "symbols" : [
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Creates a user\n\nPath: \/users\nMethod: POST"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "swift",
-        "precise" : "f:API.createUser"
-      },
-      "kind" : {
-        "displayName" : "Function",
-        "identifier" : "func"
-      },
-      "names" : {
-        "prose" : "Creates a user\n\nPath: \/users\nMethod: POST",
-        "title" : "createUser"
-      },
-      "pathComponents" : [
-        "API",
-        "createUser"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Schema for User\n\nType Information:\nRequired properties: id, name\nemail: String - The user email\nid: String - The user ID\nname: String - The user name\n"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "swift",
-        "precise" : "s:API.User"
-      },
-      "kind" : {
-        "displayName" : "Structure",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "prose" : "Schema for User\n\nType Information:\nRequired properties: id, name\nemail: String - The user email\nid: String - The user ID\nname: String - The user name\n",
-        "title" : "User"
-      },
-      "pathComponents" : [
-        "API",
-        "User"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "The user ID\n\nType Information:\nString"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "swift",
-        "precise" : "s:API.User.id"
-      },
-      "kind" : {
-        "displayName" : "Property",
-        "identifier" : "property"
-      },
-      "names" : {
-        "prose" : "The user ID\n\nType Information:\nString",
-        "title" : "id"
-      },
-      "pathComponents" : [
-        "API",
-        "User",
-        "id"
-      ]
-    },
     {
       "accessLevel" : "public",
       "docComment" : {
@@ -164,6 +85,31 @@
       "pathComponents" : [
         "API",
         "getUserById"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "A sample API for testing"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "swift",
+        "precise" : "s:API"
+      },
+      "kind" : {
+        "displayName" : "Module",
+        "identifier" : "module"
+      },
+      "names" : {
+        "prose" : "A sample API for testing",
+        "title" : "Sample API"
+      },
+      "pathComponents" : [
+        "API"
       ]
     },
     {
@@ -224,31 +170,6 @@
       "docComment" : {
         "lines" : [
           {
-            "text" : "A sample API for testing"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "swift",
-        "precise" : "s:API"
-      },
-      "kind" : {
-        "displayName" : "Module",
-        "identifier" : "module"
-      },
-      "names" : {
-        "prose" : "A sample API for testing",
-        "title" : "Sample API"
-      },
-      "pathComponents" : [
-        "API"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
             "text" : "The user name\n\nType Information:\nString"
           }
         ]
@@ -269,6 +190,85 @@
         "API",
         "User",
         "name"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Creates a user\n\nPath: \/users\nMethod: POST"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "swift",
+        "precise" : "f:API.createUser"
+      },
+      "kind" : {
+        "displayName" : "Function",
+        "identifier" : "func"
+      },
+      "names" : {
+        "prose" : "Creates a user\n\nPath: \/users\nMethod: POST",
+        "title" : "createUser"
+      },
+      "pathComponents" : [
+        "API",
+        "createUser"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Schema for User\n\nType Information:\nRequired properties: id, name\nid: String - The user ID\nname: String - The user name\nemail: String - The user email\n"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "swift",
+        "precise" : "s:API.User"
+      },
+      "kind" : {
+        "displayName" : "Structure",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "prose" : "Schema for User\n\nType Information:\nRequired properties: id, name\nid: String - The user ID\nname: String - The user name\nemail: String - The user email\n",
+        "title" : "User"
+      },
+      "pathComponents" : [
+        "API",
+        "User"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "The user ID\n\nType Information:\nString"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "swift",
+        "precise" : "s:API.User.id"
+      },
+      "kind" : {
+        "displayName" : "Property",
+        "identifier" : "property"
+      },
+      "names" : {
+        "prose" : "The user ID\n\nType Information:\nString",
+        "title" : "id"
+      },
+      "pathComponents" : [
+        "API",
+        "User",
+        "id"
       ]
     }
   ]

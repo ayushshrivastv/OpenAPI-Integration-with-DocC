@@ -17,13 +17,13 @@ This documentation is generated from an OpenAPI specification, showcasing how RE
 
 ### Endpoints
 
-- ``API/listUsers``
-- ``API/getUserById``
-- ``API/createUser``
+- ``/REST-API-Example/API/listUsers``
+- ``/REST-API-Example/API/getUserById``
+- ``/REST-API-Example/API/createUser``
 
 ### Data Models
 
-- ``API/User``
+- ``/REST-API-Example/API/User``
 
 ### Getting Started
 
