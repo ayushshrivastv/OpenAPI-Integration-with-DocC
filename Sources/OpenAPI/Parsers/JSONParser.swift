@@ -156,6 +156,29 @@ public struct JSONParser {
         guard let array = array else { return nil }
 
         return try array.map { dict in
+            // Check if this is a parameter reference ($ref)
+            if let ref = dict["$ref"] as? String {
+                // We can't resolve references during parsing since we don't have access
+                // to the full document with components yet. Return a placeholder parameter
+                // with the reference for later resolution.
+                let refComponents = ref.split(separator: "/")
+                
+                // Ensure the reference format is correct (e.g., "#/components/parameters/SomeParam")
+                guard refComponents.count >= 4,
+                      refComponents[1] == "components",
+                      refComponents[2] == "parameters" else {
+                    throw ParserError.invalidDocument("Invalid parameter reference format: \(ref)")
+                }
+                
+                let refName = String(refComponents[3])
+                return Parameter(
+                    name: refName, // Use the reference name as a placeholder
+                    in: .path,     // Default to path - will be overridden during resolution
+                    required: true, // Default to required - will be overridden during resolution
+                    schema: .string(StringSchema()) // Default schema - will be overridden during resolution
+                )
+            }
+            
             guard let name = dict["name"] as? String else {
                 throw ParserError.missingRequiredField("name")
             }
@@ -248,22 +271,57 @@ public struct JSONParser {
 
     private func parseComponents(from dict: [String: Any]?) throws -> Components? {
         guard let dict = dict else { return nil }
-
-        guard let schemasDict = dict["schemas"] as? [String: Any] else {
-            return Components()
-        }
-
-        var schemas: [String: JSONSchema] = [:]
-
-        for (name, schemaDict) in schemasDict {
-            guard let schemaDict = schemaDict as? [String: Any] else {
-                throw ParserError.invalidSchema(name)
+        
+        // Parse schemas
+        let schemasDict = dict["schemas"] as? [String: Any]
+        var schemas: [String: JSONSchema]?
+        
+        if let schemasDict = schemasDict {
+            schemas = [:]
+            for (name, schemaDict) in schemasDict {
+                guard let schemaDict = schemaDict as? [String: Any] else {
+                    throw ParserError.invalidSchema(name)
+                }
+                
+                schemas?[name] = try parseSchema(from: schemaDict)
             }
-
-            schemas[name] = try parseSchema(from: schemaDict)
         }
-
-        return Components(schemas: schemas)
+        
+        // Parse parameters
+        let parametersDict = dict["parameters"] as? [String: Any]
+        var parameters: [String: Parameter]?
+        
+        if let parametersDict = parametersDict {
+            parameters = [:]
+            for (name, paramDict) in parametersDict {
+                guard let paramDict = paramDict as? [String: Any] else {
+                    throw ParserError.invalidParameter(name)
+                }
+                
+                // Parameter must have 'name', 'in', and 'schema' properties
+                guard let paramName = paramDict["name"] as? String else {
+                    throw ParserError.missingRequiredField("name")
+                }
+                
+                guard let inValue = paramDict["in"] as? String,
+                      let location = ParameterLocation(rawValue: inValue) else {
+                    throw ParserError.invalidParameterLocation
+                }
+                
+                guard let schemaDict = paramDict["schema"] as? [String: Any] else {
+                    throw ParserError.missingRequiredField("schema")
+                }
+                
+                parameters?[name] = Parameter(
+                    name: paramName,
+                    in: location,
+                    required: paramDict["required"] as? Bool ?? false,
+                    schema: try parseSchema(from: schemaDict)
+                )
+            }
+        }
+        
+        return Components(schemas: schemas, parameters: parameters)
     }
 
     private func parseSchema(from dict: [String: Any]) throws -> JSONSchema {

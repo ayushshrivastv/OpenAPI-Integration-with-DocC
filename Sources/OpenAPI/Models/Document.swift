@@ -65,9 +65,18 @@ public struct Components {
     /// The reusable schemas
     public let schemas: [String: JSONSchema]?
     
+    /// The reusable parameters
+    public let parameters: [String: Parameter]?
+    
     /// Creates new reusable components
-    /// - Parameter schemas: The reusable schemas
-    public init(schemas: [String: JSONSchema]? = nil) {
+    /// - Parameters:
+    ///   - schemas: The reusable schemas
+    ///   - parameters: The reusable parameters
+    public init(
+        schemas: [String: JSONSchema]? = nil,
+        parameters: [String: Parameter]? = nil
+    ) {
         self.schemas = schemas
+        self.parameters = parameters
     }
 }

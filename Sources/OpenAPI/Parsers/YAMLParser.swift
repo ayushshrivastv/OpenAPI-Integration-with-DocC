@@ -21,7 +21,8 @@ public struct YAMLParser {
             throw ParserError.invalidYAML
         }
         
-        return try parseDocument(from: yamlDict)
+        let document = try parseDocument(from: yamlDict)
+        return try resolveReferences(in: document)
     }
     
     /// Parses a YAML file into an OpenAPI document
@@ -188,18 +189,22 @@ public struct YAMLParser {
         var paths: [String: PathItem] = [:]
         
         for (path, pathDict) in dict {
-            guard let pathDict = pathDict as? [String: Any] else {
+            if let pathDict = pathDict as? [String: Any] {
+                paths[path] = try parsePathItem(from: pathDict)
+            } else {
                 throw ParserError.invalidPathItem(path)
             }
-            
-            paths[path] = try parsePathItem(from: pathDict)
         }
         
         return paths
     }
     
     private func parsePathItem(from dict: [String: Any]) throws -> PathItem {
-        let parameters = try parseParameters(from: dict["parameters"] as? [[String: Any]])
+        var parameters: [Parameter]? = nil
+        
+        if let paramsArray = dict["parameters"] as? [[String: Any]] {
+            parameters = try parseParameters(from: paramsArray)
+        }
         
         return PathItem(
             get: try parseOperation(from: dict["get"] as? [String: Any]),
@@ -213,7 +218,11 @@ public struct YAMLParser {
     private func parseOperation(from dict: [String: Any]?) throws -> Operation? {
         guard let dict = dict else { return nil }
         
-        let parameters = try parseParameters(from: dict["parameters"] as? [[String: Any]])
+        var parameters: [Parameter]? = nil
+        if let paramsArray = dict["parameters"] as? [[String: Any]] {
+            parameters = try parseParameters(from: paramsArray)
+        }
+        
         let requestBody = try parseRequestBody(from: dict["requestBody"] as? [String: Any])
         let responses = try parseResponses(from: dict["responses"] as? [String: Any])
         
@@ -232,6 +241,25 @@ public struct YAMLParser {
         guard let array = array else { return nil }
         
         return try array.map { dict in
+            // Check if this is a parameter reference ($ref)
+            if let ref = dict["$ref"] as? String {
+                // For now, just use a placeholder parameter for referenced parameters
+                let refComponents = ref.split(separator: "/")
+                guard refComponents.count >= 4,
+                      refComponents[1] == "components",
+                      refComponents[2] == "parameters" else {
+                    throw ParserError.invalidDocument("Invalid parameter reference format: \(ref)")
+                }
+                
+                let refName = String(refComponents[3])
+                return Parameter(
+                    name: refName,
+                    in: .path,
+                    required: true,
+                    schema: .string(StringSchema())
+                )
+            }
+            
             guard let name = dict["name"] as? String else {
                 throw ParserError.missingRequiredField("name")
             }
@@ -286,20 +314,28 @@ public struct YAMLParser {
         var responses: [String: Response] = [:]
         
         for (statusCode, responseDict) in dict {
-            guard let responseDict = responseDict as? [String: Any] else {
+            if let responseDict = responseDict as? [String: Any] {
+                if responseDict["$ref"] is String {
+                    // For now, just use a placeholder description for referenced responses
+                    responses[statusCode] = Response(
+                        description: "Referenced response",
+                        content: nil
+                    )
+                } else {
+                    guard let description = responseDict["description"] as? String else {
+                        throw ParserError.missingRequiredField("description")
+                    }
+                    
+                    let content = try parseContent(from: responseDict["content"] as? [String: Any])
+                    
+                    responses[statusCode] = Response(
+                        description: description,
+                        content: content
+                    )
+                }
+            } else {
                 throw ParserError.invalidResponse(statusCode)
             }
-            
-            guard let description = responseDict["description"] as? String else {
-                throw ParserError.missingRequiredField("description")
-            }
-            
-            let content = try parseContent(from: responseDict["content"] as? [String: Any])
-            
-            responses[statusCode] = Response(
-                description: description,
-                content: content
-            )
         }
         
         return responses
@@ -325,21 +361,56 @@ public struct YAMLParser {
     private func parseComponents(from dict: [String: Any]?) throws -> Components? {
         guard let dict = dict else { return nil }
         
-        guard let schemasDict = dict["schemas"] as? [String: Any] else {
-            return Components()
-        }
+        // Parse schemas
+        let schemasDict = dict["schemas"] as? [String: Any]
+        var schemas: [String: JSONSchema]?
         
-        var schemas: [String: JSONSchema] = [:]
-        
-        for (name, schemaDict) in schemasDict {
-            guard let schemaDict = schemaDict as? [String: Any] else {
-                throw ParserError.invalidSchema(name)
+        if let schemasDict = schemasDict {
+            schemas = [:]
+            for (name, schemaDict) in schemasDict {
+                guard let schemaDict = schemaDict as? [String: Any] else {
+                    throw ParserError.invalidSchema(name)
+                }
+                
+                schemas?[name] = try parseSchema(from: schemaDict)
             }
-            
-            schemas[name] = try parseSchema(from: schemaDict)
         }
         
-        return Components(schemas: schemas)
+        // Parse parameters
+        let parametersDict = dict["parameters"] as? [String: Any]
+        var parameters: [String: Parameter]?
+        
+        if let parametersDict = parametersDict {
+            parameters = [:]
+            for (name, paramDict) in parametersDict {
+                guard let paramDict = paramDict as? [String: Any] else {
+                    throw ParserError.invalidParameter(name)
+                }
+                
+                // Parameter must have 'name', 'in', and 'schema' properties
+                guard let paramName = paramDict["name"] as? String else {
+                    throw ParserError.missingRequiredField("name")
+                }
+                
+                guard let inValue = paramDict["in"] as? String,
+                      let location = ParameterLocation(rawValue: inValue) else {
+                    throw ParserError.invalidParameterLocation
+                }
+                
+                guard let schemaDict = paramDict["schema"] as? [String: Any] else {
+                    throw ParserError.missingRequiredField("schema")
+                }
+                
+                parameters?[name] = Parameter(
+                    name: paramName,
+                    in: location,
+                    required: paramDict["required"] as? Bool ?? false,
+                    schema: try parseSchema(from: schemaDict)
+                )
+            }
+        }
+        
+        return Components(schemas: schemas, parameters: parameters)
     }
     
     private func parseSchema(from dict: [String: Any]) throws -> JSONSchema {
@@ -449,6 +520,85 @@ public struct YAMLParser {
             required: dict["required"] as? [String] ?? [],
             properties: properties,
             additionalProperties: additionalProperties
+        )
+    }
+    
+    // Resolves references in the document
+    private func resolveReferences(in document: Document) throws -> Document {
+        // If there are no components, no need to resolve references
+        guard let components = document.components else {
+            return document
+        }
+        
+        // Create a new paths dictionary with resolved references
+        var resolvedPaths: [String: PathItem] = [:]
+        
+        for (path, pathItem) in document.paths {
+            // Resolve references in path parameters
+            let resolvedPathParameters = try resolveParameterReferences(pathItem.parameters, components: components)
+            
+            // Create a new path item with resolved references for each operation
+            let resolvedPathItem = PathItem(
+                get: try resolveOperationReferences(pathItem.get, components: components),
+                post: try resolveOperationReferences(pathItem.post, components: components),
+                put: try resolveOperationReferences(pathItem.put, components: components),
+                delete: try resolveOperationReferences(pathItem.delete, components: components),
+                parameters: resolvedPathParameters
+            )
+            
+            resolvedPaths[path] = resolvedPathItem
+        }
+        
+        // Create a new document with resolved references
+        return Document(
+            openapi: document.openapi,
+            info: document.info,
+            paths: resolvedPaths,
+            components: document.components
+        )
+    }
+    
+    // Resolves parameter references in an array of parameters
+    private func resolveParameterReferences(_ parameters: [Parameter]?, components: Components) throws -> [Parameter]? {
+        guard let parameters = parameters else {
+            return nil
+        }
+        
+        // If there are no parameter components, no need to resolve references
+        guard let parameterComponents = components.parameters else {
+            return parameters
+        }
+        
+        return parameters.map { parameter in
+            // For placeholder parameters created from $ref, the name will be the reference name
+            // and we can use it to look up the actual parameter in the components
+            if parameter.schema == .string(StringSchema()) && 
+               parameterComponents.keys.contains(parameter.name) {
+                return parameterComponents[parameter.name]!
+            }
+            
+            return parameter
+        }
+    }
+    
+    // Resolves references in an operation
+    private func resolveOperationReferences(_ operation: Operation?, components: Components) throws -> Operation? {
+        guard let operation = operation else {
+            return nil
+        }
+        
+        // Resolve parameter references
+        let resolvedParameters = try resolveParameterReferences(operation.parameters, components: components)
+        
+        // Create a new operation with resolved references
+        return Operation(
+            summary: operation.summary,
+            description: operation.description,
+            parameters: resolvedParameters,
+            requestBody: operation.requestBody,
+            responses: operation.responses,
+            deprecated: operation.deprecated,
+            tags: operation.tags
         )
     }
 } 

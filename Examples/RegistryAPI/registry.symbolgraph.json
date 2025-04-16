@@ -1,0 +1,1607 @@
+{
+  "metadata" : {
+    "formatVersion" : {
+      "major" : 0,
+      "minor" : 5,
+      "patch" : 3
+    },
+    "generator" : "OpenAPItoSymbolGraph"
+  },
+  "module" : {
+    "isVirtual" : false,
+    "name" : "Swift Package Registry API",
+    "platform" : {
+      "vendor" : "OpenAPI"
+    }
+  },
+  "relationships" : [
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "\/{scope}\/{name}\/{version}.zip"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "target" : "path:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "GET \/{scope}\/{name}\/{version}.zip"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:415",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "415"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:303",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "303"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:401",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "401"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:429",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "429"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}.zip",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "\/{scope}\/{name}\/{version}\/Package.swift"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "target" : "path:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "GET \/{scope}\/{name}\/{version}\/Package.swift"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:swift-version",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "swift-version"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:303",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "303"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:415",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "415"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:429",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "429"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:401",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "401"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "\/{scope}\/{name}\/{version}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:get:\/{scope}\/{name}\/{version}",
+      "target" : "path:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "GET \/{scope}\/{name}\/{version}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:429",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "429"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:415",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "415"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:401",
+      "target" : "operation:get:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "401"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:put:\/{scope}\/{name}\/{version}",
+      "target" : "path:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "PUT \/{scope}\/{name}\/{version}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:X-Swift-Package-Signature-Format",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "X-Swift-Package-Signature-Format"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:Prefer",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "Prefer"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:405",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "405"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:409",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "409"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:429",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "429"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:201",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "201"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:422",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "422"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:415",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "415"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:413",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "413"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:401",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "401"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:202",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "202"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:put:\/{scope}\/{name}\/{version}",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/login",
+      "targetFallback" : "\/login"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:post:\/login",
+      "target" : "path:\/login",
+      "targetFallback" : "POST \/login"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:post:\/login",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:501",
+      "target" : "operation:post:\/login",
+      "targetFallback" : "501"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:429",
+      "target" : "operation:post:\/login",
+      "targetFallback" : "429"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:401",
+      "target" : "operation:post:\/login",
+      "targetFallback" : "401"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/{scope}\/{name}",
+      "targetFallback" : "\/{scope}\/{name}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:get:\/{scope}\/{name}",
+      "target" : "path:\/{scope}\/{name}",
+      "targetFallback" : "GET \/{scope}\/{name}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:get:\/{scope}\/{name}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:415",
+      "target" : "operation:get:\/{scope}\/{name}",
+      "targetFallback" : "415"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:429",
+      "target" : "operation:get:\/{scope}\/{name}",
+      "targetFallback" : "429"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:get:\/{scope}\/{name}",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:get:\/{scope}\/{name}",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:401",
+      "target" : "operation:get:\/{scope}\/{name}",
+      "targetFallback" : "401"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/identifiers",
+      "targetFallback" : "\/identifiers"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:get:\/identifiers",
+      "target" : "path:\/identifiers",
+      "targetFallback" : "GET \/identifiers"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:415",
+      "target" : "operation:get:\/identifiers",
+      "targetFallback" : "415"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:get:\/identifiers",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:get:\/identifiers",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:401",
+      "target" : "operation:get:\/identifiers",
+      "targetFallback" : "401"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:429",
+      "target" : "operation:get:\/identifiers",
+      "targetFallback" : "429"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:PublishResponse",
+      "target" : "module",
+      "targetFallback" : "PublishResponse"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:ReleaseResource",
+      "target" : "module",
+      "targetFallback" : "ReleaseResource"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:ProblemDetails",
+      "target" : "module",
+      "targetFallback" : "ProblemDetails"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:PackageMetadata",
+      "target" : "module",
+      "targetFallback" : "PackageMetadata"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:Releases",
+      "target" : "module",
+      "targetFallback" : "Releases"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:PackageAuthor",
+      "target" : "module",
+      "targetFallback" : "PackageAuthor"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:PackageOrganization",
+      "target" : "module",
+      "targetFallback" : "PackageOrganization"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:ReleaseSignature",
+      "target" : "module",
+      "targetFallback" : "ReleaseSignature"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:Identifiers",
+      "target" : "module",
+      "targetFallback" : "Identifiers"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:ListedRelease",
+      "target" : "module",
+      "targetFallback" : "ListedRelease"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:Identifier",
+      "target" : "module",
+      "targetFallback" : "Identifier"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "schema:ReleaseMetadata",
+      "target" : "module",
+      "targetFallback" : "ReleaseMetadata"
+    }
+  ],
+  "symbols" : [
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:ProblemDetails"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "ProblemDetails"
+          }
+        ],
+        "title" : "ProblemDetails"
+      },
+      "pathComponents" : [
+        "ProblemDetails"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:put:\/{scope}\/{name}\/{version}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "PUT \/{scope}\/{name}\/{version}"
+          }
+        ],
+        "title" : "PUT \/{scope}\/{name}\/{version}"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:PackageAuthor"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "PackageAuthor"
+          }
+        ],
+        "title" : "PackageAuthor"
+      },
+      "pathComponents" : [
+        "PackageAuthor"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "See other - download from the URL in the Location header."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:303"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "303 Response"
+          }
+        ],
+        "title" : "303 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get",
+        "303"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:ListedRelease"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "ListedRelease"
+          }
+        ],
+        "title" : "ListedRelease"
+      },
+      "pathComponents" : [
+        "ListedRelease"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Referenced response"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:404"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "404 Response"
+          }
+        ],
+        "title" : "404 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get",
+        "404"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Referenced response"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:429"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "429 Response"
+          }
+        ],
+        "title" : "429 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get",
+        "429"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:Prefer"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Prefer"
+          }
+        ],
+        "title" : "Prefer"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "Prefer"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Referenced response"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:400"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "400 Response"
+          }
+        ],
+        "title" : "400 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get",
+        "400"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/{scope}\/{name}\/{version}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/{scope}\/{name}\/{version}"
+          }
+        ],
+        "title" : "GET \/{scope}\/{name}\/{version}"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:PackageMetadata"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "PackageMetadata"
+          }
+        ],
+        "title" : "PackageMetadata"
+      },
+      "pathComponents" : [
+        "PackageMetadata"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/{scope}\/{name}"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/{scope}\/{name}"
+          }
+        ],
+        "title" : "\/{scope}\/{name}"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Unprocessable entity - refused to publish the release."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:422"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "422 Response"
+          }
+        ],
+        "title" : "422 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "422"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:ReleaseMetadata"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "ReleaseMetadata"
+          }
+        ],
+        "title" : "ReleaseMetadata"
+      },
+      "pathComponents" : [
+        "ReleaseMetadata"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Referenced response"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:415"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "415 Response"
+          }
+        ],
+        "title" : "415 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get",
+        "415"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Method not allowed - publishing is not supported on this server."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:405"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "405 Response"
+          }
+        ],
+        "title" : "405 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "405"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Log in using either basic or token authentication. Use the `Authorization` header to provide credentials.\n\nAlso use this endpoint to verify authentication credentials before saving them to the local secrets store."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:post:\/login"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "POST \/login"
+          }
+        ],
+        "title" : "POST \/login"
+      },
+      "pathComponents" : [
+        "\/login",
+        "post"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:X-Swift-Package-Signature-Format"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "X-Swift-Package-Signature-Format"
+          }
+        ],
+        "title" : "X-Swift-Package-Signature-Format"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "X-Swift-Package-Signature-Format"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/{scope}\/{name}\/{version}.zip"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/{scope}\/{name}\/{version}.zip"
+          }
+        ],
+        "title" : "GET \/{scope}\/{name}\/{version}.zip"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:Identifier"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Identifier"
+          }
+        ],
+        "title" : "Identifier"
+      },
+      "pathComponents" : [
+        "Identifier"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:PublishResponse"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "PublishResponse"
+          }
+        ],
+        "title" : "PublishResponse"
+      },
+      "pathComponents" : [
+        "PublishResponse"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:Releases"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Releases"
+          }
+        ],
+        "title" : "Releases"
+      },
+      "pathComponents" : [
+        "Releases"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/{scope}\/{name}\/{version}"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/{scope}\/{name}\/{version}"
+          }
+        ],
+        "title" : "\/{scope}\/{name}\/{version}"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/{scope}\/{name}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/{scope}\/{name}"
+          }
+        ],
+        "title" : "GET \/{scope}\/{name}"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Registry does not support authentication."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:501"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "501 Response"
+          }
+        ],
+        "title" : "501 Response"
+      },
+      "pathComponents" : [
+        "\/login",
+        "post",
+        "501"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/login"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/login"
+          }
+        ],
+        "title" : "\/login"
+      },
+      "pathComponents" : [
+        "\/login"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/identifiers"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/identifiers"
+          }
+        ],
+        "title" : "\/identifiers"
+      },
+      "pathComponents" : [
+        "\/identifiers"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Download the source archive for the specified package release"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:200"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "200 Response"
+          }
+        ],
+        "title" : "200 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get",
+        "200"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:swift-version"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "swift-version"
+          }
+        ],
+        "title" : "swift-version"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}\/Package.swift",
+        "get",
+        "swift-version"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Content too large."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:413"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "413 Response"
+          }
+        ],
+        "title" : "413 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "413"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "The request to publish the package has been accepted and is being processed"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:202"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "202 Response"
+          }
+        ],
+        "title" : "202 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "202"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/identifiers"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/identifiers"
+          }
+        ],
+        "title" : "GET \/identifiers"
+      },
+      "pathComponents" : [
+        "\/identifiers",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "The package release has been successfully published"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:201"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "201 Response"
+          }
+        ],
+        "title" : "201 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "201"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Conflict - an existing release already exists, or the release is still processing."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:409"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "409 Response"
+          }
+        ],
+        "title" : "409 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}",
+        "put",
+        "409"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "API for managing Swift package releases and interacting with the package registry."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "module"
+      },
+      "kind" : {
+        "displayName" : "Module",
+        "identifier" : "module"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Swift Package Registry API"
+          }
+        ],
+        "title" : "Swift Package Registry API"
+      },
+      "pathComponents" : [
+        "Swift Package Registry API"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:Identifiers"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Identifiers"
+          }
+        ],
+        "title" : "Identifiers"
+      },
+      "pathComponents" : [
+        "Identifiers"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/{scope}\/{name}\/{version}.zip"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/{scope}\/{name}\/{version}.zip"
+          }
+        ],
+        "title" : "\/{scope}\/{name}\/{version}.zip"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/{scope}\/{name}\/{version}\/Package.swift"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/{scope}\/{name}\/{version}\/Package.swift"
+          }
+        ],
+        "title" : "GET \/{scope}\/{name}\/{version}\/Package.swift"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}\/Package.swift",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/{scope}\/{name}\/{version}\/Package.swift"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/{scope}\/{name}\/{version}\/Package.swift"
+          }
+        ],
+        "title" : "\/{scope}\/{name}\/{version}\/Package.swift"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}\/Package.swift"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:ReleaseSignature"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "ReleaseSignature"
+          }
+        ],
+        "title" : "ReleaseSignature"
+      },
+      "pathComponents" : [
+        "ReleaseSignature"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:ReleaseResource"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "ReleaseResource"
+          }
+        ],
+        "title" : "ReleaseResource"
+      },
+      "pathComponents" : [
+        "ReleaseResource"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:PackageOrganization"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "PackageOrganization"
+          }
+        ],
+        "title" : "PackageOrganization"
+      },
+      "pathComponents" : [
+        "PackageOrganization"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Referenced response"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:401"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "401 Response"
+          }
+        ],
+        "title" : "401 Response"
+      },
+      "pathComponents" : [
+        "\/{scope}\/{name}\/{version}.zip",
+        "get",
+        "401"
+      ]
+    }
+  ]
+}
