@@ -1,6 +1,11 @@
-# Utilities
+# Utils
 
-This directory contains various utility classes and functions used throughout the OpenAPI to SymbolGraph conversion process.
+This directory contains utility functions and types used across the OpenAPItoSymbolGraph module.
+
+## Contents
+
+- DocC: DocC-specific utilities
+- Common helper functions and extensions
 
 ## Structure
 

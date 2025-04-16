@@ -1,5 +1,6 @@
 import Foundation
 import OpenAPI
+import SymbolKit
 
 /// A generator that converts OpenAPI documents to DocC symbol graphs
 public struct SymbolGraphGenerator {
@@ -9,9 +10,9 @@ public struct SymbolGraphGenerator {
     /// Generates a symbol graph from an OpenAPI document
     /// - Parameter document: The OpenAPI document to convert
     /// - Returns: The generated symbol graph
-    public func generate(from document: Document) -> SymbolGraph {
-        var symbols: [Symbol] = []
-        var relationships: [Relationship] = []
+    public func generate(from document: Document) -> SymbolKit.SymbolGraph {
+        var symbols: [SymbolKit.SymbolGraph.Symbol] = []
+        var relationships: [SymbolKit.SymbolGraph.Relationship] = []
         
         // Add module symbol
         let moduleSymbol = createModuleSymbol(from: document.info)
@@ -24,10 +25,10 @@ public struct SymbolGraphGenerator {
             symbols.append(pathSymbol)
             
             // Add relationship from module to path
-            relationships.append(Relationship(
-                source: moduleSymbol.identifier,
-                target: pathSymbol.identifier,
-                kind: .contains,
+            relationships.append(SymbolKit.SymbolGraph.Relationship(
+                source: moduleSymbol.identifier.precise,
+                target: pathSymbol.identifier.precise,
+                kind: .memberOf,
                 targetFallback: path
             ))
             
@@ -38,10 +39,10 @@ public struct SymbolGraphGenerator {
                 symbols.append(operationSymbol)
                 
                 // Add relationship from path to operation
-                relationships.append(Relationship(
-                    source: pathSymbol.identifier,
-                    target: operationSymbol.identifier,
-                    kind: .contains,
+                relationships.append(SymbolKit.SymbolGraph.Relationship(
+                    source: operationSymbol.identifier.precise,
+                    target: pathSymbol.identifier.precise,
+                    kind: .memberOf,
                     targetFallback: "\(method.rawValue.uppercased()) \(path)"
                 ))
                 
@@ -53,10 +54,10 @@ public struct SymbolGraphGenerator {
                         symbols.append(parameterSymbol)
                         
                         // Add relationship from operation to parameter
-                        relationships.append(Relationship(
-                            source: operationSymbol.identifier,
-                            target: parameterSymbol.identifier,
-                            kind: .hasParameter,
+                        relationships.append(SymbolKit.SymbolGraph.Relationship(
+                            source: parameterSymbol.identifier.precise,
+                            target: operationSymbol.identifier.precise,
+                            kind: .memberOf,
                             targetFallback: parameter.name
                         ))
                     }
@@ -69,10 +70,10 @@ public struct SymbolGraphGenerator {
                     symbols.append(responseSymbol)
                     
                     // Add relationship from operation to response
-                    relationships.append(Relationship(
-                        source: operationSymbol.identifier,
-                        target: responseSymbol.identifier,
-                        kind: .returnsType,
+                    relationships.append(SymbolKit.SymbolGraph.Relationship(
+                        source: responseSymbol.identifier.precise,
+                        target: operationSymbol.identifier.precise,
+                        kind: .memberOf,
                         targetFallback: statusCode
                     ))
                 }
@@ -87,16 +88,16 @@ public struct SymbolGraphGenerator {
                 symbols.append(schemaSymbol)
                 
                 // Add relationship from module to schema
-                relationships.append(Relationship(
-                    source: moduleSymbol.identifier,
-                    target: schemaSymbol.identifier,
-                    kind: .contains,
+                relationships.append(SymbolKit.SymbolGraph.Relationship(
+                    source: schemaSymbol.identifier.precise,
+                    target: moduleSymbol.identifier.precise,
+                    kind: .memberOf,
                     targetFallback: name
                 ))
             }
         }
         
-        return SymbolGraph(
+        return SymbolKit.SymbolGraph(
             metadata: createMetadata(from: document),
             module: createModule(from: document.info),
             symbols: symbols,
@@ -104,179 +105,199 @@ public struct SymbolGraphGenerator {
         )
     }
     
-    private func createModuleSymbol(from info: Info) -> Symbol {
-        return Symbol(
-            identifier: "module",
-            names: Names(title: info.title, navigator: [info.title]),
+    private func createModuleSymbol(from info: Info) -> SymbolKit.SymbolGraph.Symbol {
+        let identifier = SymbolKit.SymbolGraph.Symbol.Identifier(
+            precise: "module",
+            interfaceLanguage: "openapi"
+        )
+        
+        let names = SymbolKit.SymbolGraph.Symbol.Names(
+            title: info.title,
+            navigator: [.init(kind: .text, spelling: info.title, preciseIdentifier: nil)],
+            subHeading: nil,
+            prose: nil
+        )
+        
+        var docComment: SymbolKit.SymbolGraph.LineList? = nil
+        
+        if let description = info.description {
+            let line = SymbolKit.SymbolGraph.LineList.Line(text: description, range: nil)
+            docComment = SymbolKit.SymbolGraph.LineList([line])
+        }
+        
+        return SymbolKit.SymbolGraph.Symbol(
+            identifier: identifier,
+            names: names,
             pathComponents: [info.title],
-            docComment: info.description,
-            kind: .module
+            docComment: docComment,
+            accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+            kind: .init(parsedIdentifier: .module, displayName: "Module"),
+            mixins: [:]
         )
     }
     
-    private func createPathSymbol(path: String, pathItem: PathItem) -> Symbol {
-        return Symbol(
-            identifier: "path:\(path)",
-            names: Names(title: path, navigator: [path]),
+    private func createPathSymbol(path: String, pathItem: PathItem) -> SymbolKit.SymbolGraph.Symbol {
+        let identifier = SymbolKit.SymbolGraph.Symbol.Identifier(
+            precise: "path:\(path)",
+            interfaceLanguage: "openapi"
+        )
+        
+        let names = SymbolKit.SymbolGraph.Symbol.Names(
+            title: path,
+            navigator: [.init(kind: .text, spelling: path, preciseIdentifier: nil)],
+            subHeading: nil,
+            prose: nil
+        )
+        
+        return SymbolKit.SymbolGraph.Symbol(
+            identifier: identifier,
+            names: names,
             pathComponents: [path],
             docComment: nil,
-            kind: .group
+            accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+            kind: .init(parsedIdentifier: .protocol, displayName: "Path"),
+            mixins: [:]
         )
     }
     
-    private func createOperationSymbol(method: HTTPMethod, operation: OpenAPI.Operation, path: String) -> Symbol {
+    private func createOperationSymbol(method: HTTPMethod, operation: OpenAPI.Operation, path: String) -> SymbolKit.SymbolGraph.Symbol {
         let title = "\(method.rawValue.uppercased()) \(path)"
-        return Symbol(
-            identifier: "operation:\(method.rawValue):\(path)",
-            names: Names(title: title, navigator: [title]),
+        let identifier = SymbolKit.SymbolGraph.Symbol.Identifier(
+            precise: "operation:\(method.rawValue):\(path)",
+            interfaceLanguage: "openapi"
+        )
+        
+        let names = SymbolKit.SymbolGraph.Symbol.Names(
+            title: title,
+            navigator: [.init(kind: .text, spelling: title, preciseIdentifier: nil)],
+            subHeading: nil,
+            prose: nil
+        )
+        
+        var docComment: SymbolKit.SymbolGraph.LineList? = nil
+        
+        if let description = operation.description {
+            let line = SymbolKit.SymbolGraph.LineList.Line(text: description, range: nil)
+            docComment = SymbolKit.SymbolGraph.LineList([line])
+        }
+        
+        return SymbolKit.SymbolGraph.Symbol(
+            identifier: identifier,
+            names: names,
             pathComponents: [path, method.rawValue],
-            docComment: operation.description,
-            kind: .endpoint
+            docComment: docComment,
+            accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+            kind: .init(parsedIdentifier: .method, displayName: "Operation"),
+            mixins: [:]
         )
     }
     
-    private func createParameterSymbol(parameter: Parameter, operation: Symbol) -> Symbol {
-        return Symbol(
-            identifier: "parameter:\(parameter.name)",
-            names: Names(title: parameter.name, navigator: [parameter.name]),
+    private func createParameterSymbol(parameter: Parameter, operation: SymbolKit.SymbolGraph.Symbol) -> SymbolKit.SymbolGraph.Symbol {
+        let identifier = SymbolKit.SymbolGraph.Symbol.Identifier(
+            precise: "parameter:\(parameter.name)",
+            interfaceLanguage: "openapi"
+        )
+        
+        let names = SymbolKit.SymbolGraph.Symbol.Names(
+            title: parameter.name,
+            navigator: [.init(kind: .text, spelling: parameter.name, preciseIdentifier: nil)],
+            subHeading: nil,
+            prose: nil
+        )
+        
+        var docComment: SymbolKit.SymbolGraph.LineList? = nil
+        
+        if let description = parameter.schema.description {
+            let line = SymbolKit.SymbolGraph.LineList.Line(text: description, range: nil)
+            docComment = SymbolKit.SymbolGraph.LineList([line])
+        }
+        
+        return SymbolKit.SymbolGraph.Symbol(
+            identifier: identifier,
+            names: names,
             pathComponents: operation.pathComponents + [parameter.name],
-            docComment: nil,
-            kind: .parameter
+            docComment: docComment,
+            accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+            kind: .init(parsedIdentifier: .property, displayName: "Parameter"),
+            mixins: [:]
         )
     }
     
-    private func createResponseSymbol(statusCode: String, response: Response, operation: Symbol) -> Symbol {
-        return Symbol(
-            identifier: "response:\(statusCode)",
-            names: Names(title: "\(statusCode) Response", navigator: ["\(statusCode) Response"]),
+    private func createResponseSymbol(statusCode: String, response: Response, operation: SymbolKit.SymbolGraph.Symbol) -> SymbolKit.SymbolGraph.Symbol {
+        let title = "\(statusCode) Response"
+        let identifier = SymbolKit.SymbolGraph.Symbol.Identifier(
+            precise: "response:\(statusCode)",
+            interfaceLanguage: "openapi"
+        )
+        
+        let names = SymbolKit.SymbolGraph.Symbol.Names(
+            title: title,
+            navigator: [.init(kind: .text, spelling: title, preciseIdentifier: nil)],
+            subHeading: nil,
+            prose: nil
+        )
+        
+        // Create doc comment with the non-optional description
+        let line = SymbolKit.SymbolGraph.LineList.Line(text: response.description, range: nil)
+        let docComment = SymbolKit.SymbolGraph.LineList([line])
+        
+        return SymbolKit.SymbolGraph.Symbol(
+            identifier: identifier,
+            names: names,
             pathComponents: operation.pathComponents + [statusCode],
-            docComment: response.description,
-            kind: .response
+            docComment: docComment,
+            accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+            kind: .init(parsedIdentifier: .struct, displayName: "Response"),
+            mixins: [:]
         )
     }
     
-    private func createSchemaSymbol(name: String, schema: JSONSchema) -> Symbol {
-        return Symbol(
-            identifier: "schema:\(name)",
-            names: Names(title: name, navigator: [name]),
+    private func createSchemaSymbol(name: String, schema: JSONSchema) -> SymbolKit.SymbolGraph.Symbol {
+        let identifier = SymbolKit.SymbolGraph.Symbol.Identifier(
+            precise: "schema:\(name)",
+            interfaceLanguage: "openapi"
+        )
+        
+        let names = SymbolKit.SymbolGraph.Symbol.Names(
+            title: name,
+            navigator: [.init(kind: .text, spelling: name, preciseIdentifier: nil)],
+            subHeading: nil,
+            prose: nil
+        )
+        
+        var docComment: SymbolKit.SymbolGraph.LineList? = nil
+        
+        if let description = schema.description {
+            let line = SymbolKit.SymbolGraph.LineList.Line(text: description, range: nil)
+            docComment = SymbolKit.SymbolGraph.LineList([line])
+        }
+        
+        return SymbolKit.SymbolGraph.Symbol(
+            identifier: identifier,
+            names: names,
             pathComponents: [name],
-            docComment: nil,
-            kind: .structType
+            docComment: docComment,
+            accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
+            kind: .init(parsedIdentifier: .struct, displayName: "Schema"),
+            mixins: [:]
         )
     }
     
-    private func createMetadata(from document: Document) -> Metadata {
-        return Metadata(
-            formatVersion: "1.0",
+    private func createMetadata(from document: Document) -> SymbolKit.SymbolGraph.Metadata {
+        return SymbolKit.SymbolGraph.Metadata(
+            formatVersion: SymbolKit.SymbolGraph.SemanticVersion(major: 0, minor: 5, patch: 3),
             generator: "OpenAPItoSymbolGraph"
         )
     }
     
-    private func createModule(from info: Info) -> Module {
-        return Module(
+    private func createModule(from info: Info) -> SymbolKit.SymbolGraph.Module {
+        return SymbolKit.SymbolGraph.Module(
             name: info.title,
-            platform: "OpenAPI"
+            platform: SymbolKit.SymbolGraph.Platform(
+                architecture: nil,
+                vendor: "OpenAPI",
+                operatingSystem: nil
+            )
         )
     }
-}
-
-/// Represents a DocC symbol graph
-public struct SymbolGraph {
-    /// The metadata of the symbol graph
-    public let metadata: Metadata
-    
-    /// The module information
-    public let module: Module
-    
-    /// The symbols in the graph
-    public let symbols: [Symbol]
-    
-    /// The relationships between symbols
-    public let relationships: [Relationship]
-}
-
-/// Represents metadata about the symbol graph
-public struct Metadata {
-    /// The format version
-    public let formatVersion: String
-    
-    /// The generator that created the symbol graph
-    public let generator: String
-}
-
-/// Represents a module in the symbol graph
-public struct Module {
-    /// The name of the module
-    public let name: String
-    
-    /// The platform the module is for
-    public let platform: String
-}
-
-/// Represents a symbol in the symbol graph
-public struct Symbol {
-    /// The unique identifier of the symbol
-    public let identifier: String
-    
-    /// The names of the symbol
-    public let names: Names
-    
-    /// The path components of the symbol
-    public let pathComponents: [String]
-    
-    /// The documentation comment of the symbol
-    public let docComment: String?
-    
-    /// The kind of the symbol
-    public let kind: SymbolKind
-}
-
-/// Represents the names of a symbol
-public struct Names {
-    /// The title of the symbol
-    public let title: String
-    
-    /// The navigator name of the symbol
-    public let navigator: [String]
-    
-    /// Creates new names for a symbol
-    /// - Parameters:
-    ///   - title: The title of the symbol
-    ///   - navigator: The navigator names for the symbol
-    public init(title: String, navigator: [String]) {
-        self.title = title
-        self.navigator = navigator
-    }
-}
-
-/// Represents a relationship between symbols
-public struct Relationship {
-    /// The source symbol identifier
-    public let source: String
-    
-    /// The target symbol identifier
-    public let target: String
-    
-    /// The kind of relationship
-    public let kind: RelationshipKind
-    
-    /// The fallback target if the relationship is not explicitly defined
-    public let targetFallback: String?
-}
-
-/// The kind of a symbol
-public enum SymbolKind {
-    case module
-    case group
-    case endpoint
-    case structType
-    case parameter
-    case response
-}
-
-/// The kind of a relationship
-public enum RelationshipKind {
-    case contains
-    case hasParameter
-    case returnsType
 } 

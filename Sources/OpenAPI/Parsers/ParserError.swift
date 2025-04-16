@@ -34,4 +34,7 @@ public enum ParserError: Error {
     
     /// The document is invalid
     case invalidDocument(String)
+    
+    /// The file type is not supported
+    case unsupportedFileType(String)
 } 

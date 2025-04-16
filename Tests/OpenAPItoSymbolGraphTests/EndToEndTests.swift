@@ -1,12 +1,12 @@
 import XCTest
 import Foundation
-import OpenAPIKit
+import OpenAPI
 import SymbolKit
 import Yams
 import ArgumentParser
-@testable import Core
 @testable import CLI
 @testable import OpenAPItoSymbolGraph
+@testable import Integration
 
 final class EndToEndTests: XCTestCase {
     var tempDir: URL!
@@ -15,11 +15,11 @@ final class EndToEndTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        
+
         // Create a temporary directory for test artifacts
         tempDir = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true, attributes: nil)
-        
+
         // Create a sample YAML file
         testYamlPath = tempDir.appendingPathComponent("test.yaml").path
         let yamlContent = """
@@ -37,7 +37,7 @@ final class EndToEndTests: XCTestCase {
                   description: OK
         """
         try yamlContent.write(toFile: testYamlPath, atomically: true, encoding: .utf8)
-        
+
         // Define the output path
         outputPath = tempDir.appendingPathComponent("output.symbolgraph.json").path
     }
@@ -57,7 +57,7 @@ final class EndToEndTests: XCTestCase {
     func testSuccessfulConversion() throws {
         // Run the command
         let arguments = [testYamlPath!, "--output-path", outputPath!]
-        let command = try OpenAPItoSymbolGraphCommand.parse(arguments)
+        var command = try OpenAPIToSymbolGraph.parse(arguments)
         try command.run()
         
         // Check if the output file exists
@@ -77,11 +77,11 @@ final class EndToEndTests: XCTestCase {
     // Test command-line argument parsing
     func testArgumentParsing() throws {
         // Create an instance of the command (assuming it's now OpenAPItoSymbolGraphCommand)
-        var cmd = try OpenAPItoSymbolGraphCommand.parse(["some/path.yaml"])
+        var cmd = try OpenAPIToSymbolGraph.parse(["some/path.yaml"])
         XCTAssertEqual(cmd.inputPath, "some/path.yaml")
         XCTAssertEqual(cmd.outputPath, "openapi.symbolgraph.json") // Default output path
 
-        cmd = try OpenAPItoSymbolGraphCommand.parse(["another.json", "--output-path", "custom.json"])
+        cmd = try OpenAPIToSymbolGraph.parse(["another.json", "--output-path", "custom.json"])
         XCTAssertEqual(cmd.inputPath, "another.json")
         XCTAssertEqual(cmd.outputPath, "custom.json")
     }
@@ -92,16 +92,16 @@ final class EndToEndTests: XCTestCase {
         try "invalid content".write(toFile: invalidFilePath, atomically: true, encoding: .utf8)
         
         let arguments = [invalidFilePath, "--output-path", outputPath!]
-        let command = try OpenAPItoSymbolGraphCommand.parse(arguments)
+        var command = try OpenAPIToSymbolGraph.parse(arguments)
         
         XCTAssertThrowsError(try command.run()) {
             error in
             if let conversionError = error as? ConversionError,
-               case .invalidFileType(let message) = conversionError {
-                XCTAssertTrue(message.contains("Unsupported file type: txt"), "Error message should indicate unsupported file type")
+               case .unsupportedFileType(let fileType) = conversionError {
+                XCTAssertEqual(fileType, "txt", "Error should indicate unsupported file type")
             } else {
-                XCTFail("Expected ConversionError.invalidFileType, but got \(error)")
+                XCTFail("Expected ConversionError.unsupportedFileType, but got \(error)")
             }
         }
     }
-} 
+}

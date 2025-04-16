@@ -1,6 +1,11 @@
-# DocC Utilities
+# DocC Utils
 
-This directory contains utilities for working with DocC documentation.
+This directory contains DocC-specific utility functions and types.
+
+## Components
+
+- `DocCGenerator`: Generates DocC documentation from OpenAPI documents
+- Helper functions for DocC symbol graph generation
 
 ## Contents
 

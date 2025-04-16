@@ -1,6 +1,19 @@
-# CLI
+# CLI Module
 
-This directory contains the command-line interface for the OpenAPI to SymbolGraph converter.
+This module provides the command-line interface for converting OpenAPI specifications to DocC documentation.
+
+## Usage
+
+```bash
+openapi-to-symbolgraph <input-file> --output-path <output-file>
+```
+
+## Features
+
+- Convert OpenAPI YAML/JSON files to DocC symbol graphs
+- Configurable output path
+- Error handling and validation
+- Progress reporting
 
 ## Contents
 

@@ -1,13 +1,12 @@
 {
-  "originHash" : "a7f62fa585b504bcbca6484c4c9691bee0e0420bafca5b691dcdee21f788cb02",
   "pins" : [
     {
       "identity" : "openapikit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattpolzin/OpenAPIKit.git",
       "state" : {
-        "revision" : "90c137c3dfde4e31204ffccc51a0a17a959efde7",
-        "version" : "3.4.1"
+        "revision" : "da7d3a5ddff0dd8e5e9fdb5585d186d645bcc21b",
+        "version" : "3.5.0"
       }
     },
     {
@@ -22,7 +21,7 @@
     {
       "identity" : "swift-docc-symbolkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-docc-symbolkit.git",
+      "location" : "https://github.com/apple/swift-docc-symbolkit.git",
       "state" : {
         "revision" : "b45d1f2ed151d057b54504d653e0da5552844e34",
         "version" : "1.0.0"
@@ -38,5 +37,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }

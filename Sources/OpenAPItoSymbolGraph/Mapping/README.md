@@ -1,6 +1,12 @@
 # Mapping
 
-This directory contains classes and utilities for mapping between OpenAPI elements and SymbolGraph symbols.
+This directory contains types and functions for mapping between OpenAPI and DocC symbol graph concepts.
+
+## Components
+
+- Type mapping utilities
+- Schema conversion functions
+- Path and operation mapping
 
 ## Contents
 

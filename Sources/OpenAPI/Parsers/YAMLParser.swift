@@ -29,6 +29,11 @@ public struct YAMLParser {
     /// - Returns: The parsed OpenAPI document
     /// - Throws: An error if the file cannot be read or parsed
     public func parse(fileURL: URL) throws -> Document {
+        let fileExtension = fileURL.pathExtension.lowercased()
+        guard fileExtension == "yaml" || fileExtension == "yml" || fileExtension == "json" else {
+            throw ParserError.unsupportedFileType(fileExtension)
+        }
+        
         let yamlString = try String(contentsOf: fileURL)
         return try parse(yamlString)
     }
@@ -342,6 +347,16 @@ public struct YAMLParser {
             return .reference(Reference(ref: ref))
         }
         
+        // If there's no type field but there are properties, it's an object
+        if dict["properties"] != nil {
+            return .object(try parseObjectSchema(from: dict))
+        }
+        
+        // If there's no type field but there's an items field, it's an array
+        if dict["items"] != nil {
+            return .array(try parseArraySchema(from: dict))
+        }
+        
         guard let type = dict["type"] as? String else {
             throw ParserError.missingRequiredField("type")
         }
@@ -409,18 +424,16 @@ public struct YAMLParser {
     }
     
     private func parseObjectSchema(from dict: [String: Any]) throws -> ObjectSchema {
-        guard let propertiesDict = dict["properties"] as? [String: Any] else {
-            throw ParserError.missingRequiredField("properties")
-        }
-        
         var properties: [String: JSONSchema] = [:]
         
-        for (name, schemaDict) in propertiesDict {
-            guard let schemaDict = schemaDict as? [String: Any] else {
-                throw ParserError.invalidProperty(name)
+        // Properties are optional in OpenAPI - if present, parse them
+        if let propertiesDict = dict["properties"] as? [String: Any] {
+            for (name, propertyDict) in propertiesDict {
+                guard let propertyDict = propertyDict as? [String: Any] else {
+                    throw ParserError.invalidProperty(name)
+                }
+                properties[name] = try parseSchema(from: propertyDict)
             }
-            
-            properties[name] = try parseSchema(from: schemaDict)
         }
         
         let additionalProperties: JSONSchema?

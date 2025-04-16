@@ -34,6 +34,23 @@ public indirect enum JSONSchema {
     
     /// A schema that must not match the given schema
     case not(JSONSchema)
+    
+    /// The description of the schema
+    public var description: String? {
+        switch self {
+        case .string(let schema): return schema.description
+        case .number(let schema): return schema.description
+        case .integer(let schema): return schema.description
+        case .boolean(let schema): return schema.description
+        case .array(let schema): return schema.description
+        case .object(let schema): return schema.description
+        case .reference(let ref): return ref.description
+        case .allOf(let schemas): return schemas.compactMap { $0.description }.joined(separator: "\n")
+        case .anyOf(let schemas): return schemas.compactMap { $0.description }.joined(separator: "\n")
+        case .oneOf(let schemas): return schemas.compactMap { $0.description }.joined(separator: "\n")
+        case .not(let schema): return schema.description
+        }
+    }
 }
 
 /// Represents a string schema
@@ -50,22 +67,28 @@ public struct StringSchema {
     /// The pattern the string must match
     public let pattern: String?
     
+    /// The description of the schema
+    public let description: String?
+    
     /// Creates a new string schema
     /// - Parameters:
     ///   - format: The format of the string
     ///   - minLength: The minimum length of the string
     ///   - maxLength: The maximum length of the string
     ///   - pattern: The pattern the string must match
+    ///   - description: The description of the schema
     public init(
         format: StringFormat? = nil,
         minLength: Int? = nil,
         maxLength: Int? = nil,
-        pattern: String? = nil
+        pattern: String? = nil,
+        description: String? = nil
     ) {
         self.format = format
         self.minLength = minLength
         self.maxLength = maxLength
         self.pattern = pattern
+        self.description = description
     }
 }
 
@@ -122,6 +145,9 @@ public struct NumberSchema {
     /// The multiple of value
     public let multipleOf: Double?
     
+    /// The description of the schema
+    public let description: String?
+    
     /// Creates a new number schema
     /// - Parameters:
     ///   - minimum: The minimum value
@@ -129,18 +155,21 @@ public struct NumberSchema {
     ///   - maximum: The maximum value
     ///   - exclusiveMaximum: Whether the maximum value is exclusive
     ///   - multipleOf: The multiple of value
+    ///   - description: The description of the schema
     public init(
         minimum: Double? = nil,
         exclusiveMinimum: Bool? = nil,
         maximum: Double? = nil,
         exclusiveMaximum: Bool? = nil,
-        multipleOf: Double? = nil
+        multipleOf: Double? = nil,
+        description: String? = nil
     ) {
         self.minimum = minimum
         self.exclusiveMinimum = exclusiveMinimum
         self.maximum = maximum
         self.exclusiveMaximum = exclusiveMaximum
         self.multipleOf = multipleOf
+        self.description = description
     }
 }
 
@@ -161,6 +190,9 @@ public struct IntegerSchema {
     /// The multiple of value
     public let multipleOf: Int?
     
+    /// The description of the schema
+    public let description: String?
+    
     /// Creates a new integer schema
     /// - Parameters:
     ///   - minimum: The minimum value
@@ -168,25 +200,34 @@ public struct IntegerSchema {
     ///   - maximum: The maximum value
     ///   - exclusiveMaximum: Whether the maximum value is exclusive
     ///   - multipleOf: The multiple of value
+    ///   - description: The description of the schema
     public init(
         minimum: Int? = nil,
         exclusiveMinimum: Bool? = nil,
         maximum: Int? = nil,
         exclusiveMaximum: Bool? = nil,
-        multipleOf: Int? = nil
+        multipleOf: Int? = nil,
+        description: String? = nil
     ) {
         self.minimum = minimum
         self.exclusiveMinimum = exclusiveMinimum
         self.maximum = maximum
         self.exclusiveMaximum = exclusiveMaximum
         self.multipleOf = multipleOf
+        self.description = description
     }
 }
 
 /// Represents a boolean schema
 public struct BooleanSchema {
+    /// The description of the schema
+    public let description: String?
+    
     /// Creates a new boolean schema
-    public init() {}
+    /// - Parameter description: The description of the schema
+    public init(description: String? = nil) {
+        self.description = description
+    }
 }
 
 /// Represents an array schema
@@ -203,22 +244,28 @@ public struct ArraySchema {
     /// Whether items must be unique
     public let uniqueItems: Bool?
     
+    /// The description of the schema
+    public let description: String?
+    
     /// Creates a new array schema
     /// - Parameters:
     ///   - items: The schema of the items in the array
     ///   - minItems: The minimum number of items
     ///   - maxItems: The maximum number of items
     ///   - uniqueItems: Whether items must be unique
+    ///   - description: The description of the schema
     public init(
         items: JSONSchema,
         minItems: Int? = nil,
         maxItems: Int? = nil,
-        uniqueItems: Bool? = nil
+        uniqueItems: Bool? = nil,
+        description: String? = nil
     ) {
         self.items = items
         self.minItems = minItems
         self.maxItems = maxItems
         self.uniqueItems = uniqueItems
+        self.description = description
     }
 }
 
@@ -233,19 +280,25 @@ public struct ObjectSchema {
     /// The additional properties schema
     public let additionalProperties: JSONSchema?
     
+    /// The description of the schema
+    public let description: String?
+    
     /// Creates a new object schema
     /// - Parameters:
     ///   - required: The required properties
     ///   - properties: The properties of the object
     ///   - additionalProperties: The additional properties schema
+    ///   - description: The description of the schema
     public init(
         required: [String] = [],
         properties: [String: JSONSchema] = [:],
-        additionalProperties: JSONSchema? = nil
+        additionalProperties: JSONSchema? = nil,
+        description: String? = nil
     ) {
         self.required = required
         self.properties = properties
         self.additionalProperties = additionalProperties
+        self.description = description
     }
 }
 
@@ -254,9 +307,15 @@ public struct Reference {
     /// The reference path
     public let ref: String
     
+    /// The description of the reference
+    public let description: String?
+    
     /// Creates a new reference
-    /// - Parameter ref: The reference path
-    public init(ref: String) {
+    /// - Parameters:
+    ///   - ref: The reference path
+    ///   - description: The description of the reference
+    public init(ref: String, description: String? = nil) {
         self.ref = ref
+        self.description = description
     }
 } 
