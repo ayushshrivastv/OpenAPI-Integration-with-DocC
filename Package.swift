@@ -7,8 +7,30 @@ import PackageDescription
 
 let package = Package(
     name: "OpenAPItoSymbolGraph",
+    platforms: [
+        .macOS(.v12)
+    ],
     products: [
-        .executable(name: "openapi-to-symbolgraph", targets: ["CLI"])
+        .library(
+            name: "OpenAPItoSymbolGraph",
+            targets: ["OpenAPItoSymbolGraph"]
+        ),
+        .library(
+            name: "Integration",
+            targets: ["Integration"]
+        ),
+        .library(
+            name: "OpenAPI",
+            targets: ["OpenAPI"]
+        ),
+        .library(
+            name: "DocC",
+            targets: ["DocC"]
+        ),
+        .executable(
+            name: "openapi-to-symbolgraph",
+            targets: ["CLI"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/mattpolzin/OpenAPIKit.git", from: "3.1.0"),
@@ -28,11 +50,50 @@ let package = Package(
             exclude: ["README.md"]
         ),
         
+        // OpenAPI module
+        .target(
+            name: "OpenAPI",
+            dependencies: [
+                "Core",
+                .product(name: "OpenAPIKit", package: "OpenAPIKit"),
+                .product(name: "Yams", package: "Yams")
+            ],
+            path: "Sources/OpenAPI",
+            exclude: ["README.md"]
+        ),
+        
+        // DocC module
+        .target(
+            name: "DocC",
+            dependencies: [
+                "Core",
+                .product(name: "SymbolKit", package: "swift-docc-symbolkit")
+            ],
+            path: "Sources/DocC",
+            exclude: ["README.md"]
+        ),
+        
+        // Integration module
+        .target(
+            name: "Integration",
+            dependencies: [
+                "Core",
+                "OpenAPI",
+                "DocC",
+                .product(name: "OpenAPIKit", package: "OpenAPIKit"),
+                .product(name: "SymbolKit", package: "swift-docc-symbolkit"),
+                .product(name: "Yams", package: "Yams")
+            ],
+            path: "Sources/Integration",
+            exclude: ["README.md"]
+        ),
+        
         // CLI executable
         .executableTarget(
             name: "CLI",
             dependencies: [
                 "Core",
+                "Integration",
                 "OpenAPItoSymbolGraph",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Yams", package: "Yams"),
@@ -48,6 +109,9 @@ let package = Package(
             name: "OpenAPItoSymbolGraph",
             dependencies: [
                 "Core",
+                "Integration",
+                "OpenAPI",
+                "DocC",
                 .product(name: "SymbolKit", package: "swift-docc-symbolkit"),
                 .product(name: "OpenAPIKit", package: "OpenAPIKit"),
                 .product(name: "Yams", package: "Yams")
@@ -64,7 +128,7 @@ let package = Package(
         // Tests
         .testTarget(
             name: "OpenAPItoSymbolGraphTests",
-            dependencies: ["Core", "CLI", "OpenAPItoSymbolGraph"],
+            dependencies: ["Core", "CLI", "OpenAPItoSymbolGraph", "Integration", "OpenAPI", "DocC"],
             path: "Tests"
         )
     ]
