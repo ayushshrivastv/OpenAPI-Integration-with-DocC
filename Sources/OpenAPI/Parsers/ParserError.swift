@@ -29,6 +29,9 @@ public enum ParserError: Error {
     /// A property is invalid
     case invalidProperty(String)
     
+    /// A parameter is invalid
+    case invalidParameter(String)
+    
     /// A schema type is unknown
     case unknownSchemaType(String)
     

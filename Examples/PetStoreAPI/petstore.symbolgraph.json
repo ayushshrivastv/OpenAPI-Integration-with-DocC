@@ -18,49 +18,43 @@
     {
       "kind" : "memberOf",
       "source" : "module",
-      "target" : "path:\/pet\/{petId}\/uploadImage",
-      "targetFallback" : "\/pet\/{petId}\/uploadImage"
+      "target" : "path:\/user\/login",
+      "targetFallback" : "\/user\/login"
     },
     {
       "kind" : "memberOf",
-      "source" : "operation:post:\/pet\/{petId}\/uploadImage",
-      "target" : "path:\/pet\/{petId}\/uploadImage",
-      "targetFallback" : "POST \/pet\/{petId}\/uploadImage"
+      "source" : "operation:get:\/user\/login",
+      "target" : "path:\/user\/login",
+      "targetFallback" : "GET \/user\/login"
     },
     {
       "kind" : "memberOf",
-      "source" : "parameter:petId",
-      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
-      "targetFallback" : "petId"
+      "source" : "parameter:username",
+      "target" : "operation:get:\/user\/login",
+      "targetFallback" : "username"
     },
     {
       "kind" : "memberOf",
-      "source" : "parameter:additionalMetadata",
-      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
-      "targetFallback" : "additionalMetadata"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
-      "targetFallback" : "200"
+      "source" : "parameter:password",
+      "target" : "operation:get:\/user\/login",
+      "targetFallback" : "password"
     },
     {
       "kind" : "memberOf",
       "source" : "response:default",
-      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "target" : "operation:get:\/user\/login",
       "targetFallback" : "default"
     },
     {
       "kind" : "memberOf",
-      "source" : "response:404",
-      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
-      "targetFallback" : "404"
+      "source" : "response:200",
+      "target" : "operation:get:\/user\/login",
+      "targetFallback" : "200"
     },
     {
       "kind" : "memberOf",
       "source" : "response:400",
-      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "target" : "operation:get:\/user\/login",
       "targetFallback" : "400"
     },
     {
@@ -102,266 +96,26 @@
     {
       "kind" : "memberOf",
       "source" : "module",
-      "target" : "path:\/pet",
-      "targetFallback" : "\/pet"
+      "target" : "path:\/store\/inventory",
+      "targetFallback" : "\/store\/inventory"
     },
     {
       "kind" : "memberOf",
-      "source" : "operation:post:\/pet",
-      "target" : "path:\/pet",
-      "targetFallback" : "POST \/pet"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:post:\/pet",
-      "targetFallback" : "default"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:post:\/pet",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:post:\/pet",
-      "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:422",
-      "target" : "operation:post:\/pet",
-      "targetFallback" : "422"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "operation:put:\/pet",
-      "target" : "path:\/pet",
-      "targetFallback" : "PUT \/pet"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:put:\/pet",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:put:\/pet",
-      "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:404",
-      "target" : "operation:put:\/pet",
-      "targetFallback" : "404"
+      "source" : "operation:get:\/store\/inventory",
+      "target" : "path:\/store\/inventory",
+      "targetFallback" : "GET \/store\/inventory"
     },
     {
       "kind" : "memberOf",
       "source" : "response:default",
-      "target" : "operation:put:\/pet",
-      "targetFallback" : "default"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:422",
-      "target" : "operation:put:\/pet",
-      "targetFallback" : "422"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "module",
-      "target" : "path:\/store\/order\/{orderId}",
-      "targetFallback" : "\/store\/order\/{orderId}"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "operation:get:\/store\/order\/{orderId}",
-      "target" : "path:\/store\/order\/{orderId}",
-      "targetFallback" : "GET \/store\/order\/{orderId}"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "parameter:orderId",
-      "target" : "operation:get:\/store\/order\/{orderId}",
-      "targetFallback" : "orderId"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:get:\/store\/order\/{orderId}",
-      "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:get:\/store\/order\/{orderId}",
-      "targetFallback" : "default"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:404",
-      "target" : "operation:get:\/store\/order\/{orderId}",
-      "targetFallback" : "404"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:get:\/store\/order\/{orderId}",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "operation:delete:\/store\/order\/{orderId}",
-      "target" : "path:\/store\/order\/{orderId}",
-      "targetFallback" : "DELETE \/store\/order\/{orderId}"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "parameter:orderId",
-      "target" : "operation:delete:\/store\/order\/{orderId}",
-      "targetFallback" : "orderId"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:delete:\/store\/order\/{orderId}",
+      "target" : "operation:get:\/store\/inventory",
       "targetFallback" : "default"
     },
     {
       "kind" : "memberOf",
       "source" : "response:200",
-      "target" : "operation:delete:\/store\/order\/{orderId}",
+      "target" : "operation:get:\/store\/inventory",
       "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:404",
-      "target" : "operation:delete:\/store\/order\/{orderId}",
-      "targetFallback" : "404"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:delete:\/store\/order\/{orderId}",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "module",
-      "target" : "path:\/user\/{username}",
-      "targetFallback" : "\/user\/{username}"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "operation:get:\/user\/{username}",
-      "target" : "path:\/user\/{username}",
-      "targetFallback" : "GET \/user\/{username}"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "parameter:username",
-      "target" : "operation:get:\/user\/{username}",
-      "targetFallback" : "username"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:get:\/user\/{username}",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:get:\/user\/{username}",
-      "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:404",
-      "target" : "operation:get:\/user\/{username}",
-      "targetFallback" : "404"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:get:\/user\/{username}",
-      "targetFallback" : "default"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "operation:put:\/user\/{username}",
-      "target" : "path:\/user\/{username}",
-      "targetFallback" : "PUT \/user\/{username}"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "parameter:username",
-      "target" : "operation:put:\/user\/{username}",
-      "targetFallback" : "username"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:put:\/user\/{username}",
-      "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:404",
-      "target" : "operation:put:\/user\/{username}",
-      "targetFallback" : "404"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:put:\/user\/{username}",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:put:\/user\/{username}",
-      "targetFallback" : "default"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "operation:delete:\/user\/{username}",
-      "target" : "path:\/user\/{username}",
-      "targetFallback" : "DELETE \/user\/{username}"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "parameter:username",
-      "target" : "operation:delete:\/user\/{username}",
-      "targetFallback" : "username"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:delete:\/user\/{username}",
-      "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:404",
-      "target" : "operation:delete:\/user\/{username}",
-      "targetFallback" : "404"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:delete:\/user\/{username}",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:delete:\/user\/{username}",
-      "targetFallback" : "default"
     },
     {
       "kind" : "memberOf",
@@ -386,6 +140,78 @@
       "source" : "response:200",
       "target" : "operation:post:\/user",
       "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "\/pet\/{petId}\/uploadImage"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "target" : "path:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "POST \/pet\/{petId}\/uploadImage"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:petId",
+      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "petId"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:additionalMetadata",
+      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "additionalMetadata"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:default",
+      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:post:\/pet\/{petId}\/uploadImage",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/user\/createWithList",
+      "targetFallback" : "\/user\/createWithList"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:post:\/user\/createWithList",
+      "target" : "path:\/user\/createWithList",
+      "targetFallback" : "POST \/user\/createWithList"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:post:\/user\/createWithList",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:default",
+      "target" : "operation:post:\/user\/createWithList",
+      "targetFallback" : "default"
     },
     {
       "kind" : "memberOf",
@@ -450,49 +276,193 @@
     {
       "kind" : "memberOf",
       "source" : "module",
-      "target" : "path:\/user\/createWithList",
-      "targetFallback" : "\/user\/createWithList"
+      "target" : "path:\/user\/{username}",
+      "targetFallback" : "\/user\/{username}"
     },
     {
       "kind" : "memberOf",
-      "source" : "operation:post:\/user\/createWithList",
-      "target" : "path:\/user\/createWithList",
-      "targetFallback" : "POST \/user\/createWithList"
+      "source" : "operation:get:\/user\/{username}",
+      "target" : "path:\/user\/{username}",
+      "targetFallback" : "GET \/user\/{username}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:username",
+      "target" : "operation:get:\/user\/{username}",
+      "targetFallback" : "username"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:get:\/user\/{username}",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:get:\/user\/{username}",
+      "targetFallback" : "200"
     },
     {
       "kind" : "memberOf",
       "source" : "response:default",
-      "target" : "operation:post:\/user\/createWithList",
+      "target" : "operation:get:\/user\/{username}",
+      "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:get:\/user\/{username}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:put:\/user\/{username}",
+      "target" : "path:\/user\/{username}",
+      "targetFallback" : "PUT \/user\/{username}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:username",
+      "target" : "operation:put:\/user\/{username}",
+      "targetFallback" : "username"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:put:\/user\/{username}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:default",
+      "target" : "operation:put:\/user\/{username}",
       "targetFallback" : "default"
     },
     {
       "kind" : "memberOf",
       "source" : "response:200",
-      "target" : "operation:post:\/user\/createWithList",
+      "target" : "operation:put:\/user\/{username}",
       "targetFallback" : "200"
     },
     {
       "kind" : "memberOf",
-      "source" : "module",
-      "target" : "path:\/store\/inventory",
-      "targetFallback" : "\/store\/inventory"
+      "source" : "response:404",
+      "target" : "operation:put:\/user\/{username}",
+      "targetFallback" : "404"
     },
     {
       "kind" : "memberOf",
-      "source" : "operation:get:\/store\/inventory",
-      "target" : "path:\/store\/inventory",
-      "targetFallback" : "GET \/store\/inventory"
+      "source" : "operation:delete:\/user\/{username}",
+      "target" : "path:\/user\/{username}",
+      "targetFallback" : "DELETE \/user\/{username}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:username",
+      "target" : "operation:delete:\/user\/{username}",
+      "targetFallback" : "username"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:delete:\/user\/{username}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:delete:\/user\/{username}",
+      "targetFallback" : "404"
     },
     {
       "kind" : "memberOf",
       "source" : "response:200",
-      "target" : "operation:get:\/store\/inventory",
+      "target" : "operation:delete:\/user\/{username}",
       "targetFallback" : "200"
     },
     {
       "kind" : "memberOf",
       "source" : "response:default",
-      "target" : "operation:get:\/store\/inventory",
+      "target" : "operation:delete:\/user\/{username}",
+      "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
+      "target" : "path:\/store\/order\/{orderId}",
+      "targetFallback" : "\/store\/order\/{orderId}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:get:\/store\/order\/{orderId}",
+      "target" : "path:\/store\/order\/{orderId}",
+      "targetFallback" : "GET \/store\/order\/{orderId}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:orderId",
+      "target" : "operation:get:\/store\/order\/{orderId}",
+      "targetFallback" : "orderId"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:get:\/store\/order\/{orderId}",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:get:\/store\/order\/{orderId}",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:default",
+      "target" : "operation:get:\/store\/order\/{orderId}",
+      "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:get:\/store\/order\/{orderId}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:delete:\/store\/order\/{orderId}",
+      "target" : "path:\/store\/order\/{orderId}",
+      "targetFallback" : "DELETE \/store\/order\/{orderId}"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "parameter:orderId",
+      "target" : "operation:delete:\/store\/order\/{orderId}",
+      "targetFallback" : "orderId"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:delete:\/store\/order\/{orderId}",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:delete:\/store\/order\/{orderId}",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:delete:\/store\/order\/{orderId}",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:default",
+      "target" : "operation:delete:\/store\/order\/{orderId}",
       "targetFallback" : "default"
     },
     {
@@ -534,6 +504,78 @@
     {
       "kind" : "memberOf",
       "source" : "module",
+      "target" : "path:\/pet",
+      "targetFallback" : "\/pet"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:post:\/pet",
+      "target" : "path:\/pet",
+      "targetFallback" : "POST \/pet"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:post:\/pet",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:default",
+      "target" : "operation:post:\/pet",
+      "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:422",
+      "target" : "operation:post:\/pet",
+      "targetFallback" : "422"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:post:\/pet",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "operation:put:\/pet",
+      "target" : "path:\/pet",
+      "targetFallback" : "PUT \/pet"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:422",
+      "target" : "operation:put:\/pet",
+      "targetFallback" : "422"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:default",
+      "target" : "operation:put:\/pet",
+      "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:put:\/pet",
+      "targetFallback" : "404"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:put:\/pet",
+      "targetFallback" : "200"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:400",
+      "target" : "operation:put:\/pet",
+      "targetFallback" : "400"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "module",
       "target" : "path:\/pet\/{petId}",
       "targetFallback" : "\/pet\/{petId}"
     },
@@ -551,15 +593,9 @@
     },
     {
       "kind" : "memberOf",
-      "source" : "response:404",
+      "source" : "response:200",
       "target" : "operation:get:\/pet\/{petId}",
-      "targetFallback" : "404"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:get:\/pet\/{petId}",
-      "targetFallback" : "default"
+      "targetFallback" : "200"
     },
     {
       "kind" : "memberOf",
@@ -569,9 +605,15 @@
     },
     {
       "kind" : "memberOf",
-      "source" : "response:200",
+      "source" : "response:default",
       "target" : "operation:get:\/pet\/{petId}",
-      "targetFallback" : "200"
+      "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:404",
+      "target" : "operation:get:\/pet\/{petId}",
+      "targetFallback" : "404"
     },
     {
       "kind" : "memberOf",
@@ -599,15 +641,15 @@
     },
     {
       "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:post:\/pet\/{petId}",
-      "targetFallback" : "200"
-    },
-    {
-      "kind" : "memberOf",
       "source" : "response:default",
       "target" : "operation:post:\/pet\/{petId}",
       "targetFallback" : "default"
+    },
+    {
+      "kind" : "memberOf",
+      "source" : "response:200",
+      "target" : "operation:post:\/pet\/{petId}",
+      "targetFallback" : "200"
     },
     {
       "kind" : "memberOf",
@@ -653,45 +695,15 @@
     },
     {
       "kind" : "memberOf",
-      "source" : "module",
-      "target" : "path:\/user\/login",
-      "targetFallback" : "\/user\/login"
+      "source" : "schema:Tag",
+      "target" : "module",
+      "targetFallback" : "Tag"
     },
     {
       "kind" : "memberOf",
-      "source" : "operation:get:\/user\/login",
-      "target" : "path:\/user\/login",
-      "targetFallback" : "GET \/user\/login"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "parameter:username",
-      "target" : "operation:get:\/user\/login",
-      "targetFallback" : "username"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "parameter:password",
-      "target" : "operation:get:\/user\/login",
-      "targetFallback" : "password"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:default",
-      "target" : "operation:get:\/user\/login",
-      "targetFallback" : "default"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:400",
-      "target" : "operation:get:\/user\/login",
-      "targetFallback" : "400"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "response:200",
-      "target" : "operation:get:\/user\/login",
-      "targetFallback" : "200"
+      "source" : "schema:Pet",
+      "target" : "module",
+      "targetFallback" : "Pet"
     },
     {
       "kind" : "memberOf",
@@ -701,33 +713,21 @@
     },
     {
       "kind" : "memberOf",
-      "source" : "schema:Order",
-      "target" : "module",
-      "targetFallback" : "Order"
-    },
-    {
-      "kind" : "memberOf",
       "source" : "schema:User",
       "target" : "module",
       "targetFallback" : "User"
     },
     {
       "kind" : "memberOf",
-      "source" : "schema:Tag",
+      "source" : "schema:Order",
       "target" : "module",
-      "targetFallback" : "Tag"
+      "targetFallback" : "Order"
     },
     {
       "kind" : "memberOf",
       "source" : "schema:Category",
       "target" : "module",
       "targetFallback" : "Category"
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "schema:Pet",
-      "target" : "module",
-      "targetFallback" : "Pet"
     }
   ],
   "symbols" : [
@@ -735,7 +735,7 @@
       "accessLevel" : "public",
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "path:\/store\/order\/{orderId}"
+        "precise" : "path:\/user\/login"
       },
       "kind" : {
         "displayName" : "Path",
@@ -745,20 +745,20 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "\/store\/order\/{orderId}"
+            "spelling" : "\/user\/login"
           }
         ],
-        "title" : "\/store\/order\/{orderId}"
+        "title" : "\/user\/login"
       },
       "pathComponents" : [
-        "\/store\/order\/{orderId}"
+        "\/user\/login"
       ]
     },
     {
       "accessLevel" : "public",
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "parameter:additionalMetadata"
+        "precise" : "parameter:tags"
       },
       "kind" : {
         "displayName" : "Parameter",
@@ -768,15 +768,84 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "additionalMetadata"
+            "spelling" : "tags"
           }
         ],
-        "title" : "additionalMetadata"
+        "title" : "tags"
       },
       "pathComponents" : [
-        "\/pet\/{petId}\/uploadImage",
-        "post",
-        "additionalMetadata"
+        "\/pet\/findByTags",
+        "get",
+        "tags"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/user\/logout"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/user\/logout"
+          }
+        ],
+        "title" : "\/user\/logout"
+      },
+      "pathComponents" : [
+        "\/user\/logout"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:Category"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Category"
+          }
+        ],
+        "title" : "Category"
+      },
+      "pathComponents" : [
+        "Category"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/user"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/user"
+          }
+        ],
+        "title" : "\/user"
+      },
+      "pathComponents" : [
+        "\/user"
       ]
     },
     {
@@ -813,7 +882,7 @@
       "accessLevel" : "public",
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "path:\/user\/{username}"
+        "precise" : "path:\/store\/inventory"
       },
       "kind" : {
         "displayName" : "Path",
@@ -823,61 +892,13 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "\/user\/{username}"
+            "spelling" : "\/store\/inventory"
           }
         ],
-        "title" : "\/user\/{username}"
+        "title" : "\/store\/inventory"
       },
       "pathComponents" : [
-        "\/user\/{username}"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "schema:ApiResponse"
-      },
-      "kind" : {
-        "displayName" : "Schema",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "ApiResponse"
-          }
-        ],
-        "title" : "ApiResponse"
-      },
-      "pathComponents" : [
-        "ApiResponse"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "parameter:tags"
-      },
-      "kind" : {
-        "displayName" : "Parameter",
-        "identifier" : "property"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "tags"
-          }
-        ],
-        "title" : "tags"
-      },
-      "pathComponents" : [
-        "\/pet\/findByTags",
-        "get",
-        "tags"
+        "\/store\/inventory"
       ]
     },
     {
@@ -913,40 +934,9 @@
     },
     {
       "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Updates a pet resource based on the form data."
-          }
-        ]
-      },
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "operation:post:\/pet\/{petId}"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "POST \/pet\/{petId}"
-          }
-        ],
-        "title" : "POST \/pet\/{petId}"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}",
-        "post"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "schema:Pet"
+        "precise" : "schema:ApiResponse"
       },
       "kind" : {
         "displayName" : "Schema",
@@ -956,646 +946,13 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "Pet"
+            "spelling" : "ApiResponse"
           }
         ],
-        "title" : "Pet"
+        "title" : "ApiResponse"
       },
       "pathComponents" : [
-        "Pet"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "successful operation"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "response:200"
-      },
-      "kind" : {
-        "displayName" : "Response",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "200 Response"
-          }
-        ],
-        "title" : "200 Response"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}\/uploadImage",
-        "post",
-        "200"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/user"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/user"
-          }
-        ],
-        "title" : "\/user"
-      },
-      "pathComponents" : [
-        "\/user"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "This can only be done by the logged in user."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:delete:\/user\/{username}"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "DELETE \/user\/{username}"
-          }
-        ],
-        "title" : "DELETE \/user\/{username}"
-      },
-      "pathComponents" : [
-        "\/user\/{username}",
-        "delete"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Update an existing pet by Id."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:put:\/pet"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "PUT \/pet"
-          }
-        ],
-        "title" : "PUT \/pet"
-      },
-      "pathComponents" : [
-        "\/pet",
-        "put"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "schema:Order"
-      },
-      "kind" : {
-        "displayName" : "Schema",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "Order"
-          }
-        ],
-        "title" : "Order"
-      },
-      "pathComponents" : [
-        "Order"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Unexpected error"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "response:default"
-      },
-      "kind" : {
-        "displayName" : "Response",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "default Response"
-          }
-        ],
-        "title" : "default Response"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}\/uploadImage",
-        "post",
-        "default"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Validation exception"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "response:422"
-      },
-      "kind" : {
-        "displayName" : "Response",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "422 Response"
-          }
-        ],
-        "title" : "422 Response"
-      },
-      "pathComponents" : [
-        "\/pet",
-        "post",
-        "422"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Delete a pet."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:delete:\/pet\/{petId}"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "DELETE \/pet\/{petId}"
-          }
-        ],
-        "title" : "DELETE \/pet\/{petId}"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}",
-        "delete"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/user\/createWithList"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/user\/createWithList"
-          }
-        ],
-        "title" : "\/user\/createWithList"
-      },
-      "pathComponents" : [
-        "\/user\/createWithList"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:get:\/pet\/findByTags"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "GET \/pet\/findByTags"
-          }
-        ],
-        "title" : "GET \/pet\/findByTags"
-      },
-      "pathComponents" : [
-        "\/pet\/findByTags",
-        "get"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:get:\/store\/order\/{orderId}"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "GET \/store\/order\/{orderId}"
-          }
-        ],
-        "title" : "GET \/store\/order\/{orderId}"
-      },
-      "pathComponents" : [
-        "\/store\/order\/{orderId}",
-        "get"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "parameter:password"
-      },
-      "kind" : {
-        "displayName" : "Parameter",
-        "identifier" : "property"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "password"
-          }
-        ],
-        "title" : "password"
-      },
-      "pathComponents" : [
-        "\/user\/login",
-        "get",
-        "password"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/user\/login"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/user\/login"
-          }
-        ],
-        "title" : "\/user\/login"
-      },
-      "pathComponents" : [
-        "\/user\/login"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/store\/inventory"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/store\/inventory"
-          }
-        ],
-        "title" : "\/store\/inventory"
-      },
-      "pathComponents" : [
-        "\/store\/inventory"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Place a new order in the store."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:post:\/store\/order"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "POST \/store\/order"
-          }
-        ],
-        "title" : "POST \/store\/order"
-      },
-      "pathComponents" : [
-        "\/store\/order",
-        "post"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/pet\/{petId}"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/pet\/{petId}"
-          }
-        ],
-        "title" : "\/pet\/{petId}"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "No file uploaded"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "response:400"
-      },
-      "kind" : {
-        "displayName" : "Response",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "400 Response"
-          }
-        ],
-        "title" : "400 Response"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}\/uploadImage",
-        "post",
-        "400"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "schema:Category"
-      },
-      "kind" : {
-        "displayName" : "Schema",
-        "identifier" : "struct"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "Category"
-          }
-        ],
-        "title" : "Category"
-      },
-      "pathComponents" : [
-        "Category"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Creates list of users with given input array."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:post:\/user\/createWithList"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "POST \/user\/createWithList"
-          }
-        ],
-        "title" : "POST \/user\/createWithList"
-      },
-      "pathComponents" : [
-        "\/user\/createWithList",
-        "post"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "This can only be done by the logged in user."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:put:\/user\/{username}"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "PUT \/user\/{username}"
-          }
-        ],
-        "title" : "PUT \/user\/{username}"
-      },
-      "pathComponents" : [
-        "\/user\/{username}",
-        "put"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/user\/logout"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/user\/logout"
-          }
-        ],
-        "title" : "\/user\/logout"
-      },
-      "pathComponents" : [
-        "\/user\/logout"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "parameter:petId"
-      },
-      "kind" : {
-        "displayName" : "Parameter",
-        "identifier" : "property"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "petId"
-          }
-        ],
-        "title" : "petId"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}\/uploadImage",
-        "post",
-        "petId"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/pet\/findByStatus"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/pet\/findByStatus"
-          }
-        ],
-        "title" : "\/pet\/findByStatus"
-      },
-      "pathComponents" : [
-        "\/pet\/findByStatus"
+        "ApiResponse"
       ]
     },
     {
@@ -1631,40 +988,9 @@
     },
     {
       "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Upload image of the pet."
-          }
-        ]
-      },
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "operation:post:\/pet\/{petId}\/uploadImage"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "POST \/pet\/{petId}\/uploadImage"
-          }
-        ],
-        "title" : "POST \/pet\/{petId}\/uploadImage"
-      },
-      "pathComponents" : [
-        "\/pet\/{petId}\/uploadImage",
-        "post"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "parameter:api_key"
+        "precise" : "parameter:name"
       },
       "kind" : {
         "displayName" : "Parameter",
@@ -1674,53 +1000,22 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "api_key"
+            "spelling" : "name"
           }
         ],
-        "title" : "api_key"
+        "title" : "name"
       },
       "pathComponents" : [
         "\/pet\/{petId}",
-        "delete",
-        "api_key"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Log into the system."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:get:\/user\/login"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "GET \/user\/login"
-          }
-        ],
-        "title" : "GET \/user\/login"
-      },
-      "pathComponents" : [
-        "\/user\/login",
-        "get"
+        "post",
+        "name"
       ]
     },
     {
       "accessLevel" : "public",
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "schema:Tag"
+        "precise" : "schema:Order"
       },
       "kind" : {
         "displayName" : "Schema",
@@ -1730,82 +1025,20 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "Tag"
+            "spelling" : "Order"
           }
         ],
-        "title" : "Tag"
+        "title" : "Order"
       },
       "pathComponents" : [
-        "Tag"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Returns a map of status codes to quantities."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:get:\/store\/inventory"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "GET \/store\/inventory"
-          }
-        ],
-        "title" : "GET \/store\/inventory"
-      },
-      "pathComponents" : [
-        "\/store\/inventory",
-        "get"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Add a new pet to the store."
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "operation:post:\/pet"
-      },
-      "kind" : {
-        "displayName" : "Operation",
-        "identifier" : "method"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "POST \/pet"
-          }
-        ],
-        "title" : "POST \/pet"
-      },
-      "pathComponents" : [
-        "\/pet",
-        "post"
+        "Order"
       ]
     },
     {
       "accessLevel" : "public",
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "path:\/store\/order"
+        "precise" : "path:\/pet\/{petId}"
       },
       "kind" : {
         "displayName" : "Path",
@@ -1815,13 +1048,157 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "\/store\/order"
+            "spelling" : "\/pet\/{petId}"
           }
         ],
-        "title" : "\/store\/order"
+        "title" : "\/pet\/{petId}"
       },
       "pathComponents" : [
-        "\/store\/order"
+        "\/pet\/{petId}"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Validation exception"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:422"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "422 Response"
+          }
+        ],
+        "title" : "422 Response"
+      },
+      "pathComponents" : [
+        "\/store\/order",
+        "post",
+        "422"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:username"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "username"
+          }
+        ],
+        "title" : "username"
+      },
+      "pathComponents" : [
+        "\/user\/login",
+        "get",
+        "username"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "This can only be done by the logged in user."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:delete:\/user\/{username}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "DELETE \/user\/{username}"
+          }
+        ],
+        "title" : "DELETE \/user\/{username}"
+      },
+      "pathComponents" : [
+        "\/user\/{username}",
+        "delete"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:status"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "status"
+          }
+        ],
+        "title" : "status"
+      },
+      "pathComponents" : [
+        "\/pet\/findByStatus",
+        "get",
+        "status"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Place a new order in the store."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:post:\/store\/order"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "POST \/store\/order"
+          }
+        ],
+        "title" : "POST \/store\/order"
+      },
+      "pathComponents" : [
+        "\/store\/order",
+        "post"
       ]
     },
     {
@@ -1860,6 +1237,400 @@
       "docComment" : {
         "lines" : [
           {
+            "text" : "Add a new pet to the store."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:post:\/pet"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "POST \/pet"
+          }
+        ],
+        "title" : "POST \/pet"
+      },
+      "pathComponents" : [
+        "\/pet",
+        "post"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Updates a pet resource based on the form data."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:post:\/pet\/{petId}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "POST \/pet\/{petId}"
+          }
+        ],
+        "title" : "POST \/pet\/{petId}"
+      },
+      "pathComponents" : [
+        "\/pet\/{petId}",
+        "post"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:additionalMetadata"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "additionalMetadata"
+          }
+        ],
+        "title" : "additionalMetadata"
+      },
+      "pathComponents" : [
+        "\/pet\/{petId}\/uploadImage",
+        "post",
+        "additionalMetadata"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:petId"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "petId"
+          }
+        ],
+        "title" : "petId"
+      },
+      "pathComponents" : [
+        "\/pet\/{petId}\/uploadImage",
+        "post",
+        "petId"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/store\/order"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/store\/order"
+          }
+        ],
+        "title" : "\/store\/order"
+      },
+      "pathComponents" : [
+        "\/store\/order"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/user\/{username}"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/user\/{username}"
+          }
+        ],
+        "title" : "\/user\/{username}"
+      },
+      "pathComponents" : [
+        "\/user\/{username}"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/store\/order\/{orderId}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/store\/order\/{orderId}"
+          }
+        ],
+        "title" : "GET \/store\/order\/{orderId}"
+      },
+      "pathComponents" : [
+        "\/store\/order\/{orderId}",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/pet\/{petId}\/uploadImage"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/pet\/{petId}\/uploadImage"
+          }
+        ],
+        "title" : "\/pet\/{petId}\/uploadImage"
+      },
+      "pathComponents" : [
+        "\/pet\/{petId}\/uploadImage"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:orderId"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "orderId"
+          }
+        ],
+        "title" : "orderId"
+      },
+      "pathComponents" : [
+        "\/store\/order\/{orderId}",
+        "get",
+        "orderId"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "successful operation"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:200"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "200 Response"
+          }
+        ],
+        "title" : "200 Response"
+      },
+      "pathComponents" : [
+        "\/user\/login",
+        "get",
+        "200"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:api_key"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "api_key"
+          }
+        ],
+        "title" : "api_key"
+      },
+      "pathComponents" : [
+        "\/pet\/{petId}",
+        "delete",
+        "api_key"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:User"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "User"
+          }
+        ],
+        "title" : "User"
+      },
+      "pathComponents" : [
+        "User"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:Tag"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Tag"
+          }
+        ],
+        "title" : "Tag"
+      },
+      "pathComponents" : [
+        "Tag"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/pet"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/pet"
+          }
+        ],
+        "title" : "\/pet"
+      },
+      "pathComponents" : [
+        "\/pet"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Multiple status values can be provided with comma separated strings."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/pet\/findByStatus"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/pet\/findByStatus"
+          }
+        ],
+        "title" : "GET \/pet\/findByStatus"
+      },
+      "pathComponents" : [
+        "\/pet\/findByStatus",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
             "text" : "Returns a single pet."
           }
         ]
@@ -1883,6 +1654,225 @@
       },
       "pathComponents" : [
         "\/pet\/{petId}",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Delete a pet."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:delete:\/pet\/{petId}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "DELETE \/pet\/{petId}"
+          }
+        ],
+        "title" : "DELETE \/pet\/{petId}"
+      },
+      "pathComponents" : [
+        "\/pet\/{petId}",
+        "delete"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/store\/order\/{orderId}"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/store\/order\/{orderId}"
+          }
+        ],
+        "title" : "\/store\/order\/{orderId}"
+      },
+      "pathComponents" : [
+        "\/store\/order\/{orderId}"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Returns a map of status codes to quantities."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/store\/inventory"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/store\/inventory"
+          }
+        ],
+        "title" : "GET \/store\/inventory"
+      },
+      "pathComponents" : [
+        "\/store\/inventory",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/user\/createWithList"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/user\/createWithList"
+          }
+        ],
+        "title" : "\/user\/createWithList"
+      },
+      "pathComponents" : [
+        "\/user\/createWithList"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "schema:Pet"
+      },
+      "kind" : {
+        "displayName" : "Schema",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "Pet"
+          }
+        ],
+        "title" : "Pet"
+      },
+      "pathComponents" : [
+        "Pet"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "parameter:password"
+      },
+      "kind" : {
+        "displayName" : "Parameter",
+        "identifier" : "property"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "password"
+          }
+        ],
+        "title" : "password"
+      },
+      "pathComponents" : [
+        "\/user\/login",
+        "get",
+        "password"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Unexpected error"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "response:default"
+      },
+      "kind" : {
+        "displayName" : "Response",
+        "identifier" : "struct"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "default Response"
+          }
+        ],
+        "title" : "default Response"
+      },
+      "pathComponents" : [
+        "\/user\/login",
+        "get",
+        "default"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:get:\/pet\/findByTags"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "GET \/pet\/findByTags"
+          }
+        ],
+        "title" : "GET \/pet\/findByTags"
+      },
+      "pathComponents" : [
+        "\/pet\/findByTags",
         "get"
       ]
     },
@@ -1920,6 +1910,91 @@
     },
     {
       "accessLevel" : "public",
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "path:\/pet\/findByTags"
+      },
+      "kind" : {
+        "displayName" : "Path",
+        "identifier" : "protocol"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "\/pet\/findByTags"
+          }
+        ],
+        "title" : "\/pet\/findByTags"
+      },
+      "pathComponents" : [
+        "\/pet\/findByTags"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Upload image of the pet."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:post:\/pet\/{petId}\/uploadImage"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "POST \/pet\/{petId}\/uploadImage"
+          }
+        ],
+        "title" : "POST \/pet\/{petId}\/uploadImage"
+      },
+      "pathComponents" : [
+        "\/pet\/{petId}\/uploadImage",
+        "post"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Creates list of users with given input array."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:post:\/user\/createWithList"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "POST \/user\/createWithList"
+          }
+        ],
+        "title" : "POST \/user\/createWithList"
+      },
+      "pathComponents" : [
+        "\/user\/createWithList",
+        "post"
+      ]
+    },
+    {
+      "accessLevel" : "public",
       "docComment" : {
         "lines" : [
           {
@@ -1953,7 +2028,7 @@
       "accessLevel" : "public",
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "path:\/pet\/{petId}\/uploadImage"
+        "precise" : "path:\/pet\/findByStatus"
       },
       "kind" : {
         "displayName" : "Path",
@@ -1963,36 +2038,13 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "\/pet\/{petId}\/uploadImage"
+            "spelling" : "\/pet\/findByStatus"
           }
         ],
-        "title" : "\/pet\/{petId}\/uploadImage"
+        "title" : "\/pet\/findByStatus"
       },
       "pathComponents" : [
-        "\/pet\/{petId}\/uploadImage"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/pet\/findByTags"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/pet\/findByTags"
-          }
-        ],
-        "title" : "\/pet\/findByTags"
-      },
-      "pathComponents" : [
-        "\/pet\/findByTags"
+        "\/pet\/findByStatus"
       ]
     },
     {
@@ -2000,13 +2052,13 @@
       "docComment" : {
         "lines" : [
           {
-            "text" : "Multiple status values can be provided with comma separated strings."
+            "text" : "Update an existing pet by Id."
           }
         ]
       },
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "operation:get:\/pet\/findByStatus"
+        "precise" : "operation:put:\/pet"
       },
       "kind" : {
         "displayName" : "Operation",
@@ -2016,160 +2068,108 @@
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "GET \/pet\/findByStatus"
+            "spelling" : "PUT \/pet"
           }
         ],
-        "title" : "GET \/pet\/findByStatus"
+        "title" : "PUT \/pet"
       },
       "pathComponents" : [
-        "\/pet\/findByStatus",
-        "get"
+        "\/pet",
+        "put"
       ]
     },
     {
       "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "parameter:name"
-      },
-      "kind" : {
-        "displayName" : "Parameter",
-        "identifier" : "property"
-      },
-      "names" : {
-        "navigator" : [
+      "docComment" : {
+        "lines" : [
           {
-            "kind" : "text",
-            "spelling" : "name"
+            "text" : "Invalid username\/password supplied"
           }
-        ],
-        "title" : "name"
+        ]
       },
-      "pathComponents" : [
-        "\/pet\/{petId}",
-        "post",
-        "name"
-      ]
-    },
-    {
-      "accessLevel" : "public",
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "schema:User"
+        "precise" : "response:400"
       },
       "kind" : {
-        "displayName" : "Schema",
+        "displayName" : "Response",
         "identifier" : "struct"
       },
       "names" : {
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "User"
+            "spelling" : "400 Response"
           }
         ],
-        "title" : "User"
+        "title" : "400 Response"
       },
       "pathComponents" : [
-        "User"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "parameter:status"
-      },
-      "kind" : {
-        "displayName" : "Parameter",
-        "identifier" : "property"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "status"
-          }
-        ],
-        "title" : "status"
-      },
-      "pathComponents" : [
-        "\/pet\/findByStatus",
+        "\/user\/login",
         "get",
-        "status"
+        "400"
       ]
     },
     {
       "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Log into the system."
+          }
+        ]
+      },
       "identifier" : {
         "interfaceLanguage" : "openapi",
-        "precise" : "parameter:username"
+        "precise" : "operation:get:\/user\/login"
       },
       "kind" : {
-        "displayName" : "Parameter",
-        "identifier" : "property"
+        "displayName" : "Operation",
+        "identifier" : "method"
       },
       "names" : {
         "navigator" : [
           {
             "kind" : "text",
-            "spelling" : "username"
+            "spelling" : "GET \/user\/login"
           }
         ],
-        "title" : "username"
+        "title" : "GET \/user\/login"
+      },
+      "pathComponents" : [
+        "\/user\/login",
+        "get"
+      ]
+    },
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "This can only be done by the logged in user."
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "openapi",
+        "precise" : "operation:put:\/user\/{username}"
+      },
+      "kind" : {
+        "displayName" : "Operation",
+        "identifier" : "method"
+      },
+      "names" : {
+        "navigator" : [
+          {
+            "kind" : "text",
+            "spelling" : "PUT \/user\/{username}"
+          }
+        ],
+        "title" : "PUT \/user\/{username}"
       },
       "pathComponents" : [
         "\/user\/{username}",
-        "get",
-        "username"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "parameter:orderId"
-      },
-      "kind" : {
-        "displayName" : "Parameter",
-        "identifier" : "property"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "orderId"
-          }
-        ],
-        "title" : "orderId"
-      },
-      "pathComponents" : [
-        "\/store\/order\/{orderId}",
-        "get",
-        "orderId"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "identifier" : {
-        "interfaceLanguage" : "openapi",
-        "precise" : "path:\/pet"
-      },
-      "kind" : {
-        "displayName" : "Path",
-        "identifier" : "protocol"
-      },
-      "names" : {
-        "navigator" : [
-          {
-            "kind" : "text",
-            "spelling" : "\/pet"
-          }
-        ],
-        "title" : "\/pet"
-      },
-      "pathComponents" : [
-        "\/pet"
+        "put"
       ]
     }
   ]

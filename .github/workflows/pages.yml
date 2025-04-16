@@ -27,57 +27,10 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       
-      - name: Prepare public directory
-        run: |
-          # Create public directory
-          mkdir -p public
-          
-          # Copy documentation files
-          cp -r docs/* public/
-          
-          # Copy sample files into the samples directory
-          mkdir -p public/samples
-          cp -r DocsExample public/samples/
-          cp api.yaml public/samples/
-          cp -r API.docc public/samples/
-          
-          # Create README with instructions and note about source
-          cat > public/samples/README.md << 'EOF'
-          # The DocsExample directory within the repository (ayushshrivastv/OpenAPI-integration-with-DocC/DocsExample) is the source for this example.
-
-          ## Building and Viewing Documentation Locally
-
-          1. Convert OpenAPI specification to SymbolGraph:
-             ```
-             swift run openapi-to-symbolgraph api.yaml --output-path api.symbolgraph.json
-             ```
-
-          2. Generate DocC documentation:
-             ```
-             xcrun docc convert API.docc --fallback-display-name API --fallback-bundle-identifier com.example.API --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs
-             ```
-
-          3. View the documentation locally:
-             ```
-             python -m http.server 8000 --directory docs
-             ```
-
-          4. Open your browser to http://localhost:8000
-          EOF
-          
-          # Copy the existing index.html as is, since it already has the correct paths
-          cp index.html public/
-          
-          # Copy other necessary files
-          cp favicon.ico public/ || true
-          cp favicon.svg public/ || true
-          cp .nojekyll public/ || true
-          cp 404.html public/ || true
-      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './public'
+          path: './docs'
       
       - name: Deploy to GitHub Pages
         id: deployment

@@ -8,7 +8,7 @@ OpenAPI is the industry standard for documenting HTTP services, but Swift develo
 
 ## Key Features
 
-- Convert OpenAPI 3.1.0 specifications to DocC-compatible format
+- Convert OpenAPI 3.x specifications to DocC-compatible format
 - Generate beautiful API documentation
 - Provide a consistent documentation experience for Swift developers
 - Support for documenting endpoints, schemas, parameters, and more
@@ -17,19 +17,18 @@ OpenAPI is the industry standard for documenting HTTP services, but Swift develo
 
 The project is organized into several modules:
 
-- `Sources/Core` - Core functionality and data models
-- `Sources/CLI` - Command-line interface 
-- `Sources/OpenAPItoSymbolGraph` - Main implementation with submodules:
-  - `Mapping` - Mappers between OpenAPI and SymbolGraph
-  - `Utils/DocC` - DocC integration utilities
+- `Sources/OpenAPI` - Core functionality for parsing OpenAPI specifications.
+- `Sources/OpenAPItoSymbolGraph` - Main implementation for converting OpenAPI models to SymbolGraph.
+- `Sources/Integration` - Integration points, potentially including the CLI tool.
+- `Sources/openapi-to-symbolgraph` - The command-line executable target.
+- `Tests/OpenAPItoSymbolGraphTests` - Unit and integration tests.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Xcode 15.0 or later
-- Swift 6.0 or later
-- Python 3 (for local documentation serving)
+- Xcode 15.0 or later (requires Swift 5.9+ for DocC support)
+- Swift command-line tools configured (`xcrun`)
 
 ### Installation
 
@@ -39,82 +38,107 @@ cd OpenAPI-integration-with-DocC
 swift build
 ```
 
-### Usage
+### Usage Steps
 
-1. Convert your OpenAPI specification to a SymbolGraph:
+1.  **Obtain your OpenAPI Specification:** Ensure you have your API specification in a `.yaml`, `.yml`, or `.json` file (OpenAPI v3.x format).
+2.  **Generate SymbolGraph:** Run the command-line tool, providing the path to your OpenAPI file.
 
-```bash
-# Example using one of the provided files
-swift run openapi-to-symbolgraph Examples/api.yaml --output-path api.symbolgraph.json
-```
+    ```bash
+    swift run openapi-to-symbolgraph <path_to_your_openapi_spec> --output-path <desired_symbolgraph_name>.symbolgraph.json
+    ```
 
-### Example with Pet Store API
+3.  **Prepare SymbolGraph Directory:** Move the generated `.symbolgraph.json` file into a dedicated directory (e.g., `symbolgraphs`).
 
-The tool has also been tested with the standard Swagger Pet Store OpenAPI definition:
+    ```bash
+    mkdir symbolgraphs
+    mv <desired_symbolgraph_name>.symbolgraph.json symbolgraphs/
+    ```
 
-```bash
-# Download the Pet Store spec (if you haven't already)
-# curl -o Examples/petstore.yaml https://raw.githubusercontent.com/swagger-api/swagger-petstore/master/src/main/resources/openapi.yaml
+4.  **Create a DocC Catalog:** Create a basic documentation catalog directory (e.g., `MyAPI.docc`). This needs at least one markdown file to serve as the root landing page.
 
-# Convert the Pet Store spec
-swift run openapi-to-symbolgraph Examples/petstore.yaml --output-path petstore.symbolgraph.json
-```
+    ```bash
+    mkdir MyAPI.docc
+    # Create a root file, e.g., MyAPI.docc/MyAPI.md
+    echo "# MyAPI\\n\\nAPI Documentation landing page." > MyAPI.docc/MyAPI.md
+    ```
 
-2. Create a DocC documentation catalog (see `API.docc` as an example)
+5.  **Generate DocC Archive:** Use `xcrun docc convert` to combine your catalog and symbol graph into a `.doccarchive`.
 
-3. Generate the documentation:
+    ```bash
+    xcrun docc convert MyAPI.docc --additional-symbol-graph-dir symbolgraphs --output-path MyAPI.doccarchive
+    ```
 
-```bash
-xcrun docc convert YourAPI.docc --fallback-display-name YourAPI --fallback-bundle-identifier com.example.YourAPI --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs
-```
+6.  **View Documentation:** Open the generated `MyAPI.doccarchive` file in Xcode, or host it on a web server.
+
+### Example: Swift Package Registry API
+
+This example demonstrates generating documentation for the official Swift Package Registry API.
+
+1.  **Download the Spec:**
+
+    ```bash
+    # Create a directory for test resources if it doesn't exist
+    mkdir -p Tests/OpenAPItoSymbolGraphTests/Resources
+
+    # Download the registry spec
+    curl -o Tests/OpenAPItoSymbolGraphTests/Resources/registry.openapi.yaml https://raw.githubusercontent.com/swiftlang/swift-package-manager/main/Documentation/PackageRegistry/registry.openapi.yaml
+    ```
+
+2.  **Generate SymbolGraph:**
+
+    ```bash
+    swift run openapi-to-symbolgraph Tests/OpenAPItoSymbolGraphTests/Resources/registry.openapi.yaml --output-path registry.symbolgraph.json
+    ```
+
+3.  **Prepare Directory:**
+
+    ```bash
+    mkdir -p symbolgraphs # Ensure directory exists
+    mv registry.symbolgraph.json symbolgraphs/
+    ```
+
+4.  **Create Catalog:** (We created `RegistryAPI.docc` earlier)
+
+    ```bash
+    # Ensure the catalog exists and has a root file
+    mkdir -p RegistryAPI.docc
+    echo "# RegistryAPI\\n\\nSwift Package Registry API documentation." > RegistryAPI.docc/RegistryAPI.md
+    ```
+
+5.  **Generate Archive:**
+
+    ```bash
+    xcrun docc convert RegistryAPI.docc --additional-symbol-graph-dir symbolgraphs --output-path RegistryAPI.doccarchive
+    ```
+
+    This creates `RegistryAPI.doccarchive`, which contains the generated documentation for the Swift Package Registry API.
 
 ## Viewing the Documentation
 
-The `docs/` directory in this repository contains the pre-generated DocC documentation website output for the **Swagger Pet Store API**, which was built using the `petstore.symbolgraph.json` generated by this tool and the `API.docc` catalog.
+You can view generated `.doccarchive` files in Xcode or host them online.
 
-### Online Documentation
+### Example Pet Store Documentation (Pre-built)
 
-The latest documentation is automatically deployed to GitHub Pages and can be viewed at:
+The `docs/` directory in this repository contains pre-generated DocC website output for the **Swagger Pet Store API**. This was built using `Examples/petstore.yaml` and an example `API.docc` catalog.
 
-[https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/](https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/)
+**View Online:** [https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/](https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/)
 
-### Local Documentation Server
-
-You can serve the included Pet Store documentation locally using one of these methods:
-
-#### Using the helper script:
+**Serve Locally:**
 
 ```bash
-./serve-docs.sh
-```
-
-#### Using Python 3 directly:
-
-```bash
+# Serve the pre-built Pet Store docs
 python3 -m http.server 8000 --directory docs
 ```
 
-Then open your browser to http://localhost:8000
+Then open http://localhost:8000 in your browser.
 
-## Example
+## Testing
 
-Check out the `DocsExample` directory for a working example of a REST API documented with DocC. It showcases how endpoints, schemas, and examples appear in the DocC format.
-
-## How It Works
-
-1. The OpenAPI specification is parsed using `OpenAPIKit`
-2. The specification is converted to a SymbolGraph, which is the format DocC uses for documentation
-3. DocC processes the SymbolGraph and generates the documentation
-4. The documentation can be served as a static website or deployed to GitHub Pages
+The tool includes a comprehensive test suite (`swift test`) covering parsing, conversion, and command-line arguments, using examples like the Pet Store API and the Swift Package Registry API.
 
 ## GitHub Pages Deployment
 
-This repository is configured to automatically deploy documentation to GitHub Pages whenever changes are pushed to the main branch. The deployment process:
-
-1. Uses the GitHub Actions workflow defined in `.github/workflows/pages.yml`
-2. Takes the contents of the `docs` directory
-3. Deploys them to GitHub Pages
-4. Makes the documentation available at the URL: [https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/](https://ayushshrivastv.github.io/OpenAPI-integration-with-DocC/)
+This repository automatically deploys the pre-built Pet Store documentation from the `docs` directory to GitHub Pages via the `.github/workflows/pages.yml` workflow.
 
 ## Contributing
 

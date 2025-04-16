@@ -1,6 +1,24 @@
-# OpenAPI to DocC Examples
+# API Documentation Examples
 
-This directory contains example OpenAPI specifications and demonstrates how to convert them to DocC documentation.
+This directory contains example OpenAPI specifications and their corresponding generated SymbolGraph files and DocC archives produced by the `openapi-to-symbolgraph` tool.
+
+## Contents
+
+- **RegistryAPI/**: Contains files related to the Swift Package Registry API.
+  - `registry.openapi.yaml`: The original OpenAPI specification.
+  - `registry.symbolgraph.json`: The generated SymbolGraph file.
+  - `RegistryAPI.doccarchive`: The generated DocC documentation archive.
+
+- **PetStoreAPI/**: Contains files related to the Swagger Pet Store API.
+  - `petstore.yaml`: The original OpenAPI specification.
+  - `petstore.symbolgraph.json`: The generated SymbolGraph file.
+  - `PetStore.doccarchive`: The generated DocC documentation archive.
+
+## Usage
+
+These examples demonstrate the input and output of the conversion process. You can inspect the `.yaml` files as input examples and the `.symbolgraph.json` files to see the intermediate representation used by DocC. The `.doccarchive` files can be opened in Xcode or hosted to view the final rendered documentation.
+
+Refer to the main project `README.md` for instructions on how to run the tool and generate these files yourself.
 
 ## Petstore API Example
 

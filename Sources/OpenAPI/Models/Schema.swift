@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a JSON schema in OpenAPI
-public indirect enum JSONSchema {
+public indirect enum JSONSchema: Equatable {
     /// A string schema
     case string(StringSchema)
     
@@ -51,10 +51,40 @@ public indirect enum JSONSchema {
         case .not(let schema): return schema.description
         }
     }
+    
+    // Custom implementation of equality for JSONSchema
+    public static func == (lhs: JSONSchema, rhs: JSONSchema) -> Bool {
+        switch (lhs, rhs) {
+        case (.string, .string):
+            return true // Simplified for reference detection
+        case (.number, .number):
+            return true
+        case (.integer, .integer):
+            return true
+        case (.boolean, .boolean):
+            return true
+        case (.array, .array):
+            return true
+        case (.object, .object):
+            return true
+        case (.reference(let lhsRef), .reference(let rhsRef)):
+            return lhsRef.ref == rhsRef.ref
+        case (.allOf(let lhsSchemas), .allOf(let rhsSchemas)):
+            return lhsSchemas == rhsSchemas
+        case (.anyOf(let lhsSchemas), .anyOf(let rhsSchemas)):
+            return lhsSchemas == rhsSchemas
+        case (.oneOf(let lhsSchemas), .oneOf(let rhsSchemas)):
+            return lhsSchemas == rhsSchemas
+        case (.not(let lhsSchema), .not(let rhsSchema)):
+            return lhsSchema == rhsSchema
+        default:
+            return false
+        }
+    }
 }
 
 /// Represents a string schema
-public struct StringSchema {
+public struct StringSchema: Equatable {
     /// The format of the string
     public let format: StringFormat?
     
@@ -129,7 +159,7 @@ public enum StringFormat: String {
 }
 
 /// Represents a number schema
-public struct NumberSchema {
+public struct NumberSchema: Equatable {
     /// The minimum value
     public let minimum: Double?
     
@@ -174,7 +204,7 @@ public struct NumberSchema {
 }
 
 /// Represents an integer schema
-public struct IntegerSchema {
+public struct IntegerSchema: Equatable {
     /// The minimum value
     public let minimum: Int?
     
@@ -219,7 +249,7 @@ public struct IntegerSchema {
 }
 
 /// Represents a boolean schema
-public struct BooleanSchema {
+public struct BooleanSchema: Equatable {
     /// The description of the schema
     public let description: String?
     
@@ -231,7 +261,7 @@ public struct BooleanSchema {
 }
 
 /// Represents an array schema
-public struct ArraySchema {
+public struct ArraySchema: Equatable {
     /// The schema of the items in the array
     public let items: JSONSchema
     
@@ -270,7 +300,7 @@ public struct ArraySchema {
 }
 
 /// Represents an object schema
-public struct ObjectSchema {
+public struct ObjectSchema: Equatable {
     /// The required properties
     public let required: [String]
     
@@ -303,7 +333,7 @@ public struct ObjectSchema {
 }
 
 /// Represents a reference to another schema
-public struct Reference {
+public struct Reference: Equatable {
     /// The reference path
     public let ref: String
     
