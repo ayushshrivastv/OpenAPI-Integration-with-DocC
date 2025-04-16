@@ -9,39 +9,52 @@
   },
   "module" : {
     "isVirtual" : false,
-    "name" : "TestAPI",
+    "name" : "SampleAPI",
     "platform" : {
-      "operatingSystem" : {
-        "name" : "macosx"
-      }
-    },
-    "version" : {
-      "major" : 1,
-      "minor" : 0,
-      "patch" : 0
+      "vendor" : "OpenAPI"
     }
   },
   "relationships" : [
     {
       "kind" : "memberOf",
-      "source" : "s:TestAPI",
-      "target" : "s:TestAPI.User",
+      "source" : "s:SampleAPI",
+      "target" : "f:SampleAPI.get__users",
       "targetFallback" : null
     },
     {
       "kind" : "memberOf",
-      "source" : "s:TestAPI.User",
-      "target" : "s:TestAPI.User.name",
-      "targetFallback" : null
-    },
-    {
-      "kind" : "memberOf",
-      "source" : "s:TestAPI.User",
-      "target" : "s:TestAPI.User.id",
+      "source" : "s:SampleAPI",
+      "target" : "s:SampleAPI.User",
       "targetFallback" : null
     }
   ],
   "symbols" : [
+    {
+      "accessLevel" : "public",
+      "docComment" : {
+        "lines" : [
+          {
+            "text" : "Get all users\n\nReturns a list of users\n\nPath: \/users\nMethod: GET"
+          }
+        ]
+      },
+      "identifier" : {
+        "interfaceLanguage" : "swift",
+        "precise" : "f:SampleAPI.get__users"
+      },
+      "kind" : {
+        "displayName" : "Function",
+        "identifier" : "func"
+      },
+      "names" : {
+        "prose" : "Get all users\n\nReturns a list of users\n\nPath: \/users\nMethod: GET",
+        "title" : "get__users"
+      },
+      "pathComponents" : [
+        "SampleAPI",
+        "get__users"
+      ]
+    },
     {
       "accessLevel" : "public",
       "docComment" : {
@@ -53,7 +66,7 @@
       },
       "identifier" : {
         "interfaceLanguage" : "swift",
-        "precise" : "s:TestAPI.User"
+        "precise" : "s:SampleAPI.User"
       },
       "kind" : {
         "displayName" : "Structure",
@@ -64,7 +77,7 @@
         "title" : "User"
       },
       "pathComponents" : [
-        "TestAPI",
+        "SampleAPI",
         "User"
       ]
     },
@@ -73,78 +86,24 @@
       "docComment" : {
         "lines" : [
           {
-            "text" : "Property id"
+            "text" : "A sample API for testing OpenAPI to DocC conversion"
           }
         ]
       },
       "identifier" : {
         "interfaceLanguage" : "swift",
-        "precise" : "s:TestAPI.User.id"
-      },
-      "kind" : {
-        "displayName" : "Property",
-        "identifier" : "property"
-      },
-      "names" : {
-        "prose" : "Property id",
-        "title" : "id"
-      },
-      "pathComponents" : [
-        "TestAPI",
-        "User",
-        "id"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Property name"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "swift",
-        "precise" : "s:TestAPI.User.name"
-      },
-      "kind" : {
-        "displayName" : "Property",
-        "identifier" : "property"
-      },
-      "names" : {
-        "prose" : "Property name",
-        "title" : "name"
-      },
-      "pathComponents" : [
-        "TestAPI",
-        "User",
-        "name"
-      ]
-    },
-    {
-      "accessLevel" : "public",
-      "docComment" : {
-        "lines" : [
-          {
-            "text" : "Test API"
-          }
-        ]
-      },
-      "identifier" : {
-        "interfaceLanguage" : "swift",
-        "precise" : "s:TestAPI"
+        "precise" : "s:SampleAPI"
       },
       "kind" : {
         "displayName" : "Module",
         "identifier" : "module"
       },
       "names" : {
-        "prose" : "Test API",
-        "title" : "Test API"
+        "prose" : "A sample API for testing OpenAPI to DocC conversion",
+        "title" : "Sample API"
       },
       "pathComponents" : [
-        "TestAPI"
+        "SampleAPI"
       ]
     }
   ]

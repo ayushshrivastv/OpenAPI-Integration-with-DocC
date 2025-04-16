@@ -26,15 +26,15 @@ fi
 
 # Check if python3 is available
 if command -v python3 &> /dev/null; then
-    echo "Starting server with python3 on port $PORT..."
-    python3 -m http.server $PORT --directory docs
+    echo "Starting server with python3 on port $PORT from docs/api directory..."
+    python3 -m http.server $PORT --directory docs/api
 # Check if python is available as a fallback
 elif command -v python &> /dev/null; then
     # Check Python version to ensure it's Python 3
     PYTHON_VERSION=$(python --version 2>&1)
     if [[ $PYTHON_VERSION == *"Python 3"* ]]; then
-        echo "Starting server with python on port $PORT..."
-        python -m http.server $PORT --directory docs
+        echo "Starting server with python on port $PORT from docs/api directory..."
+        python -m http.server $PORT --directory docs/api
     else
         echo "Error: Python 3 is required to run the server."
         exit 1

@@ -1,30 +1,23 @@
-# REST API Documentation
+# SwaggerPetstoreOpenAPI30 REST API Documentation
 
-A comprehensive REST API example documented with DocC.
+A comprehensive REST API example documented with DocC, generated from the standard Swagger Pet Store OpenAPI specification using the `openapi-to-symbolgraph` tool.
 
 ## Overview
 
-This documentation is generated from an OpenAPI specification, showcasing how REST APIs can be documented using DocC, the documentation compiler familiar to Swift developers.
-
-## Key Features
-
-- Auto-generated documentation from OpenAPI schemas
-- Integration with Swift DocC's navigation and search
-- Standard format for HTTP endpoints and request/response schemas
-- Consistent developer experience between Swift API docs and REST API docs
+This documentation showcases how REST APIs defined in OpenAPI can be converted to SymbolGraph files and rendered using DocC, providing a familiar documentation experience for Swift developers.
 
 ## Topics
 
-### Endpoints
+### Pet Operations
 
-- ``/REST-API-Example/API/listUsers``
-- ``/REST-API-Example/API/getUserById``
-- ``/REST-API-Example/API/createUser``
+Browse operations related to pets in the store. (See sidebar for links)
 
 ### Data Models
 
-- ``/REST-API-Example/API/User``
+Explore the data structures used in the API. (See sidebar for links)
 
 ### Getting Started
+
+Learn how to use this tool.
 
 - <doc:Getting-Started> 
