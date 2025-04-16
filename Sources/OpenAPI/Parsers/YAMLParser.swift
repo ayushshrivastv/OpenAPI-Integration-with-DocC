@@ -38,6 +38,15 @@ public struct YAMLParser {
             throw ParserError.missingRequiredField("openapi")
         }
         
+        // Validate OpenAPI version
+        let versionComponents = openapi.split(separator: ".")
+        guard versionComponents.count >= 2,
+              versionComponents[0] == "3",
+              let minorVersion = Int(versionComponents[1]),
+              minorVersion >= 0 else {
+            throw ParserError.invalidDocument("Unsupported OpenAPI version. Must be 3.x.x")
+        }
+        
         guard let infoDict = dict["info"] as? [String: Any] else {
             throw ParserError.missingRequiredField("info")
         }
@@ -46,32 +55,17 @@ public struct YAMLParser {
             throw ParserError.missingRequiredField("paths")
         }
         
-        // Validate that paths have at least one operation with responses
-        var hasValidPath = false
-        for (_, pathValue) in pathsDict {
-            if let pathDict = pathValue as? [String: Any] {
-                for (key, value) in pathDict {
-                    if ["get", "post", "put", "delete", "patch", "options", "head"].contains(key),
-                       let operationDict = value as? [String: Any],
-                       let responsesDict = operationDict["responses"] as? [String: Any],
-                       !responsesDict.isEmpty {
-                        hasValidPath = true
-                        break
-                    }
-                }
-            }
-            if hasValidPath {
-                break
-            }
-        }
-        
-        if !hasValidPath {
-            throw ParserError.invalidDocument("No valid paths with operations and responses found")
-        }
+        // Validate paths
+        try validatePaths(pathsDict)
         
         let info = try parseInfo(from: infoDict)
         let paths = try parsePaths(from: pathsDict)
         let components = try parseComponents(from: dict["components"] as? [String: Any])
+        
+        // Validate components references
+        if let componentsDict = dict["components"] as? [String: Any] {
+            try validateComponentReferences(componentsDict, paths: paths)
+        }
         
         return Document(
             openapi: openapi,
@@ -79,6 +73,94 @@ public struct YAMLParser {
             paths: paths,
             components: components
         )
+    }
+    
+    private func validatePaths(_ pathsDict: [String: Any]) throws {
+        var hasValidPath = false
+        
+        for (path, pathValue) in pathsDict {
+            // Validate path format
+            if !path.starts(with: "/") {
+                throw ParserError.invalidDocument("Path must start with '/' - Invalid path: \(path)")
+            }
+            
+            guard let pathDict = pathValue as? [String: Any] else {
+                throw ParserError.invalidPathItem(path)
+            }
+            
+            // Validate operations
+            let validMethods = ["get", "post", "put", "delete", "patch", "options", "head"]
+            var hasOperation = false
+            
+            for (method, operation) in pathDict {
+                if validMethods.contains(method.lowercased()) {
+                    hasOperation = true
+                    guard let operationDict = operation as? [String: Any] else {
+                        throw ParserError.invalidDocument("Invalid operation in path: \(path), method: \(method)")
+                    }
+                    
+                    // Validate operation has responses
+                    guard let responses = operationDict["responses"] as? [String: Any],
+                          !responses.isEmpty else {
+                        throw ParserError.invalidDocument("Operation must have at least one response - Path: \(path), Method: \(method)")
+                    }
+                    
+                    // Validate response codes
+                    for (code, _) in responses {
+                        if let intCode = Int(code) {
+                            guard (100...599).contains(intCode) else {
+                                throw ParserError.invalidDocument("Invalid response code \(code) in path: \(path), method: \(method)")
+                            }
+                        } else if code != "default" {
+                            throw ParserError.invalidDocument("Invalid response code \(code) in path: \(path), method: \(method)")
+                        }
+                    }
+                }
+            }
+            
+            if hasOperation {
+                hasValidPath = true
+            }
+        }
+        
+        if !hasValidPath {
+            throw ParserError.invalidDocument("No valid paths with operations found")
+        }
+    }
+    
+    private func validateComponentReferences(_ componentsDict: [String: Any], paths: [String: PathItem]) throws {
+        let schemas = (componentsDict["schemas"] as? [String: Any]) ?? [:]
+        
+        // Collect all schema references from paths
+        for (_, pathItem) in paths {
+            for operation in [pathItem.get, pathItem.post, pathItem.put, pathItem.delete].compactMap({ $0 }) {
+                // Check request body references
+                if let requestBody = operation.requestBody {
+                    for mediaType in requestBody.content.values {
+                        if case .reference(let ref) = mediaType.schema {
+                            let schemaName = ref.ref.split(separator: "/").last.map(String.init) ?? ref.ref
+                            if !schemas.keys.contains(schemaName) {
+                                throw ParserError.invalidDocument("Referenced schema '\(schemaName)' not found in components")
+                            }
+                        }
+                    }
+                }
+                
+                // Check response references
+                for response in operation.responses.values {
+                    if let content = response.content {
+                        for mediaType in content.values {
+                            if case .reference(let ref) = mediaType.schema {
+                                let schemaName = ref.ref.split(separator: "/").last.map(String.init) ?? ref.ref
+                                if !schemas.keys.contains(schemaName) {
+                                    throw ParserError.invalidDocument("Referenced schema '\(schemaName)' not found in components")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     private func parseInfo(from dict: [String: Any]) throws -> Info {
