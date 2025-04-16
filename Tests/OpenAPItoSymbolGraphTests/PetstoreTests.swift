@@ -1,4 +1,8 @@
 import XCTest
+import Foundation
+import OpenAPI
+import SymbolKit
+import Yams
 @testable import OpenAPItoSymbolGraph
 @testable import OpenAPI
 @testable import DocC
@@ -132,32 +136,47 @@ final class PetstoreTests: XCTestCase {
                   type: string
         """
         
-        // Create parser and converter
         let parser = YAMLParser()
-        let converter = OpenAPItoSymbolGraph()
+        let converter = OpenAPIDocCConverter()
         
-        // Parse and convert
         let document = try parser.parse(yamlString)
-        let markdown = try converter.convert(document)
+        let symbolGraph = converter.convert(document)
         
-        // Verify markdown content
-        XCTAssertTrue(markdown.contains("# Swagger Petstore"))
-        XCTAssertTrue(markdown.contains("## Overview"))
-        XCTAssertTrue(markdown.contains("3 Endpoints"))
-        XCTAssertTrue(markdown.contains("4 Schemas"))
+        // MARK: - SymbolGraph Assertions
+        XCTAssertEqual(symbolGraph.module.name, "Swagger Petstore")
+
+        // Count specific symbol kinds
+        let operationSymbols = symbolGraph.symbols.values.filter { $0.kind.identifier == .method } 
+        // Refined schema filter: only count structs with 1 path component (SchemaName)
+        let topLevelSchemaSymbols = symbolGraph.symbols.values.filter { $0.kind.identifier == .struct && $0.pathComponents.count == 1 }
         
-        // Verify specific endpoint
-        XCTAssertTrue(markdown.contains("## GET /pets"))
-        XCTAssertTrue(markdown.contains("Returns all pets from the system that the user has access to"))
+        XCTAssertEqual(operationSymbols.count, 3, "Incorrect number of operation symbols")
+        XCTAssertEqual(topLevelSchemaSymbols.count, 4, "Incorrect number of top-level schema symbols") // Expect 4: Pet, NewPet, Pets, Error
         
-        // Verify parameters
-        XCTAssertTrue(markdown.contains("limit"))
-        XCTAssertTrue(markdown.contains("How many items to return at one time (max 100)"))
+        // Check specific symbols
+        let listPetsOpIdentifier1 = "operation:listPets"
+        let listPetsOpIdentifier2 = "operation:get:/pets"
+        let listPetsOp = symbolGraph.symbols.values.first { $0.identifier.precise == listPetsOpIdentifier1 || $0.identifier.precise == listPetsOpIdentifier2 }
+        XCTAssertNotNil(listPetsOp, "List pets operation missing")
         
-        // Verify schemas
-        XCTAssertTrue(markdown.contains("### Pet"))
-        XCTAssertTrue(markdown.contains("### NewPet"))
-        XCTAssertTrue(markdown.contains("### Pets"))
-        XCTAssertTrue(markdown.contains("### Error"))
+        XCTAssertNotNil(symbolGraph.symbols.values.first { $0.identifier.precise.hasSuffix("schema:Pet") }, "Pet schema missing")
+        XCTAssertNotNil(symbolGraph.symbols.values.first { $0.identifier.precise.hasSuffix("schema:NewPet") }, "NewPet schema missing")
+        XCTAssertNotNil(symbolGraph.symbols.values.first { $0.identifier.precise.hasSuffix("schema:Pets") }, "Pets schema missing")
+        XCTAssertNotNil(symbolGraph.symbols.values.first { $0.identifier.precise.hasSuffix("schema:Error") }, "Error schema missing")
+        
+        // Check specific doc comments
+        XCTAssertEqual(listPetsOp?.docComment?.lines.first?.text, "Returns all pets from the system that the user has access to", "List pets description mismatch")
+        
+        // Check a relationship (Example: operation -> path)
+        let pathPetsSymbol = symbolGraph.symbols.values.first { $0.identifier.precise == "path:/pets" }
+        XCTAssertNotNil(pathPetsSymbol, "Path symbol /pets missing")
+         
+        // Find relationship with OPERATION as source and PATH as target
+        let listPetsRelationship = symbolGraph.relationships.first { 
+            $0.source == listPetsOp?.identifier.precise && // Source is Operation
+            $0.target == pathPetsSymbol?.identifier.precise && // Target is Path
+            $0.kind == SymbolKit.SymbolGraph.Relationship.Kind.memberOf 
+        }
+        XCTAssertNotNil(listPetsRelationship, "Relationship from listPets operation to /pets path missing")
     }
 }

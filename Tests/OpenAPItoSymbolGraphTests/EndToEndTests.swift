@@ -69,9 +69,9 @@ final class EndToEndTests: XCTestCase {
         let symbolGraph = try decoder.decode(SymbolKit.SymbolGraph.self, from: outputData)
         
         // Basic assertions on the symbol graph
-        XCTAssertEqual(symbolGraph.module.name, "TestAPI")
-        XCTAssertEqual(symbolGraph.symbols.count, 2, "Should contain namespace and endpoint symbols")
-        XCTAssertEqual(symbolGraph.relationships.count, 1, "Should contain one memberOf relationship")
+        XCTAssertEqual(symbolGraph.module.name, "Test API")
+        XCTAssertEqual(symbolGraph.symbols.count, 4, "Should contain module, path, operation, and response symbols")
+        XCTAssertEqual(symbolGraph.relationships.count, 3, "Should contain relationships for path, operation, and response")
     }
 
     // Test command-line argument parsing
