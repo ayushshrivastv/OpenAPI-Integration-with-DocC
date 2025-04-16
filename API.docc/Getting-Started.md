@@ -29,18 +29,18 @@ func fetchUsers(completion: @escaping ([User]?, Error?) -> Void) {
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
     request.setValue("Bearer YOUR_API_KEY", forHTTPHeaderField: "Authorization")
-    
+
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
         if let error = error {
             completion(nil, error)
             return
         }
-        
+
         guard let data = data else {
             completion(nil, NSError(domain: "No data", code: 0, userInfo: nil))
             return
         }
-        
+
         do {
             let users = try JSONDecoder().decode([User].self, from: data)
             completion(users, nil)
@@ -48,7 +48,7 @@ func fetchUsers(completion: @escaping ([User]?, Error?) -> Void) {
             completion(nil, error)
         }
     }
-    
+
     task.resume()
 }
 ```
@@ -65,7 +65,7 @@ func fetchUsers() async throws -> [User] {
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
     request.setValue("Bearer YOUR_API_KEY", forHTTPHeaderField: "Authorization")
-    
+
     let (data, _) = try await URLSession.shared.data(for: request)
     return try JSONDecoder().decode([User].self, from: data)
 }
@@ -83,4 +83,4 @@ Our API uses standard HTTP status codes:
 
 ## Rate Limits
 
-API requests are limited to 100 requests per minute per API key. 
+API requests are limited to 100 requests per minute per API key.

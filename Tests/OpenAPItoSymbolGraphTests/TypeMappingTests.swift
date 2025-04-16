@@ -1,6 +1,6 @@
 import XCTest
 import OpenAPIKit
-@testable import OpenAPItoSymbolGraph
+@testable import Core
 
 final class TypeMappingTests: XCTestCase {
     func testStringTypeMapping() {
@@ -9,13 +9,13 @@ final class TypeMappingTests: XCTestCase {
         let (basicType, basicDocs) = SymbolMapper.mapSchemaType(basicString)
         XCTAssertEqual(basicType, "String")
         XCTAssertTrue(basicDocs.isEmpty)
-        
+
         // Test string with format
         let dateString: OpenAPIKit.JSONSchema = .string(format: .date)
         let (dateType, dateDocs) = SymbolMapper.mapSchemaType(dateString)
         XCTAssertEqual(dateType, "Date")
         XCTAssertTrue(dateDocs.contains("Format: date"))
-        
+
         // Test string with constraints
         let stringCoreCtx = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.StringFormat>()
         let stringCtx = OpenAPIKit.JSONSchema.StringContext(
@@ -29,7 +29,7 @@ final class TypeMappingTests: XCTestCase {
         XCTAssertTrue(constrainedDocs.contains("Minimum length: 1"))
         XCTAssertTrue(constrainedDocs.contains("Maximum length: 100"))
         XCTAssertTrue(constrainedDocs.contains("Pattern: ^[a-zA-Z]+$"))
-        
+
         // Test string with enum values
         let enumCoreCtx = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.StringFormat>(
              allowedValues: [.init("A"), .init("B"), .init("C")]
@@ -40,20 +40,20 @@ final class TypeMappingTests: XCTestCase {
         XCTAssertEqual(enumType, "String")
         XCTAssertTrue(enumDocs.contains("Allowed values: A, B, C"))
     }
-    
+
     func testNumericTypeMapping() {
         // Test integer
         let basicInt: OpenAPIKit.JSONSchema = .integer
         let (basicType, basicDocs) = SymbolMapper.mapSchemaType(basicInt)
         XCTAssertEqual(basicType, "Int")
         XCTAssertTrue(basicDocs.isEmpty)
-        
+
         // Test integer with format
         let int32: OpenAPIKit.JSONSchema = .integer(format: .int32)
         let (int32Type, int32Docs) = SymbolMapper.mapSchemaType(int32)
         XCTAssertEqual(int32Type, "Int32")
         XCTAssertTrue(int32Docs.contains("Format: int32"))
-        
+
         // Test number with constraints
         let numCoreCtx = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.NumberFormat>()
         let numCtx = OpenAPIKit.JSONSchema.NumericContext(
@@ -68,7 +68,7 @@ final class TypeMappingTests: XCTestCase {
         XCTAssertTrue(constrainedDocs.contains("Maximum value: 100"))
         XCTAssertTrue(constrainedDocs.contains("Must be multiple of: 2"))
     }
-    
+
     func testArrayTypeMapping() {
         // Test array of strings
         let arrCoreCtx1 = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.ArrayFormat>()
@@ -77,7 +77,7 @@ final class TypeMappingTests: XCTestCase {
         let (arrayType, arrayDocs) = SymbolMapper.mapSchemaType(stringArray)
         XCTAssertEqual(arrayType, "[String]")
         XCTAssertTrue(arrayDocs.isEmpty) // Assuming basic array doesn't add docs
-        
+
         // Test array with constraints
         let arrCoreCtx2 = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.ArrayFormat>()
         let arrCtx2 = OpenAPIKit.JSONSchema.ArrayContext(
@@ -91,7 +91,7 @@ final class TypeMappingTests: XCTestCase {
         XCTAssertTrue(constrainedDocs.contains("Minimum items: 1"))
         XCTAssertTrue(constrainedDocs.contains("Maximum items: 10"))
     }
-    
+
     func testObjectTypeMapping() {
         // Test basic object with properties (without explicit required check for now)
         let objCoreCtx1 = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.ObjectFormat>()
@@ -108,7 +108,7 @@ final class TypeMappingTests: XCTestCase {
         XCTAssertTrue(objectType.contains("name: String"))
         // XCTAssertTrue(objectDocs.contains("Required properties: id, name")) // Skip this check
     }
-    
+
     func testSchemaDocumentation() {
         // Create contexts for nested schemas first
         let nameStringCoreCtx = OpenAPIKit.JSONSchema.CoreContext<OpenAPIKit.JSONTypeFormat.StringFormat>()
@@ -155,39 +155,40 @@ final class TypeMappingTests: XCTestCase {
         // Create symbols for the schema
         let (symbols, relationships) = SymbolMapper.createSchemaSymbol(
             name: "User",
-            schema: userSchema
+            schema: userSchema,
+            moduleName: "API"
         )
-        
+
         // Verify the main schema symbol
         let schemaSymbol = symbols.first { $0.identifier.precise == "s:API.User" }
         XCTAssertNotNil(schemaSymbol)
         XCTAssertEqual(schemaSymbol?.names.title, "User")
-        
+
         // Verify property symbols
         let propertySymbols = symbols.filter { $0.identifier.precise.hasPrefix("s:API.User.") }
         XCTAssertEqual(propertySymbols.count, 5)
-        
+
         // Verify relationships
         XCTAssertEqual(relationships.count, 6)
-        
+
         // Verify documentation content
         let schemaDoc = schemaSymbol?.docComment?.lines.map { $0.text }.joined(separator: "\n") ?? ""
         XCTAssertTrue(schemaDoc.contains("Type Information:"), "Schema doc should contain Type Information")
         // XCTAssertTrue(schemaDoc.contains("Required properties: id, name, email"), "Schema doc should list required properties") // Skip this check
-        
+
         // Verify property documentation
         let idPropertySymbol = propertySymbols.first { $0.identifier.precise == "s:API.User.id" }
         XCTAssertNotNil(idPropertySymbol)
         let idDoc = idPropertySymbol?.docComment?.lines.map { $0.text }.joined(separator: "\n") ?? ""
         XCTAssertTrue(idDoc.contains("Type Information:"))
         XCTAssertTrue(idDoc.contains("Format: int64"))
-        
+
         let namePropertySymbol = propertySymbols.first { $0.identifier.precise == "s:API.User.name" }
         XCTAssertNotNil(namePropertySymbol)
         let nameDoc = namePropertySymbol?.docComment?.lines.map { $0.text }.joined(separator: "\n") ?? ""
         XCTAssertTrue(nameDoc.contains("Minimum length: 1"))
         XCTAssertTrue(nameDoc.contains("Maximum length: 100"))
-        
+
         let tagsPropertySymbol = propertySymbols.first { $0.identifier.precise == "s:API.User.tags" }
         XCTAssertNotNil(tagsPropertySymbol)
         let tagsDoc = tagsPropertySymbol?.docComment?.lines.map { $0.text }.joined(separator: "\n") ?? ""
@@ -196,4 +197,4 @@ final class TypeMappingTests: XCTestCase {
         XCTAssertTrue(tagsDoc.contains("Array items:"))
         XCTAssertTrue(tagsDoc.contains("type: String"))
     }
-} 
+}

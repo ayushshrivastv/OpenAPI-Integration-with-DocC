@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #0066cc;
+        }
+        .endpoint {
+            background: #f5f5f7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .method {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get {
+            background-color: #4CAF50;
+        }
+        .post {
+            background-color: #2196F3;
+        }
+        .put {
+            background-color: #FF9800;
+        }
+        .delete {
+            background-color: #F44336;
+        }
+        code {
+            background: #f5f5f7;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Menlo, Monaco, 'Courier New', monospace;
+        }
+        pre {
+            background: #f5f5f7;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Menlo, Monaco, 'Courier New', monospace;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        nav ul li a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .schema {
+            margin-bottom: 20px;
+        }
+        .property {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>REST API Documentation</h1>
+        <p>A comprehensive example of REST API documentation that integrates OpenAPI with DocC</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#endpoints">Endpoints</a></li>
+            <li><a href="#schemas">Data Models</a></li>
+            <li><a href="#getting-started">Getting Started</a></li>
+        </ul>
+    </nav>
+    
+    <section>
+        <h2>Overview</h2>
+        <p>This documentation showcases how REST APIs can be documented using DocC, the documentation compiler familiar to Swift developers.</p>
+        
+        <h3>Key Features</h3>
+        <ul>
+            <li>Auto-generated documentation from OpenAPI schemas</li>
+            <li>Integration with Swift DocC's navigation and search</li>
+            <li>Standard format for HTTP endpoints and request/response schemas</li>
+            <li>Consistent developer experience between Swift API docs and REST API docs</li>
+        </ul>
+    </section>
+    
+    <section id="endpoints">
+        <h2>Endpoints</h2>
+        
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /users</h3>
+            <p>Returns a list of users</p>
+            <h4>Parameters</h4>
+            <div class="property">
+                <p><strong>limit</strong> (query, optional): How many items to return at one time</p>
+            </div>
+            <h4>Response</h4>
+            <p>200: A JSON array of user objects</p>
+            <pre>{
+  "users": [
+    {
+      "id": "123",
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    {
+      "id": "456",
+      "name": "Jane Smith",
+      "email": "jane@example.com"
+    }
+  ]
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /users/{userId}</h3>
+            <p>Get a user by ID</p>
+            <h4>Parameters</h4>
+            <div class="property">
+                <p><strong>userId</strong> (path, required): The ID of the user to retrieve</p>
+            </div>
+            <h4>Response</h4>
+            <p>200: A user object</p>
+            <pre>{
+  "id": "123",
+  "name": "John Doe",
+  "email": "john@example.com"
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /users</h3>
+            <p>Creates a user</p>
+            <h4>Request Body</h4>
+            <pre>{
+  "name": "John Doe",
+  "email": "john@example.com"
+}</pre>
+            <h4>Response</h4>
+            <p>201: Created</p>
+        </div>
+    </section>
+    
+    <section id="schemas">
+        <h2>Data Models</h2>
+        
+        <div class="schema">
+            <h3>User</h3>
+            <p>Represents a user in the system</p>
+            <h4>Properties</h4>
+            <div class="property">
+                <p><strong>id</strong> (string, required): The user ID</p>
+                <p><strong>name</strong> (string, required): The user name</p>
+                <p><strong>email</strong> (string, email): The user email</p>
+            </div>
+        </div>
+    </section>
+    
+    <section id="getting-started">
+        <h2>Getting Started</h2>
+        
+        <h3>Authentication</h3>
+        <p>All endpoints require authentication. Include your API key in the headers of each request:</p>
+        <pre>var request = URLRequest(url: url)
+request.setValue("Bearer YOUR_API_KEY", forHTTPHeaderField: "Authorization")</pre>
+        
+        <h3>Swift Example</h3>
+        <p>Here's a Swift example of how to get a list of users:</p>
+        <pre>import Foundation
+
+func fetchUsers(completion: @escaping ([User]?, Error?) -> Void) {
+    let url = URL(string: "https://api.example.com/users")!
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    request.setValue("Bearer YOUR_API_KEY", forHTTPHeaderField: "Authorization")
+    
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        if let error = error {
+            completion(nil, error)
+            return
+        }
+        
+        guard let data = data else {
+            completion(nil, NSError(domain: "No data", code: 0, userInfo: nil))
+            return
+        }
+        
+        do {
+            let users = try JSONDecoder().decode([User].self, from: data)
+            completion(users, nil)
+        } catch {
+            completion(nil, error)
+        }
+    }
+    
+    task.resume()
+}</pre>
+        
+        <h3>Swift Async/Await Example</h3>
+        <p>Using modern Swift concurrency:</p>
+        <pre>import Foundation
+
+func fetchUsers() async throws -> [User] {
+    let url = URL(string: "https://api.example.com/users")!
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    request.setValue("Bearer YOUR_API_KEY", forHTTPHeaderField: "Authorization")
+    
+    let (data, _) = try await URLSession.shared.data(for: request)
+    return try JSONDecoder().decode([User].self, from: data)
+}</pre>
+        
+        <h3>Error Handling</h3>
+        <p>Our API uses standard HTTP status codes:</p>
+        <ul>
+            <li>200 - OK: Request succeeded</li>
+            <li>400 - Bad Request: Invalid parameters</li>
+            <li>401 - Unauthorized: Authentication failed</li>
+            <li>404 - Not Found: Resource not found</li>
+            <li>500 - Server Error: Something went wrong on our side</li>
+        </ul>
+        
+        <h3>Rate Limits</h3>
+        <p>API requests are limited to 100 requests per minute per API key.</p>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Example API. All rights reserved.</p>
+    </footer>
+</body>
+</html> 

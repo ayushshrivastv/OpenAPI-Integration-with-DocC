@@ -7,8 +7,8 @@ paths:
     get:
       operationId: getUsers
       responses:
-        '200':
-          description: Successful response
+        \"200\":
+          description: Success
 components:
   schemas:
     User:
@@ -18,6 +18,3 @@ components:
           type: integer
         name:
           type: string
-      required:
-        - id
-        - name

@@ -1,6 +1,6 @@
 import XCTest
 import OpenAPIKit
-@testable import OpenAPItoSymbolGraph
+@testable import Core
 
 final class OpenAPItoSymbolGraphTests: XCTestCase {
     /* // Commenting out this test as the main run function bypasses parsing for now.
