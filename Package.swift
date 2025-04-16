@@ -17,28 +17,54 @@ let package = Package(
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0"),
     ],
     targets: [
+        // Core functionality
         .target(
             name: "Core",
             dependencies: [
                 .product(name: "OpenAPIKit", package: "OpenAPIKit"),
                 .product(name: "SymbolKit", package: "swift-docc-symbolkit")
             ],
-            path: "Sources/Core"
+            path: "Sources/Core",
+            exclude: ["README.md"]
         ),
+        
+        // CLI executable
         .executableTarget(
             name: "CLI",
             dependencies: [
                 "Core",
+                "OpenAPItoSymbolGraph",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Yams", package: "Yams"),
                 .product(name: "OpenAPIKit", package: "OpenAPIKit"),
                 .product(name: "SymbolKit", package: "swift-docc-symbolkit")
             ],
-            path: "Sources/CLI"
+            path: "Sources/CLI",
+            exclude: ["README.md"]
         ),
+        
+        // OpenAPItoSymbolGraph main framework
+        .target(
+            name: "OpenAPItoSymbolGraph",
+            dependencies: [
+                "Core",
+                .product(name: "SymbolKit", package: "swift-docc-symbolkit"),
+                .product(name: "OpenAPIKit", package: "OpenAPIKit"),
+                .product(name: "Yams", package: "Yams")
+            ],
+            path: "Sources/OpenAPItoSymbolGraph",
+            exclude: [
+                "README.md",
+                "Utils/README.md", 
+                "Utils/DocC/README.md",
+                "Mapping/README.md"
+            ]
+        ),
+        
+        // Tests
         .testTarget(
             name: "OpenAPItoSymbolGraphTests",
-            dependencies: ["Core", "CLI"],
+            dependencies: ["Core", "CLI", "OpenAPItoSymbolGraph"],
             path: "Tests"
         )
     ]
