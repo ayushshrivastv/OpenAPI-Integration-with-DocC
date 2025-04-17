@@ -34,6 +34,21 @@ jobs:
           swift build
           chmod +x ./scripts/build-docs.sh
           ./scripts/build-docs.sh
+          
+          # Create a root index.html to redirect to the docs
+          cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="UTF-8">
+              <meta http-equiv="refresh" content="0; url=documentation/registryapi/">
+              <title>Redirecting to API Documentation</title>
+          </head>
+          <body>
+              <p>If you are not redirected automatically, <a href="documentation/registryapi/">click here</a>.</p>
+          </body>
+          </html>
+          EOF
       
       - name: Setup Pages
         uses: actions/configure-pages@v5

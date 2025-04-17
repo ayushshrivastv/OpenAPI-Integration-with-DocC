@@ -88,7 +88,15 @@ The latest documentation is automatically deployed to GitHub Pages and can be vi
 
 You can serve the documentation locally using one of these methods:
 
-#### Using the helper script:
+#### Using the local preview script (recommended):
+
+```bash
+./scripts/local-preview.sh
+```
+
+This script creates the necessary directory structure for local testing and handles the redirects properly. This is the most reliable way to preview the documentation exactly as it will appear on GitHub Pages.
+
+#### Using the server script:
 
 ```bash
 ./scripts/serve-docs.sh
