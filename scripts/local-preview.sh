@@ -24,30 +24,8 @@ if [ $PORT -gt $MAX_PORT ]; then
     exit 1
 fi
 
-# Create the local testing directory structure
-echo "Setting up local testing environment..."
-mkdir -p docs-local/OpenAPI-Integration-with-DocC
-cp -r docs/* docs-local/OpenAPI-Integration-with-DocC/
-
-# Create redirect index.html if it doesn't exist
-if [ ! -f docs-local/index.html ]; then
-    cat > docs-local/index.html << 'EOF'
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=OpenAPI-Integration-with-DocC/">
-    <title>Redirecting to API Documentation</title>
-</head>
-<body>
-    <p>If you are not redirected automatically, <a href="OpenAPI-Integration-with-DocC/">click here</a>.</p>
-</body>
-</html>
-EOF
-    echo "Created redirect index.html in docs-local/"
-fi
-
-# Start the server
+# Start the server directly from the docs directory
 echo "Starting local preview server on port $PORT..."
 echo "Open your browser to http://localhost:$PORT/"
-python3 -m http.server $PORT --directory docs-local 
+echo "You should be automatically redirected to the API documentation."
+python3 -m http.server $PORT --directory docs

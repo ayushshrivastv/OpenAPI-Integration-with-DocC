@@ -13,7 +13,7 @@ OpenAPI is the industry standard for documenting HTTP services, but Swift develo
 The project is organized into several modules:
 
 - `Sources/Core` - Core functionality and data models
-- `Sources/CLI` - Command-line interface 
+- `Sources/CLI` - Command-line interface
 - `Sources/OpenAPItoSymbolGraph` - Main implementation with submodules:
   - `Mapping` - Mappers between OpenAPI and SymbolGraph
   - `Utils/DocC` - DocC integration utilities
@@ -71,7 +71,7 @@ swift run openapi-to-symbolgraph Examples/petstore.yaml --output-path petstore.s
 Or manually with DocC:
 
 ```bash
-xcrun docc convert YourAPI.docc --fallback-display-name YourAPI --fallback-bundle-identifier com.example.YourAPI --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs --hosting-base-path OpenAPI-Integration-with-DocC
+xcrun docc convert YourAPI.docc --fallback-display-name YourAPI --fallback-bundle-identifier com.example.YourAPI --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs
 ```
 
 ## Viewing the Documentation
@@ -94,7 +94,7 @@ You can serve the documentation locally using one of these methods:
 ./scripts/local-preview.sh
 ```
 
-This script creates the necessary directory structure for local testing and handles the redirects properly. This is the most reliable way to preview the documentation exactly as it will appear on GitHub Pages.
+This script serves the documentation directory and opens it in your browser. You will be automatically redirected to the API documentation.
 
 #### Using the server script:
 
