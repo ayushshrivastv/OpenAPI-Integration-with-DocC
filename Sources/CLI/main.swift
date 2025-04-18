@@ -17,6 +17,9 @@ struct OpenAPIToSymbolGraph: ParsableCommand {
     @Option(name: .long, help: "Path where the symbol graph file should be written", transform: { $0 })
     var outputPath: String = "openapi.symbolgraph.json"
     
+    @Option(name: .long, help: "Name to use for the module in the symbol graph", transform: { $0 })
+    var moduleName: String?
+    
     mutating func run() throws {
         // Check file extension
         let fileExtension = URL(fileURLWithPath: inputPath).pathExtension.lowercased()
@@ -37,7 +40,7 @@ struct OpenAPIToSymbolGraph: ParsableCommand {
             let document = try parser.parse(fileContent)
             
             // Convert to symbol graph
-            let converter = Integration.OpenAPIDocCConverter()
+            let converter = Integration.OpenAPIDocCConverter(moduleName: moduleName)
             let symbolGraph = converter.convert(document)
             
             // Write the symbol graph to file

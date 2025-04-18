@@ -6,7 +6,7 @@ mkdir -p docs
 
 # Convert OpenAPI specification to symbol graph
 echo "Converting OpenAPI spec to SymbolGraph..."
-swift run openapi-to-symbolgraph registry.openapi.yaml --output-path registry.symbolgraph.json
+swift run openapi-to-symbolgraph registry.openapi.yaml --output-path registry.symbolgraph.json --module-name "RegistryAPI"
 
 # Generate DocC documentation
 echo "Generating DocC documentation..."

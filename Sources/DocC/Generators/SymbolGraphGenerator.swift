@@ -4,8 +4,13 @@ import SymbolKit
 
 /// A generator that converts OpenAPI documents to DocC symbol graphs
 public struct SymbolGraphGenerator {
+    /// The name to use for the module
+    public var moduleName: String?
+    
     /// Creates a new symbol graph generator
-    public init() {}
+    public init(moduleName: String? = nil) {
+        self.moduleName = moduleName
+    }
     
     /// Generates a symbol graph from an OpenAPI document
     /// - Parameter document: The OpenAPI document to convert
@@ -106,14 +111,15 @@ public struct SymbolGraphGenerator {
     }
     
     private func createModuleSymbol(from info: Info) -> SymbolKit.SymbolGraph.Symbol {
+        let moduleName = self.moduleName ?? info.title
         let identifier = SymbolKit.SymbolGraph.Symbol.Identifier(
             precise: "module",
             interfaceLanguage: "openapi"
         )
         
         let names = SymbolKit.SymbolGraph.Symbol.Names(
-            title: info.title,
-            navigator: [.init(kind: .text, spelling: info.title, preciseIdentifier: nil)],
+            title: moduleName,
+            navigator: [.init(kind: .text, spelling: moduleName, preciseIdentifier: nil)],
             subHeading: nil,
             prose: nil
         )
@@ -128,7 +134,7 @@ public struct SymbolGraphGenerator {
         return SymbolKit.SymbolGraph.Symbol(
             identifier: identifier,
             names: names,
-            pathComponents: [info.title],
+            pathComponents: [moduleName],
             docComment: docComment,
             accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
             kind: .init(parsedIdentifier: .module, displayName: "Module"),
@@ -292,7 +298,7 @@ public struct SymbolGraphGenerator {
     
     private func createModule(from info: Info) -> SymbolKit.SymbolGraph.Module {
         return SymbolKit.SymbolGraph.Module(
-            name: info.title,
+            name: self.moduleName ?? info.title,
             platform: SymbolKit.SymbolGraph.Platform(
                 architecture: nil,
                 vendor: "OpenAPI",
