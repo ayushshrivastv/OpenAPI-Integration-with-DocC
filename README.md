@@ -49,19 +49,6 @@ swift build
 swift run openapi-to-symbolgraph Examples/api.yaml --output-path api.symbolgraph.json
 ```
 
-### Example with Pet Store API
-
-The tool has also been tested with the standard Swagger Pet Store OpenAPI definition:
-
-```bash
-# Download the Pet Store spec (if you haven't already)
-# curl -o Examples/petstore.yaml https://raw.githubusercontent.com/swagger-api/swagger-petstore/master/src/main/resources/openapi.yaml
-
-# Convert the Pet Store spec
-
-swift run openapi-to-symbolgraph Examples/petstore.yaml --output-path petstore.symbolgraph.json
-```
-
 2. Generate the documentation using our helper script:
 
 ```bash
