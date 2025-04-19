@@ -6,16 +6,22 @@ import SymbolKit
 public struct SymbolGraphGenerator {
     /// The name to use for the module
     public var moduleName: String?
+    /// Base URL for the API
+    public var baseURL: URL?
     
     /// Creates a new symbol graph generator
-    public init(moduleName: String? = nil) {
+    public init(moduleName: String? = nil, baseURL: URL? = nil) {
         self.moduleName = moduleName
+        self.baseURL = baseURL
     }
     
     /// Generates a symbol graph from an OpenAPI document
     /// - Parameter document: The OpenAPI document to convert
     /// - Returns: The generated symbol graph
     public func generate(from document: Document) -> SymbolKit.SymbolGraph {
+        // For now, we'll skip the mixin registration as it requires more work to implement correctly
+        // We're still generating valid symbol graphs, just without the HTTP-specific enhancements
+        
         var symbols: [SymbolKit.SymbolGraph.Symbol] = []
         var relationships: [SymbolKit.SymbolGraph.Relationship] = []
         
@@ -187,6 +193,19 @@ public struct SymbolGraphGenerator {
             docComment = SymbolKit.SymbolGraph.LineList([line])
         }
         
+        // Create mixins for HTTP endpoint
+        var mixins: [String: SymbolKit.Mixin] = [:]
+        
+        // Add HTTP endpoint mixin if baseURL is provided
+        if let baseURL = self.baseURL {
+            let httpEndpoint = SymbolKit.SymbolGraph.Symbol.HTTP.Endpoint(
+                method: method.rawValue,
+                baseURL: baseURL,
+                path: path
+            )
+            mixins[SymbolKit.SymbolGraph.Symbol.HTTP.endpointMixinKey] = httpEndpoint
+        }
+        
         return SymbolKit.SymbolGraph.Symbol(
             identifier: identifier,
             names: names,
@@ -194,7 +213,7 @@ public struct SymbolGraphGenerator {
             docComment: docComment,
             accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
             kind: .init(parsedIdentifier: .method, displayName: "Operation"),
-            mixins: [:]
+            mixins: mixins
         )
     }
     
@@ -218,6 +237,13 @@ public struct SymbolGraphGenerator {
             docComment = SymbolKit.SymbolGraph.LineList([line])
         }
         
+        // Create mixins for HTTP parameter
+        var mixins: [String: SymbolKit.Mixin] = [:]
+        
+        // Add HTTP parameter source mixin
+        let httpParameterSource = SymbolKit.SymbolGraph.Symbol.HTTP.ParameterSource(parameter.in)
+        mixins[SymbolKit.SymbolGraph.Symbol.HTTP.parameterSourceMixinKey] = httpParameterSource
+        
         return SymbolKit.SymbolGraph.Symbol(
             identifier: identifier,
             names: names,
@@ -225,7 +251,7 @@ public struct SymbolGraphGenerator {
             docComment: docComment,
             accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
             kind: .init(parsedIdentifier: .property, displayName: "Parameter"),
-            mixins: [:]
+            mixins: mixins
         )
     }
     
@@ -247,6 +273,15 @@ public struct SymbolGraphGenerator {
         let line = SymbolKit.SymbolGraph.LineList.Line(text: response.description, range: nil)
         let docComment = SymbolKit.SymbolGraph.LineList([line])
         
+        // Create mixins for HTTP response
+        var mixins: [String: SymbolKit.Mixin] = [:]
+        
+        // Add HTTP media type mixin if content is available
+        if let content = response.content?.first {
+            let mediaType = SymbolKit.SymbolGraph.Symbol.HTTP.MediaType(content.key)
+            mixins[SymbolKit.SymbolGraph.Symbol.HTTP.mediaTypeMixinKey] = mediaType
+        }
+        
         return SymbolKit.SymbolGraph.Symbol(
             identifier: identifier,
             names: names,
@@ -254,7 +289,7 @@ public struct SymbolGraphGenerator {
             docComment: docComment,
             accessLevel: SymbolKit.SymbolGraph.Symbol.AccessControl(rawValue: "public"),
             kind: .init(parsedIdentifier: .struct, displayName: "Response"),
-            mixins: [:]
+            mixins: mixins
         )
     }
     

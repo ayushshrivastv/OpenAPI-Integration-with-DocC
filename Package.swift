@@ -17,6 +17,9 @@ let package = Package(
         .executable(
             name: "openapi-to-symbolgraph",
             targets: ["CLI"]),
+        .executable(
+            name: "symbol-graph-debug",
+            targets: ["SymbolGraphDebug"]),
     ],
     dependencies: [
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
@@ -82,6 +85,15 @@ let package = Package(
             ],
             path: "Sources/CLI",
             exclude: ["README.md"]
+        ),
+        .executableTarget(
+            name: "SymbolGraphDebug",
+            dependencies: [
+                "OpenAPItoSymbolGraph",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "SymbolKit", package: "swift-docc-symbolkit")
+            ],
+            path: "Sources/SymbolGraphDebug"
         ),
         .testTarget(
             name: "OpenAPItoSymbolGraphTests",
