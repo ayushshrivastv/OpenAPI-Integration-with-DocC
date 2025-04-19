@@ -31,7 +31,7 @@ struct SymbolGraphDebug: ParsableCommand {
         commandName: "symbol-graph-debug",
         abstract: "Debug and analyze DocC symbol graph files",
         version: "1.0.0",
-        subcommands: [Analyze.self, ValidateRelationships.self, ShowSymbol.self, ShowHTTP.self]
+        subcommands: [Analyze.self, ValidateRelationships.self, ShowSymbol.self, ShowHTTP.self, UnifiedSymbolGraph.self, OpenAPIDebug.self]
     )
     
     struct Analyze: ParsableCommand {
@@ -429,6 +429,361 @@ struct SymbolGraphDebug: ParsableCommand {
                 print("- httpParameterSource: Specifies where parameters are located (path, query, header, cookie)")
                 print("- httpMediaType: Specifies content type for request/response payloads")
             }
+        }
+    }
+    
+    struct UnifiedSymbolGraph: ParsableCommand {
+        static var configuration = CommandConfiguration(
+            commandName: "unified",
+            abstract: "Analyze a unified symbol graph using GraphCollector"
+        )
+        
+        @Argument(help: "Directory containing symbol graph files or path to a specific .symbols.json file")
+        var symbolGraphPath: String
+        
+        @Option(name: .shortAndLong, help: "Name of an output file to save the unified symbol graph")
+        var outputPath: String?
+        
+        func run() throws {
+            let symbolGraphURL = URL(fileURLWithPath: symbolGraphPath)
+            let fileManager = FileManager.default
+            var inputURLs: [URL] = []
+            
+            // Check if path is a directory or a file
+            var isDirectory: ObjCBool = false
+            if fileManager.fileExists(atPath: symbolGraphPath, isDirectory: &isDirectory) {
+                if isDirectory.boolValue {
+                    // Get all .symbols.json files in the directory
+                    let directoryContents = try fileManager.contentsOfDirectory(at: symbolGraphURL, includingPropertiesForKeys: nil)
+                    inputURLs = directoryContents.filter { $0.pathExtension == "json" && $0.lastPathComponent.contains("symbols") }
+                } else {
+                    // Single file
+                    inputURLs = [symbolGraphURL]
+                }
+            } else {
+                print("Error: Path \(symbolGraphPath) does not exist")
+                return
+            }
+            
+            if inputURLs.isEmpty {
+                print("Error: No symbol graph files found at \(symbolGraphPath)")
+                return
+            }
+            
+            print("Found \(inputURLs.count) symbol graph files to analyze:")
+            for url in inputURLs {
+                print("- \(url.lastPathComponent)")
+            }
+            
+            // Load all symbol graphs first
+            var symbolGraphs: [SymbolKit.SymbolGraph] = []
+            
+            for url in inputURLs {
+                do {
+                    print("\nLoading \(url.lastPathComponent)...")
+                    let data = try Data(contentsOf: url)
+                    let decoder = JSONDecoder()
+                    let graph = try decoder.decode(SymbolKit.SymbolGraph.self, from: data)
+                    symbolGraphs.append(graph)
+                    print("Successfully loaded symbol graph: \(graph.module.name)")
+                } catch {
+                    print("Error loading \(url.lastPathComponent): \(error.localizedDescription)")
+                }
+            }
+            
+            // Manual approach instead of using GraphCollector
+            print("\n=== Manual Symbol Graph Analysis ===")
+            
+            // Combine all symbols and relationships
+            var allSymbols: [String: SymbolKit.SymbolGraph.Symbol] = [:]
+            var allRelationships: [SymbolKit.SymbolGraph.Relationship] = []
+            var moduleNames: Set<String> = []
+            
+            for graph in symbolGraphs {
+                // Add module name
+                moduleNames.insert(graph.module.name)
+                
+                // Add symbols
+                for (id, symbol) in graph.symbols {
+                    allSymbols[id] = symbol
+                }
+                
+                // Add relationships
+                allRelationships.append(contentsOf: graph.relationships)
+            }
+            
+            print("Modules: \(moduleNames.joined(separator: ", "))")
+            print("Total symbols: \(allSymbols.count)")
+            print("Total relationships: \(allRelationships.count)")
+            
+            // If outputPath specified, save the combined graph as JSON
+            if let outputPath = outputPath {
+                // Create a simplified JSON representation
+                var combinedData: [String: Any] = [
+                    "modules": Array(moduleNames),
+                    "symbolCount": allSymbols.count,
+                    "relationshipCount": allRelationships.count,
+                    "symbols": allSymbols.keys.sorted()
+                ]
+                
+                // Add relationship data in a simplified format
+                var relationshipData: [[String: Any]] = []
+                for relationship in allRelationships {
+                    relationshipData.append([
+                        "source": relationship.source,
+                        "target": relationship.target,
+                        "kind": relationship.kind.rawValue
+                    ])
+                }
+                combinedData["relationships"] = relationshipData
+                
+                // Save as JSON
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                let outputURL = URL(fileURLWithPath: outputPath)
+                
+                // Convert to JSON manually since we have a mix of types
+                let jsonData = try JSONSerialization.data(withJSONObject: combinedData, options: [.prettyPrinted, .sortedKeys])
+                try jsonData.write(to: outputURL)
+                print("\nSaved simplified analysis to \(outputPath)")
+            }
+            
+            // Analyze relationships
+            var problemSymbols: Set<String> = []
+            var missingSourceSymbols: [String: [SymbolKit.SymbolGraph.Relationship]] = [:]
+            var missingTargetSymbols: [String: [SymbolKit.SymbolGraph.Relationship]] = [:]
+            
+            for relationship in allRelationships {
+                let sourceID = relationship.source
+                let targetID = relationship.target
+                
+                // Check if source exists
+                if !allSymbols.keys.contains(sourceID) && sourceID != "module" {
+                    missingSourceSymbols[sourceID, default: []].append(relationship)
+                    problemSymbols.insert(sourceID)
+                }
+                
+                // Check if target exists
+                if !allSymbols.keys.contains(targetID) {
+                    missingTargetSymbols[targetID, default: []].append(relationship)
+                    problemSymbols.insert(targetID)
+                }
+            }
+            
+            // Report findings
+            if problemSymbols.isEmpty {
+                print("\n✅ No relationship issues found! All symbol relationships are valid.")
+            } else {
+                print("\n❌ Found \(problemSymbols.count) symbols with relationship issues:")
+                
+                if !missingSourceSymbols.isEmpty {
+                    print("\nMissing SOURCE symbols:")
+                    for (sourceID, relationships) in missingSourceSymbols.sorted(by: { $0.key < $1.key }) {
+                        print("  \(sourceID) - used in \(relationships.count) relationships:")
+                        for relationship in relationships.prefix(3) {
+                            print("    - \(relationship.kind.rawValue) -> \(relationship.target)")
+                        }
+                        if relationships.count > 3 {
+                            print("    - ... and \(relationships.count - 3) more")
+                        }
+                    }
+                }
+                
+                if !missingTargetSymbols.isEmpty {
+                    print("\nMissing TARGET symbols:")
+                    for (targetID, relationships) in missingTargetSymbols.sorted(by: { $0.key < $1.key }) {
+                        print("  \(targetID) - used in \(relationships.count) relationships:")
+                        for relationship in relationships.prefix(3) {
+                            print("    - \(relationship.source) \(relationship.kind.rawValue) ->")
+                        }
+                        if relationships.count > 3 {
+                            print("    - ... and \(relationships.count - 3) more")
+                        }
+                    }
+                }
+                
+                print("\n⚠️ These issues will cause DocC to crash with an error like:")
+                print("'Symbol with identifier X has no reference. A symbol will always have at least one reference.'")
+                print("\nPossible fixes:")
+                print("1. Ensure all referenced symbols are defined in your API schemas")
+                print("2. Check for typos or mismatches in symbol identifiers")
+                print("3. For path components, ensure parent symbols exist in the hierarchy")
+                print("4. Verify the symbol graph generation logic adds all required symbols")
+            }
+        }
+    }
+    
+    struct OpenAPIDebug: ParsableCommand {
+        static var configuration = CommandConfiguration(
+            commandName: "openapi-debug",
+            abstract: "Debug OpenAPI to SymbolGraph conversion issues"
+        )
+        
+        @Argument(help: "Path to the symbol graph file generated from OpenAPI")
+        var symbolGraphPath: String
+        
+        func run() throws {
+            print("Analyzing OpenAPI-generated symbol graph at \(symbolGraphPath)...")
+            
+            // Read and decode the symbol graph file
+            let symbolGraphURL = URL(fileURLWithPath: symbolGraphPath)
+            let symbolGraphData = try Data(contentsOf: symbolGraphURL)
+            let decoder = JSONDecoder()
+            let symbolGraph = try decoder.decode(SymbolKit.SymbolGraph.self, from: symbolGraphData)
+            
+            // Analyze the symbol graph structure for common OpenAPI conversion issues
+            
+            print("\n=== OpenAPI to SymbolGraph Analysis ===")
+            
+            // 1. Check for API operations/endpoints
+            var operations: [(String, SymbolKit.SymbolGraph.Symbol)] = []
+            var schemas: [(String, SymbolKit.SymbolGraph.Symbol)] = []
+            var parameters: [(String, SymbolKit.SymbolGraph.Symbol)] = []
+            var responses: [(String, SymbolKit.SymbolGraph.Symbol)] = []
+            
+            for (id, symbol) in symbolGraph.symbols {
+                if id.hasPrefix("operation:") || symbol.identifier.precise.hasPrefix("operation:") {
+                    operations.append((id, symbol))
+                } else if id.hasPrefix("schema:") || symbol.identifier.precise.hasPrefix("schema:") {
+                    schemas.append((id, symbol))
+                } else if id.hasPrefix("parameter:") || symbol.identifier.precise.hasPrefix("parameter:") {
+                    parameters.append((id, symbol))
+                } else if id.hasPrefix("response:") || symbol.identifier.precise.hasPrefix("response:") {
+                    responses.append((id, symbol))
+                }
+            }
+            
+            print("Found:")
+            print("- \(operations.count) API operations/endpoints")
+            print("- \(schemas.count) schemas/models")
+            print("- \(parameters.count) parameters")
+            print("- \(responses.count) responses")
+            
+            // 2. Check for HTTP mixins utilization
+            var operationsWithHttpMixins = 0
+            var operationsWithoutHttpMixins = 0
+            
+            for (_, symbol) in operations {
+                if symbol.httpEndpoint != nil {
+                    operationsWithHttpMixins += 1
+                } else {
+                    operationsWithoutHttpMixins += 1
+                }
+            }
+            
+            if operationsWithHttpMixins > 0 {
+                print("\n✅ \(operationsWithHttpMixins)/\(operations.count) operations use HTTP mixins")
+            } else if operations.count > 0 {
+                print("\n⚠️ None of the operations use HTTP mixins, which could improve DocC rendering")
+                print("Consider adding HTTP mixins to enhance documentation of REST APIs")
+            }
+            
+            // 3. Check path component hierarchy
+            var symbolsWithInvalidPaths: [(String, SymbolKit.SymbolGraph.Symbol, [String])] = []
+            
+            for (id, symbol) in symbolGraph.symbols {
+                let pathComponents = symbol.pathComponents
+                
+                // Skip first component and module itself
+                if pathComponents.count <= 1 || id == "module" {
+                    continue
+                }
+                
+                // Check if each parent in the path exists
+                var validComponents: [String] = []
+                var invalidComponents: [String] = []
+                var currentPath: [String] = []
+                
+                for (index, component) in pathComponents.enumerated() {
+                    // Skip the last component (which is the symbol itself)
+                    if index == pathComponents.count - 1 {
+                        continue
+                    }
+                    
+                    currentPath.append(component)
+                    let parentPath = currentPath.joined(separator: "/")
+                    
+                    // Check if a symbol with this path exists
+                    let parentExists = symbolGraph.symbols.values.contains { parentSymbol in
+                        parentSymbol.pathComponents.count == currentPath.count &&
+                        parentSymbol.pathComponents.joined(separator: "/") == parentPath
+                    }
+                    
+                    if !parentExists {
+                        invalidComponents.append(component)
+                    } else {
+                        validComponents.append(component)
+                    }
+                }
+                
+                if !invalidComponents.isEmpty {
+                    symbolsWithInvalidPaths.append((id, symbol, invalidComponents))
+                }
+            }
+            
+            if !symbolsWithInvalidPaths.isEmpty {
+                print("\n❌ Found \(symbolsWithInvalidPaths.count) symbols with invalid path hierarchies:")
+                for (id, symbol, invalidComponents) in symbolsWithInvalidPaths.prefix(10) {
+                    print("  \(symbol.names.title) (\(id)):")
+                    print("    Invalid path components: \(invalidComponents.joined(separator: ", "))")
+                    print("    Full path: \(symbol.pathComponents.joined(separator: " → "))")
+                }
+                
+                if symbolsWithInvalidPaths.count > 10 {
+                    print("  ... and \(symbolsWithInvalidPaths.count - 10) more")
+                }
+                
+                print("\nThis will cause DocC to crash with 'Symbol has no reference' errors")
+                print("Ensure all parent components in paths have corresponding symbols in the graph")
+            } else {
+                print("\n✅ All symbols have valid path hierarchies")
+            }
+            
+            // 4. Check for orphaned relationships
+            var danglingRelationships: [(SymbolKit.SymbolGraph.Relationship, String)] = []
+            
+            for relationship in symbolGraph.relationships {
+                if !symbolGraph.symbols.keys.contains(relationship.source) && relationship.source != "module" {
+                    danglingRelationships.append((relationship, "Missing source: \(relationship.source)"))
+                }
+                
+                if !symbolGraph.symbols.keys.contains(relationship.target) {
+                    danglingRelationships.append((relationship, "Missing target: \(relationship.target)"))
+                }
+            }
+            
+            if !danglingRelationships.isEmpty {
+                print("\n❌ Found \(danglingRelationships.count) dangling relationships:")
+                for (relationship, issue) in danglingRelationships.prefix(10) {
+                    print("  \(relationship.kind.rawValue) from \(relationship.source) to \(relationship.target)")
+                    print("    Issue: \(issue)")
+                }
+                
+                if danglingRelationships.count > 10 {
+                    print("  ... and \(danglingRelationships.count - 10) more")
+                }
+                
+                print("\nThis will cause DocC to crash with symbol reference errors")
+            } else {
+                print("\n✅ All relationships are valid (no dangling references)")
+            }
+            
+            // 5. Give advice on OpenAPI to SymbolGraph conversion
+            print("\n=== Recommendations for OpenAPI to SymbolGraph Conversion ===")
+            print("1. Ensure all schemas have corresponding symbols with proper path hierarchies")
+            print("2. Use HTTP mixins to enhance REST API documentation:")
+            print("   - httpEndpoint: For operations (method, path, baseURL)")
+            print("   - httpParameterSource: For parameters (path, query, header, body)")
+            print("   - httpMediaType: For request/response content types")
+            print("3. Create proper memberOf relationships between:")
+            print("   - Parameters → Operations")
+            print("   - Responses → Operations")
+            print("   - Properties → Schemas")
+            print("4. Generate conformsTo relationships for schema inheritance")
+            print("5. Include defaultImplementationOf for endpoint implementations")
+            
+            print("\nFor more details on Symbol Graph structure, see:")
+            print("https://github.com/apple/swift-docc-symbolkit/tree/main/Sources/SymbolKit")
         }
     }
 }

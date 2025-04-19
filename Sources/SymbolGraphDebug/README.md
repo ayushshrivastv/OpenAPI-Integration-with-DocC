@@ -14,6 +14,8 @@ swift run symbol-graph-debug [command] [options]
 - **validate-relationships**: Validates all relationships in a symbol graph
 - **show-symbol**: Shows detailed information about a specific symbol
 - **show-http**: Shows HTTP-specific information for API endpoints
+- **unified**: Analyzes a collection of symbol graphs and identifies relationship issues
+- **openapi-debug**: Specialized debug tool for OpenAPI to SymbolGraph conversion issues
 
 ## Findings
 
@@ -35,6 +37,16 @@ Through our investigation using this tool, we've identified several insights abo
 
 5. **Relationship Structure**: The relationship structure is valid but might need adjustments to be fully recognized by DocC.
 
+6. **Path Component Hierarchy**: Missing symbol definitions for parent paths can cause DocC to crash with "Symbol has no reference" errors.
+
+## Common Issues
+
+1. **Missing Source/Target Symbols**: A common issue is relationships referencing symbols that don't exist in the graph.
+
+2. **Invalid Path Hierarchies**: Child symbols must have their parent symbols properly defined.
+
+3. **Incomplete HTTP Mixins**: Not utilizing HTTP-specific mixins reduces the quality of API documentation.
+
 ## Potential Solutions
 
 1. **Interface Language**: Consider using "swift" as the interface language instead of "openapi" to potentially improve DocC compatibility.
@@ -44,6 +56,8 @@ Through our investigation using this tool, we've identified several insights abo
 3. **Symbol Registration**: Implement proper symbol registration for mixins to enable DocC to recognize and utilize HTTP-specific information.
 
 4. **DocC Extensions**: Consider creating DocC extensions specifically for OpenAPI types to improve rendering.
+
+5. **Ensure Hierarchy Completeness**: Generate symbols for all parent path components in hierarchical paths.
 
 ## Example Usage
 
@@ -59,4 +73,10 @@ Through our investigation using this tool, we've identified several insights abo
 
 # Show details of a specific symbol
 .build/debug/symbol-graph-debug show-symbol registry.symbolgraph.json "module"
+
+# Analyze a directory of symbol graphs
+.build/debug/symbol-graph-debug unified .build/symbolgraphs/ -o combined-analysis.json
+
+# Debug OpenAPI-specific conversion issues
+.build/debug/symbol-graph-debug openapi-debug registry.symbolgraph.json
 ``` 
