@@ -17,6 +17,7 @@ The project is organized into several modules:
 - `Sources/OpenAPItoSymbolGraph` - Main implementation with submodules:
   - `Mapping` - Mappers between OpenAPI and SymbolGraph
   - `Utils/DocC` - DocC integration utilities
+- `Sources/SymbolGraphDebug` - Debugging tools for symbol graphs (see [Symbol Graph Debug Tool](#symbol-graph-debug-tool))
 
 ## Key Features
 
@@ -24,6 +25,7 @@ The project is organized into several modules:
 - Generate API documentation
 - Provide a consistent documentation experience for Swift developers
 - Support for documenting endpoints, schemas, parameters, and more
+- Debug and analyze symbol graphs for troubleshooting
 
 ## Getting Started
 
@@ -60,6 +62,34 @@ Or manually with DocC:
 ```bash
 xcrun docc convert YourAPI.docc --fallback-display-name YourAPI --fallback-bundle-identifier com.example.YourAPI --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs
 ```
+
+## Symbol Graph Debug Tool
+
+This project includes a specialized debugging tool for analyzing and troubleshooting DocC symbol graphs, particularly those generated from OpenAPI specifications.
+
+### Debug Tool Features
+
+- Analyze symbol graph structure and relationships
+- Validate relationships between symbols
+- Detect common issues like missing source/target symbols or invalid path hierarchies
+- Debug OpenAPI-specific conversion issues
+- Analyze HTTP endpoints and associated metadata
+- Combine and analyze multiple symbol graph files
+
+### Using the Debug Tool
+
+```bash
+# Basic analysis of a symbol graph
+swift run symbol-graph-debug analyze registry.symbolgraph.json
+
+# Debug OpenAPI-specific conversion issues
+swift run symbol-graph-debug openapi-debug registry.symbolgraph.json
+
+# Analyze a directory of symbol graphs
+swift run symbol-graph-debug unified .build/symbolgraphs/ -o combined-analysis.json
+```
+
+For more information, see the [Symbol Graph Debug Tool README](Sources/SymbolGraphDebug/README.md).
 
 ## Viewing the Documentation
 
