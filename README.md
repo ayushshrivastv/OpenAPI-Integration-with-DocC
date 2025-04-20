@@ -2,11 +2,7 @@
 
 The project aims to bridge the gap between OpenAPI specifications and Swift's DocC documentation framework by developing a tool that automates the generation of DocC documentation from OpenAPI files.
 
-## Overview
-
-OpenAPI is the industry standard for documenting HTTP services, but Swift developers are already familiar with DocC for their Swift and Objective-C API documentation. This project bridges that gap by converting OpenAPI specifications into a format that DocC can understand and render.
-
-![2048](https://github.com/user-attachments/assets/f9a751be-9d2f-43f0-8346-04af7edaea57)
+![Screenshot 2025-04-20 at 8 42 01 PM](https://github.com/user-attachments/assets/453e95be-141e-422b-b53d-67834d3413aa)
 
 ## Project Structure
 
