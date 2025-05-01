@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#f8f8f8" rx="10" ry="10"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="24" text-anchor="middle" fill="#333333" font-weight="bold">Swift Package Registry Workflow</text>
+  
+  <!-- Discover Box -->
+  <rect x="100" y="100" width="160" height="180" rx="10" ry="10" fill="#ebf5ff" stroke="#0070c9" stroke-width="2"/>
+  <text x="180" y="130" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#333333" font-weight="bold">Discover</text>
+  
+  <!-- Discover Icons and Text -->
+  <circle cx="140" cy="170" r="20" fill="#0070c9"/>
+  <text x="140" y="175" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">🔍</text>
+  <text x="180" y="175" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Search</text>
+  
+  <circle cx="140" cy="220" r="20" fill="#0070c9"/>
+  <text x="140" y="225" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">📋</text>
+  <text x="180" y="225" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Browse</text>
+  
+  <circle cx="140" cy="270" r="20" fill="#0070c9"/>
+  <text x="140" y="275" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">ℹ️</text>
+  <text x="180" y="275" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Get Info</text>
+  
+  <!-- Retrieve Box -->
+  <rect x="320" y="100" width="160" height="180" rx="10" ry="10" fill="#f0f7ee" stroke="#27ae60" stroke-width="2"/>
+  <text x="400" y="130" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#333333" font-weight="bold">Retrieve</text>
+  
+  <!-- Retrieve Icons and Text -->
+  <circle cx="360" cy="170" r="20" fill="#27ae60"/>
+  <text x="360" y="175" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">📦</text>
+  <text x="400" y="175" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Download</text>
+  
+  <circle cx="360" cy="220" r="20" fill="#27ae60"/>
+  <text x="360" y="225" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">📄</text>
+  <text x="400" y="225" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Manifest</text>
+  
+  <circle cx="360" cy="270" r="20" fill="#27ae60"/>
+  <text x="360" y="275" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">🔢</text>
+  <text x="400" y="275" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Versions</text>
+  
+  <!-- Publish Box -->
+  <rect x="540" y="100" width="160" height="180" rx="10" ry="10" fill="#fff2ec" stroke="#e74c3c" stroke-width="2"/>
+  <text x="620" y="130" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="18" text-anchor="middle" fill="#333333" font-weight="bold">Publish</text>
+  
+  <!-- Publish Icons and Text -->
+  <circle cx="580" cy="170" r="20" fill="#e74c3c"/>
+  <text x="580" y="175" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">🔐</text>
+  <text x="620" y="175" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Authenticate</text>
+  
+  <circle cx="580" cy="220" r="20" fill="#e74c3c"/>
+  <text x="580" y="225" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">⬆️</text>
+  <text x="620" y="225" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Upload</text>
+  
+  <circle cx="580" cy="270" r="20" fill="#e74c3c"/>
+  <text x="580" y="275" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white">🔄</text>
+  <text x="620" y="275" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#333333">Update</text>
+  
+  <!-- Workflow Arrows -->
+  <path d="M270 190 L310 190" stroke="#666666" stroke-width="3" fill="none" />
+  <polygon points="310,190 300,185 300,195" fill="#666666" />
+  
+  <path d="M490 190 L530 190" stroke="#666666" stroke-width="3" fill="none" />
+  <polygon points="530,190 520,185 520,195" fill="#666666" />
+  
+  <!-- Footer -->
+  <text x="400" y="350" font-family="SF Pro Display, Helvetica, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#666666">Registry API enables seamless package discovery, retrieval, and publishing</text>
+</svg> 

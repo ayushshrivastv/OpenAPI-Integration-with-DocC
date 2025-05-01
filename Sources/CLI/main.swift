@@ -1,62 +1,92 @@
 import Foundation
 import ArgumentParser
-import OpenAPItoSymbolGraph
-import Integration
 import OpenAPI
+import DocC
+import SymbolKit
+import OpenAPItoSymbolGraph
 
-struct OpenAPIToSymbolGraph: ParsableCommand {
+/// Command for converting OpenAPI documents to DocC symbol graphs
+struct OpenAPItoDocC: ParsableCommand {
     static var configuration = CommandConfiguration(
-        commandName: "openapi-to-symbolgraph",
-        abstract: "Convert OpenAPI specifications to DocC symbol graphs",
+        commandName: "openapi-to-docc",
+        abstract: "Convert OpenAPI documents to DocC symbol graphs",
         version: "1.0.0"
     )
     
-    @Argument(help: "Path to the OpenAPI specification file")
-    var inputPath: String
+    @Argument(help: "The path to the OpenAPI document (YAML or JSON)")
+    var input: String
     
-    @Option(name: .long, help: "Path where the symbol graph file should be written", transform: { $0 })
-    var outputPath: String = "openapi.symbolgraph.json"
+    @Option(name: .shortAndLong, help: "The output directory for the symbol graph file")
+    var output: String = "."
     
-    @Option(name: .long, help: "Name to use for the module in the symbol graph", transform: { $0 })
+    @Option(name: .customLong("output-path"), help: "Alternative name for output directory")
+    var outputPath: String?
+    
+    @Option(name: .shortAndLong, help: "The name for the module")
     var moduleName: String?
     
-    @Option(name: .long, help: "Base URL of the API for HTTP endpoint documentation", transform: { URL(string: $0) })
-    var baseURL: URL?
+    @Option(name: .long, help: "The base URL for the API")
+    var baseURL: String?
     
     mutating func run() throws {
-        // Check file extension
-        let fileExtension = URL(fileURLWithPath: inputPath).pathExtension.lowercased()
-        guard fileExtension == "yaml" || fileExtension == "yml" || fileExtension == "json" else {
-            throw ConversionError.unsupportedFileType(fileExtension)
+        // Use outputPath if provided as alternative to output
+        let finalOutput = outputPath ?? output
+        
+        // 1. Determine if input is YAML or JSON
+        let inputURL = URL(fileURLWithPath: input)
+        let fileExtension = inputURL.pathExtension.lowercased()
+        
+        // 2. Parse the document
+        print("Parsing OpenAPI document: \(input)")
+        let document: OpenAPI.Document
+        
+        do {
+            if fileExtension == "yaml" || fileExtension == "yml" {
+                let parser = OpenAPI.YAMLParser()
+                document = try parser.parse(fileURL: inputURL)
+            } else if fileExtension == "json" {
+                let parser = OpenAPI.JSONParser()
+                document = try parser.parse(fileURL: inputURL)
+            } else {
+                throw ValidationError("Unsupported file format. Please provide a YAML or JSON file.")
+            }
+        } catch {
+            print("Error parsing OpenAPI document: \(error)")
+            throw ValidationError("Failed to parse OpenAPI document")
         }
         
-        // Read the OpenAPI file
-        let inputURL = URL(fileURLWithPath: inputPath)
-        let outputURL = URL(fileURLWithPath: outputPath)
+        // 3. Generate the symbol graph
+        print("Generating symbol graph...")
+        var baseURLObj: URL?
+        if let baseURLString = baseURL {
+            baseURLObj = URL(string: baseURLString)
+        }
         
-        // Read the file content
-        let fileContent = try String(contentsOf: inputURL, encoding: .utf8)
+        var generator = DocC.SymbolGraphGenerator(
+            moduleName: moduleName ?? document.info.title,
+            baseURL: baseURLObj
+        )
         
-        // Parse the OpenAPI document
-        let parser = YAMLParser()
+        let symbolGraph = generator.generate(from: document)
+        
+        // 4. Write the symbol graph to a file
+        let outputFileName = (moduleName ?? document.info.title.replacingOccurrences(of: " ", with: "")) + ".symbols.json"
+        let outputURL = URL(fileURLWithPath: finalOutput).appendingPathComponent(outputFileName)
+        
+        print("Writing symbol graph to: \(outputURL.path)")
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        
         do {
-            let document = try parser.parse(fileContent)
-            
-            // Convert to symbol graph
-            let converter = Integration.OpenAPIDocCConverter(moduleName: moduleName, baseURL: baseURL)
-            let symbolGraph = converter.convert(document)
-            
-            // Write the symbol graph to file
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            let jsonData = try encoder.encode(symbolGraph)
-            try jsonData.write(to: outputURL)
-            
-            print("Successfully generated symbol graph at \(outputPath)")
-        } catch let error as ParserError {
-            throw ConversionError.parsingError(error)
+            let data = try encoder.encode(symbolGraph)
+            try data.write(to: outputURL)
+            print("Symbol graph successfully written to \(outputURL.path)")
+        } catch {
+            print("Error writing symbol graph: \(error)")
+            throw ValidationError("Failed to write symbol graph")
         }
     }
 }
 
-OpenAPIToSymbolGraph.main() 
+OpenAPItoDocC.main() 
