@@ -20,7 +20,13 @@ public struct OpenAPIDocCConverter {
     /// - Parameter document: The OpenAPI document to convert
     /// - Returns: The DocC symbol graph
     public func convert(_ document: Document) -> SymbolKit.SymbolGraph {
-        let generator = SymbolGraphGenerator(moduleName: moduleName, baseURL: baseURL)
+        let actualModuleName = moduleName ?? document.info.title
+        
+        // Use DocC.SymbolGraphGenerator which is already fixed and working
+        var generator = DocC.SymbolGraphGenerator(
+            moduleName: actualModuleName,
+            baseURL: baseURL
+        )
         return generator.generate(from: document)
     }
 }

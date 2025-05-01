@@ -24,7 +24,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
-        .package(url: "https://github.com/apple/swift-docc-symbolkit.git", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-docc-symbolkit.git", from: "1.0.0"),
         .package(url: "https://github.com/mattpolzin/OpenAPIKit.git", from: "3.0.0"),
     ],
     targets: [
@@ -52,8 +52,8 @@ let package = Package(
         .target(
             name: "Integration",
             dependencies: [
-                "OpenAPI", 
-                "DocC", 
+                "OpenAPI",
+                "DocC",
                 "Core",
                 .product(name: "SymbolKit", package: "swift-docc-symbolkit")
             ],
@@ -63,8 +63,8 @@ let package = Package(
         .target(
             name: "OpenAPItoSymbolGraph",
             dependencies: [
-                "OpenAPI", 
-                "DocC", 
+                "OpenAPI",
+                "DocC",
                 "Integration",
                 "Core",
                 .product(name: "SymbolKit", package: "swift-docc-symbolkit")
@@ -98,9 +98,9 @@ let package = Package(
         .testTarget(
             name: "OpenAPItoSymbolGraphTests",
             dependencies: [
-                "OpenAPI", 
-                "DocC", 
-                "Integration", 
+                "OpenAPI",
+                "DocC",
+                "Integration",
                 "OpenAPItoSymbolGraph",
                 "Core",
                 "CLI",
