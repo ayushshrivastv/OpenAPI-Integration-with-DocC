@@ -1,5 +1,11 @@
 # ``RegistryAPI``
 
+@Metadata {
+    @DisplayName("Registry API")
+    @TitleHeading("Swift Package Registry API")
+    @DocumentationExtension(mergeBehavior: append)
+}
+
 Interact with Swift packages through a standardized API for publishing, discovering, and retrieving packages.
 
 ## Overview
@@ -28,44 +34,33 @@ print("Available versions: \(metadata.versions.joined(separator: ", "))")
 
 ## Topics
 
-### Getting Started
+### API Endpoints
 
 - <doc:GettingStarted>
+- ``_identifiers``
+- ``_login``
+- ``__scope___name_``
+- ``__scope___name___version_``
+- ``__scope___name___version_.zip``
+- ``__scope___name___version__package.swift``
+
+### Data Models
+
+- ``PackageMetadata``
+- ``ReleaseResource``
+- ``ProblemDetails``
+- ``Identifier``
+- ``Identifiers``
+- ``Releases``
+- ``ReleaseMetadata``
+- ``ReleaseSignature``
+- ``PublishResponse``
+
+### Guides
+
 - <doc:Authentication>
 - <doc:Publishing>
-
-### Core Concepts
-
-- ``RegistryAPI/PackageMetadata``
-- ``RegistryAPI/ReleaseResource``
-- ``RegistryAPI/Identifier``
-
-### Package Discovery
-
-- ``RegistryAPI/_identifiers``
-- ``RegistryAPI/__scope___name_``
-
-### Package Retrieval
-
-- ``RegistryAPI/__scope___name___version_``
-- ``RegistryAPI/__scope___name___version_.zip``
-- ``RegistryAPI/__scope___name___version__package.swift``
-
-### Package Publishing
-
-- ``RegistryAPI/__scope___name___version_/put``
-
-### Authentication
-
-- ``RegistryAPI/_login``
-
-### Error Handling
-
-- ``RegistryAPI/ProblemDetails``
 - <doc:ErrorCodes>
-
-### Best Practices
-
 - <doc:RateLimiting>
 - <doc:Security>
 - <doc:Performance>
