@@ -79,3 +79,4 @@ The endpoint is available for both public and private packages. Private packages
 - ``RegistryAPI/__scope___name_``
 - ``RegistryAPI/__scope___name___version_.zip``
 - ``RegistryAPI/ReleaseResource`` 
+ 
