@@ -1,239 +1,428 @@
 import Foundation
 import OpenAPI
-import DocC
+import Core
 import SymbolKit
 
-public struct SymbolMapper {
-    /// Maps OpenAPI schema types to Swift types with enhanced documentation
-    static func mapSchemaType(_ schema: JSONSchema) -> (type: String, documentation: String) {
-        var documentation = ""
+/// A mapping between OpenAPI schema and SymbolKit symbols
+public struct SymbolMapping {
+
+    /// Maps an OpenAPI schema to a SymbolKit symbol
+    /// - Parameters:
+    ///   - schema: The OpenAPI schema to map
+    ///   - name: The name to give the symbol
+    ///   - parentUsr: The USR of the parent symbol
+    ///   - moduleName: The name of the module
+    /// - Returns: A SymbolKit symbol representing the schema
+    public static func mapSchema(_ schema: JSONSchema, name: String, parentUsr: String, moduleName: String) -> Symbol {
+        let kind: SymbolKit.SymbolGraph.Symbol.Kind
+        let usr = makeUsr(name: name, parentUsr: parentUsr)
 
         switch schema {
         case .string(let stringSchema):
-            documentation = "A string value"
+            kind = .struct
+
+            // Handle special string formats
             if let format = stringSchema.format {
-                documentation += " in \(format) format"
+                switch format {
+                case "date", "date-time":
+                    return createDateTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: stringSchema.description)
+                case "uuid":
+                    return createUUIDTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: stringSchema.description)
+                case "email":
+                    return createEmailTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: stringSchema.description)
+                case "uri":
+                    return createURLTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: stringSchema.description)
+                case "binary", "byte":
+                    return createBinaryTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: stringSchema.description)
+                default:
+                    break
+                }
             }
-            return ("String", documentation)
 
-        case .number(_):
-            return ("Double", "A numeric value")
+            // Handle enum strings
+            if let enumValues = stringSchema.enum, !enumValues.isEmpty {
+                return createEnumTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: stringSchema.description, enumValues: enumValues)
+            }
 
-        case .integer(_):
-            return ("Int", "An integer value")
+        case .number, .integer:
+            kind = .struct
 
-        case .boolean(_):
-            return ("Bool", "A boolean value")
+        case .boolean:
+            kind = .struct
 
         case .array(let arraySchema):
-            let (itemType, itemDoc) = mapSchemaType(arraySchema.items)
-            return ("[\(itemType)]", "An array of \(itemDoc)")
+            return createArrayTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, itemsSchema: arraySchema.items, description: arraySchema.description)
 
         case .object(let objectSchema):
-            var properties = ""
-            objectSchema.properties.forEach { name, schema in
-                let (type, doc) = mapSchemaType(schema)
-                properties += "- \(name): \(type) - \(doc)\n"
+            // Handle empty objects or objects with additional properties
+            if objectSchema.properties.isEmpty {
+                if let additionalProperties = objectSchema.additionalProperties {
+                    return createDictionaryTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, valueSchema: additionalProperties, description: objectSchema.description)
+                }
             }
-            return ("Object", properties)
+            kind = .struct
 
-        case .reference(let ref):
-            return (ref.ref.components(separatedBy: "/").last ?? "Unknown", "Reference to type")
+        case .reference(let reference):
+            // Extract the type name from the reference
+            let components = reference.ref.components(separatedBy: "/")
+            let refTypeName = components.last ?? reference.ref
+            kind = .struct
+            return createReferenceTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, referenceName: refTypeName, reference: reference.ref)
 
-        case .anyOf(_), .allOf(_), .oneOf(_), .not(_):
-            return ("Any", "A composite type")
+        case .allOf(let schemas):
+            // Composite type
+            return createCompositeTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, schemas: schemas, isAllOf: true)
+
+        case .anyOf(let schemas):
+            // Union type
+            return createCompositeTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, schemas: schemas, isAllOf: false)
+
+        case .oneOf(let schemas):
+            // Enum with associated values
+            return createOneOfTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, schemas: schemas)
+
+        case .not(let schema):
+            // Inverse schema (rare)
+            return createNotTypeSymbol(name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, schema: schema)
         }
+
+        return createBasicSymbol(kind: kind, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: schema.description)
     }
 
-    /// Creates a symbol for an OpenAPI element with enhanced documentation
-    static func createSymbol(
-        kind: SymbolKind,
-        identifier: String,
-        title: String,
-        description: String?,
-        pathComponents: [String],
-        parentIdentifier: String?,
-        additionalDocumentation: String = ""
-    ) -> (symbol: SymbolKit.SymbolGraph.Symbol, relationships: [SymbolKit.SymbolGraph.Relationship]) {
-        let docComment = description.map { desc in
-            var comment = desc
-            if !additionalDocumentation.isEmpty {
-                comment += "\n\n" + additionalDocumentation
-            }
-            return comment
-        }
-
-        let symbolKind: SymbolKit.SymbolGraph.Symbol.Kind
-        switch kind {
-        case .module:
-            symbolKind = .init(rawIdentifier: "swift.module", displayName: "Module")
-        case .group:
-            symbolKind = .init(rawIdentifier: "swift.group", displayName: "Group")
-        case .endpoint:
-            symbolKind = .init(rawIdentifier: "swift.func", displayName: "Function")
-        case .structType:
-            symbolKind = .init(rawIdentifier: "swift.struct", displayName: "Structure")
-        case .parameter:
-            symbolKind = .init(rawIdentifier: "swift.var", displayName: "Parameter")
-        case .response:
-            symbolKind = .init(rawIdentifier: "swift.enum", displayName: "Response")
-        }
-
-        let symbol = SymbolKit.SymbolGraph.Symbol(
-            identifier: .init(
-                precise: identifier,
-                interfaceLanguage: "swift"
-            ),
-            names: .init(
-                title: title,
-                navigator: [.init(kind: .text, spelling: title, preciseIdentifier: nil)],
-                subHeading: [.init(kind: .text, spelling: title, preciseIdentifier: nil)],
-                prose: docComment ?? title
-            ),
-            pathComponents: pathComponents,
-            docComment: docComment.map { SymbolKit.SymbolGraph.LineList([
-                .init(text: $0, range: nil)
-            ]) },
-            accessLevel: .init(rawValue: "public"),
-            kind: symbolKind,
+    /// Creates a basic Symbol with the given properties
+    private static func createBasicSymbol(kind: SymbolKit.SymbolGraph.Symbol.Kind, name: String, usr: String, moduleName: String, parentUsr: String, description: String?) -> Symbol {
+        var symbol = Symbol(
+            identifier: .init(precise: usr, interfaceLanguage: "swift"),
+            names: .init(title: name, navigator: nil, subHeading: nil, prose: nil),
+            pathComponents: [name],
+            docComment: description.map { parseDocComment($0) },
+            accessLevel: .public,
+            kind: kind,
             mixins: [:]
         )
 
-        var relationships: [SymbolKit.SymbolGraph.Relationship] = []
-        if let parentId = parentIdentifier {
-            relationships.append(SymbolKit.SymbolGraph.Relationship(
-                source: parentId,
-                target: identifier,
-                kind: .memberOf,
-                targetFallback: nil
-            ))
-        }
+        // Add module information
+        symbol.addMixin(SymbolKit.SymbolGraph.Symbol.Swift.Extension(extendedModule: moduleName))
 
-        return (symbol: symbol, relationships: relationships)
+        // Add location to help with navigation
+        symbol.addMixin(SymbolKit.SymbolGraph.Symbol.DeclarationFragments(declarationFragments: [
+            .init(kind: .keyword, spelling: kind.rawValue, preciseIdentifier: nil),
+            .init(kind: .text, spelling: " ", preciseIdentifier: nil),
+            .init(kind: .identifier, spelling: name, preciseIdentifier: nil)
+        ]))
+
+        return symbol
     }
 
-    /// Creates a symbol for an OpenAPI operation
-    static func createOperationSymbol(
-        operation: OpenAPI.Operation,
-        path: String,
-        method: String
-    ) -> (symbol: SymbolKit.SymbolGraph.Symbol, relationships: [SymbolKit.SymbolGraph.Relationship]) {
-        var relationships: [SymbolKit.SymbolGraph.Relationship] = []
-
-        // Create operation symbol
-        let operationId = "\(method.lowercased())\(path.replacingOccurrences(of: "/", with: "_"))"
-        let identifier = "f:API.\(operationId)"
-
-        var additionalDocs = ""
-
-        // Add parameters documentation
-        if let parameters = operation.parameters, !parameters.isEmpty {
-            additionalDocs += "### Parameters\n"
-            for param in parameters {
-                let (type, _) = mapSchemaType(param.schema)
-                additionalDocs += "- \(param.name): \(type) (\(param.in))\n"
-            }
-        }
-
-        // Add request body documentation
-        if let requestBody = operation.requestBody {
-            additionalDocs += "\n### Request Body\n"
-            for (contentType, mediaType) in requestBody.content {
-                let (type, _) = mapSchemaType(mediaType.schema)
-                additionalDocs += "- Content-Type: \(contentType)\n"
-                additionalDocs += "- Type: \(type)\n"
-            }
-        }
-
-        // Add responses documentation
-        additionalDocs += "\n### Responses\n"
-        for (status, response) in operation.responses {
-            additionalDocs += "#### \(status)\n"
-            additionalDocs += response.description + "\n"
-            if let content = response.content?.first {
-                let (type, _) = mapSchemaType(content.value.schema)
-                additionalDocs += "- Content-Type: \(content.key)\n"
-                additionalDocs += "- Type: \(type)\n"
-            }
-        }
-
-        let (symbol, _) = createSymbol(
-            kind: .endpoint,
-            identifier: identifier,
-            title: "\(method.uppercased()) \(path)",
-            description: operation.summary ?? operation.description,
-            pathComponents: ["API", operationId],
-            parentIdentifier: "s:API",
-            additionalDocumentation: additionalDocs
-        )
-
-        // Add relationship to API namespace
-        let relationship = SymbolKit.SymbolGraph.Relationship(
-            source: identifier,
-            target: "s:API",
-            kind: .memberOf,
-            targetFallback: nil
-        )
-        relationships.append(relationship)
-
-        return (symbol, relationships)
+    /// Creates a relationship between a parent and child symbol
+    /// - Parameters:
+    ///   - source: The USR of the source (parent) symbol
+    ///   - target: The USR of the target (child) symbol
+    ///   - kind: The kind of relationship
+    /// - Returns: A relationship between the two symbols
+    public static func createRelationship(source: String, target: String, kind: SymbolKit.SymbolGraph.Relationship.Kind) -> SymbolKit.SymbolGraph.Relationship {
+        return .init(source: source, target: target, kind: kind, targetFallback: nil)
     }
 
-    /// Creates symbols for an OpenAPI schema
-    static func createSchemaSymbol(
-        name: String,
-        schema: JSONSchema
-    ) -> (symbols: [SymbolKit.SymbolGraph.Symbol], relationships: [SymbolKit.SymbolGraph.Relationship]) {
-        var symbols: [SymbolKit.SymbolGraph.Symbol] = []
-        var relationships: [SymbolKit.SymbolGraph.Relationship] = []
+    /// Parses a doc comment string into a DocComment mixin
+    /// - Parameter comment: The comment string to parse
+    /// - Returns: A DocComment mixin
+    private static func parseDocComment(_ comment: String) -> SymbolKit.SymbolGraph.Symbol.DocComment {
+        let lines = comment.split(separator: "\n").map { String($0) }
+        let fragments = lines.map { SymbolKit.SymbolGraph.LineList.Fragment(text: $0, range: nil) }
+        return .init(lines: .init(fragments))
+    }
 
-        // Create schema symbol
-        let identifier = "s:API.\(name)"
-        let (_, documentation) = mapSchemaType(schema)
+    /// Creates a unique USR for a symbol
+    /// - Parameters:
+    ///   - name: The name of the symbol
+    ///   - parentUsr: The USR of the parent symbol
+    /// - Returns: A unique USR for the symbol
+    private static func makeUsr(name: String, parentUsr: String) -> String {
+        return "\(parentUsr)/\(name)"
+    }
 
-        let (schemaSymbol, schemaRels) = createSymbol(
-            kind: .structType,
-            identifier: identifier,
-            title: name,
-            description: documentation,
-            pathComponents: ["API", name],
-            parentIdentifier: "s:API",
-            additionalDocumentation: ""
+    // MARK: - Specialized Symbol Creators
+
+    /// Creates a symbol for a Date type
+    private static func createDateTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, description: String?) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: "Date",
+            genericParameters: nil
         )
 
-        symbols.append(schemaSymbol)
-        relationships.append(contentsOf: schemaRels)
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
 
-        // If it's an object schema, create symbols for its properties
-        if case .object(let objectSchema) = schema {
-            for (propName, propSchema) in objectSchema.properties {
-                let (propSymbols, propRelationships) = createSchemaSymbol(
-                    name: "\(name).\(propName)",
-                    schema: propSchema
-                )
-                symbols.append(contentsOf: propSymbols)
-                relationships.append(contentsOf: propRelationships)
+    /// Creates a symbol for a UUID type
+    private static func createUUIDTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, description: String?) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: "UUID",
+            genericParameters: nil
+        )
+
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
+
+    /// Creates a symbol for an Email type
+    private static func createEmailTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, description: String?) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let enhancedDescription = """
+        \(description ?? "")
+
+        This is an email address formatted as a string.
+        """
+
+        symbol.docComment = parseDocComment(enhancedDescription)
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: "String",
+            genericParameters: nil
+        )
+
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
+
+    /// Creates a symbol for a URL type
+    private static func createURLTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, description: String?) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: "URL",
+            genericParameters: nil
+        )
+
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
+
+    /// Creates a symbol for a binary data type
+    private static func createBinaryTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, description: String?) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: "Data",
+            genericParameters: nil
+        )
+
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
+
+    /// Creates a symbol for an enum type
+    private static func createEnumTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, description: String?, enumValues: [String]) -> Symbol {
+        var symbol = createBasicSymbol(kind: .enum, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let enhancedDescription = """
+        \(description ?? "")
+
+        Possible values:
+        \(enumValues.map { "- `\($0)`" }.joined(separator: "\n"))
+        """
+
+        symbol.docComment = parseDocComment(enhancedDescription)
+
+        return symbol
+    }
+
+    /// Creates a symbol for an array type
+    private static func createArrayTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, itemsSchema: JSONSchema, description: String?) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let itemTypeName: String
+
+        switch itemsSchema {
+        case .reference(let reference):
+            let components = reference.ref.components(separatedBy: "/")
+            itemTypeName = components.last ?? reference.ref
+        case .string:
+            itemTypeName = "String"
+        case .integer:
+            itemTypeName = "Int"
+        case .number:
+            itemTypeName = "Double"
+        case .boolean:
+            itemTypeName = "Bool"
+        case .array:
+            itemTypeName = "Array"
+        case .object:
+            itemTypeName = "Object"
+        case .allOf, .anyOf, .oneOf, .not:
+            itemTypeName = "Any"
+        }
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: "[\(itemTypeName)]",
+            genericParameters: [.init(name: itemTypeName, index: 0, depth: 0)]
+        )
+
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
+
+    /// Creates a symbol for a dictionary type (for additionalProperties schemas)
+    private static func createDictionaryTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, valueSchema: JSONSchema, description: String?) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: description)
+
+        let valueTypeName: String
+
+        switch valueSchema {
+        case .reference(let reference):
+            let components = reference.ref.components(separatedBy: "/")
+            valueTypeName = components.last ?? reference.ref
+        case .string:
+            valueTypeName = "String"
+        case .integer:
+            valueTypeName = "Int"
+        case .number:
+            valueTypeName = "Double"
+        case .boolean:
+            valueTypeName = "Bool"
+        case .array:
+            valueTypeName = "Array"
+        case .object:
+            valueTypeName = "Object"
+        case .allOf, .anyOf, .oneOf, .not:
+            valueTypeName = "Any"
+        }
+
+        let enhancedDescription = """
+        \(description ?? "")
+
+        This represents a dictionary with string keys and \(valueTypeName) values.
+        """
+
+        symbol.docComment = parseDocComment(enhancedDescription)
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: "[String: \(valueTypeName)]",
+            genericParameters: [
+                .init(name: "String", index: 0, depth: 0),
+                .init(name: valueTypeName, index: 1, depth: 0)
+            ]
+        )
+
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
+
+    /// Creates a symbol for a reference type
+    private static func createReferenceTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, referenceName: String, reference: String) -> Symbol {
+        var symbol = createBasicSymbol(kind: .typeAlias, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: nil)
+
+        let description = "Reference to `\(referenceName)`"
+        symbol.docComment = parseDocComment(description)
+
+        let typeInfo = SymbolKit.SymbolGraph.Symbol.Swift.TypeInfo(
+            name: .struct,
+            rawType: referenceName,
+            genericParameters: nil
+        )
+
+        symbol.addMixin(typeInfo)
+        return symbol
+    }
+
+    /// Creates a symbol for a composite type (allOf or anyOf)
+    private static func createCompositeTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, schemas: [JSONSchema], isAllOf: Bool) -> Symbol {
+        let kind: SymbolKit.SymbolGraph.Symbol.Kind = isAllOf ? .struct : .protocol
+        var symbol = createBasicSymbol(kind: kind, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: nil)
+
+        let typeNames = schemas.compactMap { schema -> String? in
+            switch schema {
+            case .reference(let reference):
+                let components = reference.ref.components(separatedBy: "/")
+                return components.last
+            case .object:
+                return "Object"
+            default:
+                return nil
             }
         }
 
-        return (symbols, relationships)
+        let description = isAllOf
+            ? "A composite type that combines properties from: \(typeNames.joined(separator: ", "))"
+            : "A type that can be one of: \(typeNames.joined(separator: ", "))"
+
+        symbol.docComment = parseDocComment(description)
+
+        return symbol
     }
-}
 
-/// The kind of a symbol
-public enum SymbolKind {
-    case module
-    case group
-    case endpoint
-    case structType
-    case parameter
-    case response
-}
+    /// Creates a symbol for a oneOf type (modeled as an enum with associated values)
+    private static func createOneOfTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, schemas: [JSONSchema]) -> Symbol {
+        var symbol = createBasicSymbol(kind: .enum, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: nil)
 
-// Using SymbolKit's RelationshipKind directly 
-extension SymbolKit.SymbolGraph.Relationship {
-    static var memberOf: Kind { Kind(rawValue: "memberOf") }
-    static var contains: Kind { Kind(rawValue: "contains") }
-    static var hasParameter: Kind { Kind(rawValue: "hasParameter") }
-    static var returnsType: Kind { Kind(rawValue: "returnsType") }
+        let typeNames = schemas.compactMap { schema -> String? in
+            switch schema {
+            case .reference(let reference):
+                let components = reference.ref.components(separatedBy: "/")
+                return components.last
+            case .string:
+                return "String"
+            case .integer:
+                return "Int"
+            case .number:
+                return "Double"
+            case .boolean:
+                return "Bool"
+            case .object:
+                return "Object"
+            default:
+                return nil
+            }
+        }
+
+        let description = "A type that must be exactly one of: \(typeNames.joined(separator: ", "))"
+        symbol.docComment = parseDocComment(description)
+
+        return symbol
+    }
+
+    /// Creates a symbol for a not type
+    private static func createNotTypeSymbol(name: String, usr: String, moduleName: String, parentUsr: String, schema: JSONSchema) -> Symbol {
+        var symbol = createBasicSymbol(kind: .struct, name: name, usr: usr, moduleName: moduleName, parentUsr: parentUsr, description: nil)
+
+        let typeName: String
+
+        switch schema {
+        case .reference(let reference):
+            let components = reference.ref.components(separatedBy: "/")
+            typeName = components.last ?? reference.ref
+        case .string:
+            typeName = "String"
+        case .integer:
+            typeName = "Int"
+        case .number:
+            typeName = "Double"
+        case .boolean:
+            typeName = "Bool"
+        case .array:
+            typeName = "Array"
+        case .object:
+            typeName = "Object"
+        case .allOf, .anyOf, .oneOf, .not:
+            typeName = "Any"
+        }
+
+        let description = "A type that is not a \(typeName)"
+        symbol.docComment = parseDocComment(description)
+
+        return symbol
+    }
 }

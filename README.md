@@ -28,17 +28,30 @@ The project is organized into several modules:
 
 ### Prerequisites
 
-- Xcode 15.0 or later
-- Swift 6.0 or later
+- Xcode 15.0 or later (macOS) or Swift 5.9+ (all platforms)
+- Git (for cloning the repository)
 - Python 3 (for local documentation serving)
+- Internet connection (for downloading dependencies)
 
 ### Installation
 
+First, make sure you have Swift installed. If not, you can use our installation script:
+
 ```bash
+# Clone the repository
 git clone https://github.com/ayushshrivastv/OpenAPI-integration-with-DocC.git
 cd OpenAPI-integration-with-DocC
+
+# Install Swift (if needed)
+./scripts/install-swift.sh
+
+# Build the project
 swift build
 ```
+
+For detailed installation instructions and troubleshooting, see:
+- [BUILD.md](BUILD.md) - Complete build instructions for all platforms
+- [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Solutions for common issues
 
 ### Usage
 

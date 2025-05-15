@@ -1,5 +1,6 @@
 import Foundation
 import OpenAPI
+import SymbolKit
 
 /// Provides integration with SwiftOpenAPIGenerator
 public struct SwiftOpenAPIIntegration {
@@ -20,23 +21,75 @@ public struct SwiftOpenAPIIntegration {
         public let includeDocComments: Bool
         /// Whether to include examples in the generated code
         public let includeExamples: Bool
+        /// Whether to include authentication information in the generated code
+        public let includeAuthentication: Bool
+        /// Custom template directory path for code generation
+        public let templateDirectory: String?
+        /// Theme options for documentation generation
+        public let themeOptions: ThemeOptions?
 
         /// Creates a new configuration
         /// - Parameters:
         ///   - typeFormat: The format to use for generated Swift types
         ///   - includeDocComments: Whether to include documentation comments in the generated code
         ///   - includeExamples: Whether to include examples in the generated code
-        public init(typeFormat: TypeFormat, includeDocComments: Bool, includeExamples: Bool) {
+        ///   - includeAuthentication: Whether to include authentication information in the generated code
+        ///   - templateDirectory: Optional path to custom templates for code generation
+        ///   - themeOptions: Optional theme options for documentation generation
+        public init(
+            typeFormat: TypeFormat,
+            includeDocComments: Bool,
+            includeExamples: Bool,
+            includeAuthentication: Bool = true,
+            templateDirectory: String? = nil,
+            themeOptions: ThemeOptions? = nil
+        ) {
             self.typeFormat = typeFormat
             self.includeDocComments = includeDocComments
             self.includeExamples = includeExamples
+            self.includeAuthentication = includeAuthentication
+            self.templateDirectory = templateDirectory
+            self.themeOptions = themeOptions
         }
 
         /// The default configuration
         public static let `default` = Configuration(
             typeFormat: .structs,
             includeDocComments: true,
-            includeExamples: true
+            includeExamples: true,
+            includeAuthentication: true
+        )
+    }
+
+    /// Theme options for documentation generation
+    public struct ThemeOptions {
+        /// Primary color for the documentation
+        public let primaryColor: String
+        /// Secondary color for the documentation
+        public let secondaryColor: String
+        /// Font to use for the documentation
+        public let font: String
+        /// Custom logo path
+        public let logoPath: String?
+
+        /// Creates a new set of theme options
+        /// - Parameters:
+        ///   - primaryColor: Primary color in hex format (e.g., "#FF5733")
+        ///   - secondaryColor: Secondary color in hex format
+        ///   - font: Font name to use
+        ///   - logoPath: Optional path to a custom logo
+        public init(primaryColor: String, secondaryColor: String, font: String, logoPath: String? = nil) {
+            self.primaryColor = primaryColor
+            self.secondaryColor = secondaryColor
+            self.font = font
+            self.logoPath = logoPath
+        }
+
+        /// Default theme options
+        public static let `default` = ThemeOptions(
+            primaryColor: "#007AFF",
+            secondaryColor: "#5AC8FA",
+            font: "SF Pro"
         )
     }
 
@@ -80,7 +133,198 @@ public struct SwiftOpenAPIIntegration {
             documentation += "\n```\n\n"
         }
 
+        // Add authentication information if available and configured
+        // Note: This section is commented out as the current Components struct doesn't have securitySchemes
+        // If you need to add security schemes support, extend the Components struct accordingly
+        /*
+        if config.includeAuthentication, let securitySchemes = document.components?.securitySchemes {
+            documentation += "\n## Authentication\n\n"
+            documentation += "The API uses the following authentication methods:\n\n"
+
+            for (name, securityScheme) in securitySchemes {
+                documentation += "### \(name)\n\n"
+                // Security scheme handling would go here
+            }
+        }
+        */
+            documentation += "\n## Authentication\n\n"
+            documentation += "The API uses the following authentication methods:\n\n"
+
+            for (name, securityScheme) in securitySchemes {
+                documentation += "### \(name)\n\n"
+
+                switch securityScheme {
+                case .http(let httpScheme):
+                    documentation += "**Type**: HTTP Authentication\n\n"
+                    documentation += "**Scheme**: \(httpScheme.scheme)\n\n"
+
+                    if let bearerFormat = httpScheme.bearerFormat {
+                        documentation += "**Bearer Format**: \(bearerFormat)\n\n"
+                    }
+
+                    documentation += "```swift\n"
+                    documentation += generateAuthenticationCode(for: .http(httpScheme), named: name)
+                    documentation += "\n```\n\n"
+
+                case .apiKey(let apiKeyScheme):
+                    documentation += "**Type**: API Key\n\n"
+                    documentation += "**Name**: \(apiKeyScheme.name)\n\n"
+                    documentation += "**In**: \(apiKeyScheme.location.rawValue)\n\n"
+
+                    documentation += "```swift\n"
+                    documentation += generateAuthenticationCode(for: .apiKey(apiKeyScheme), named: name)
+                    documentation += "\n```\n\n"
+
+                case .oauth2(let oauthScheme):
+                    documentation += "**Type**: OAuth2\n\n"
+
+                    if let flows = oauthScheme.flows {
+                        documentation += "**Flows**:\n\n"
+
+                        if let implicit = flows.implicit {
+                            documentation += "- Implicit\n"
+                            documentation += "  - Authorization URL: \(implicit.authorizationURL)\n"
+                            if let refreshURL = implicit.refreshURL {
+                                documentation += "  - Refresh URL: \(refreshURL)\n"
+                            }
+                            documentation += "  - Scopes: \(implicit.scopes.keys.joined(separator: ", "))\n\n"
+                        }
+
+                        if let password = flows.password {
+                            documentation += "- Password\n"
+                            documentation += "  - Token URL: \(password.tokenURL)\n"
+                            if let refreshURL = password.refreshURL {
+                                documentation += "  - Refresh URL: \(refreshURL)\n"
+                            }
+                            documentation += "  - Scopes: \(password.scopes.keys.joined(separator: ", "))\n\n"
+                        }
+
+                        if let clientCredentials = flows.clientCredentials {
+                            documentation += "- Client Credentials\n"
+                            documentation += "  - Token URL: \(clientCredentials.tokenURL)\n"
+                            if let refreshURL = clientCredentials.refreshURL {
+                                documentation += "  - Refresh URL: \(refreshURL)\n"
+                            }
+                            documentation += "  - Scopes: \(clientCredentials.scopes.keys.joined(separator: ", "))\n\n"
+                        }
+
+                        if let authorizationCode = flows.authorizationCode {
+                            documentation += "- Authorization Code\n"
+                            documentation += "  - Authorization URL: \(authorizationCode.authorizationURL)\n"
+                            documentation += "  - Token URL: \(authorizationCode.tokenURL)\n"
+                            if let refreshURL = authorizationCode.refreshURL {
+                                documentation += "  - Refresh URL: \(refreshURL)\n"
+                            }
+                            documentation += "  - Scopes: \(authorizationCode.scopes.keys.joined(separator: ", "))\n\n"
+                        }
+                    }
+
+                    documentation += "```swift\n"
+                    documentation += generateAuthenticationCode(for: .oauth2(oauthScheme), named: name)
+                    documentation += "\n```\n\n"
+
+                case .openIdConnect(let openIdScheme):
+                    documentation += "**Type**: OpenID Connect\n\n"
+                    documentation += "**URL**: \(openIdScheme.openIdConnectURL)\n\n"
+
+                    documentation += "```swift\n"
+                    documentation += generateAuthenticationCode(for: .openIdConnect(openIdScheme), named: name)
+                    documentation += "\n```\n\n"
+                }
+            }
+        }
+
         return documentation
+    }
+
+    /// Generates code for authenticating with a security scheme
+    /// - Parameters:
+    ///   - securityScheme: The security scheme to generate code for (placeholder for now)
+    ///   - name: The name of the security scheme
+    /// - Returns: Swift code for using the security scheme
+    private func generateAuthenticationCode(for securityScheme: Any, named name: String) -> String {
+        // This is a placeholder implementation since the SecurityScheme type is not defined in the current model
+        // Replace with actual implementation when SecurityScheme is added to the model
+        return ""
+        /*
+        switch securityScheme {
+        case .http(let httpScheme):
+            if httpScheme.scheme.lowercased() == "bearer" {
+                return """
+                // To authenticate with Bearer token:
+                let client = Client(
+                    serverURL: URL(string: "https://api.example.com")!,
+                    transport: URLSessionTransport(),
+                    authentications: [
+                        "\(name)": BearerAuthentication(token: "YOUR_TOKEN")
+                    ]
+                )
+                """
+            } else if httpScheme.scheme.lowercased() == "basic" {
+                return """
+                // To authenticate with Basic auth:
+                let client = Client(
+                    serverURL: URL(string: "https://api.example.com")!,
+                    transport: URLSessionTransport(),
+                    authentications: [
+                        "\(name)": BasicAuthentication(username: "YOUR_USERNAME", password: "YOUR_PASSWORD")
+                    ]
+                )
+                """
+            } else {
+                return """
+                // To authenticate with \(httpScheme.scheme):
+                let client = Client(
+                    serverURL: URL(string: "https://api.example.com")!,
+                    transport: URLSessionTransport(),
+                    authentications: [
+                        "\(name)": HTTPAuthentication(scheme: "\(httpScheme.scheme)", value: "AUTH_VALUE")
+                    ]
+                )
+                """
+            }
+
+        case .apiKey(let apiKeyScheme):
+            let location = apiKeyScheme.location.rawValue
+            return """
+            // To authenticate with API Key:
+            let client = Client(
+                serverURL: URL(string: "https://api.example.com")!,
+                transport: URLSessionTransport(),
+                authentications: [
+                    "\(name)": APIKeyAuthentication(
+                        name: "\(apiKeyScheme.name)",
+                        location: .\(location),
+                        value: "YOUR_API_KEY"
+                    )
+                ]
+            )
+            """
+
+        case .oauth2:
+            return """
+            // To authenticate with OAuth2:
+            let client = Client(
+                serverURL: URL(string: "https://api.example.com")!,
+                transport: URLSessionTransport(),
+                authentications: [
+                    "\(name)": OAuth2Authentication(token: "YOUR_OAUTH_TOKEN")
+                ]
+            )
+            """
+
+        case .openIdConnect:
+            return """
+            // To authenticate with OpenID Connect:
+            let client = Client(
+                serverURL: URL(string: "https://api.example.com")!,
+                transport: URLSessionTransport(),
+                authentications: [
+                    "\(name)": OpenIDAuthentication(token: "YOUR_OPENID_TOKEN")
+                ]
+            )
+            """
+        }
     }
 
     /// Determines the Swift type for an OpenAPI schema
@@ -88,102 +332,156 @@ public struct SwiftOpenAPIIntegration {
     ///   - schema: The OpenAPI schema
     ///   - name: The name of the schema
     /// - Returns: The Swift type name
-    private func determineSwiftType(for schema: JSONSchema, named name: String) -> String {
-        switch schema {
-        case .string:
             return "String"
-        case .number:
-            return "Double"
-        case .integer:
-            return "Int"
-        case .boolean:
-            return "Bool"
-        case .array(let arraySchema):
-            let itemType = determineSwiftType(for: arraySchema.items, named: "\(name)Item")
-            return "[\(itemType)]"
-        case .object:
-            return name
-        case .reference(let reference):
-            let refComponents = reference.ref.components(separatedBy: "/")
-            return refComponents.last ?? reference.ref
-        case .allOf:
-            return name // Composite type
-        case .anyOf, .oneOf:
-            return name // Union type or enum
-        case .not:
-            return "Not\(name)" // Rare case
-        }
-    }
-
-    /// Generates a Swift type definition for an OpenAPI schema
-    /// - Parameters:
-    ///   - schema: The OpenAPI schema
-    ///   - name: The name of the schema
-    /// - Returns: A string containing the Swift type definition
-    private func generateSwiftTypeDefinition(for schema: JSONSchema, named name: String) -> String {
-        switch schema {
-        case .object(let objectSchema):
-            return generateSwiftStructOrClass(for: objectSchema, named: name)
-        case .array(let arraySchema):
-            return "typealias \(name) = [\(determineSwiftType(for: arraySchema.items, named: "\(name)Item"))]"
-        case .allOf(let schemas):
-            return generateCompositeType(for: schemas, named: name)
-        case .oneOf(let schemas), .anyOf(let schemas):
-            return generateEnumType(for: schemas, named: name)
-        default:
-            return "// \(name) is mapped to a primitive Swift type: \(determineSwiftType(for: schema, named: name))"
-        }
-    }
-
-    /// Generates a Swift struct or class for an OpenAPI object schema
-    /// - Parameters:
-    ///   - objectSchema: The OpenAPI object schema
-    ///   - name: The name of the schema
-    /// - Returns: A string containing the Swift struct or class definition
-    private func generateSwiftStructOrClass(for objectSchema: ObjectSchema, named name: String) -> String {
-        let typeKeyword = config.typeFormat == .structs ? "struct" : "class"
-        var definition = ""
-
-        if config.includeDocComments, let description = objectSchema.description {
-            definition += "/// \(description)\n"
         }
 
-        definition += "\(typeKeyword) \(name): Codable {\n"
+    case .number(let numberSchema):
+        // NumberSchema doesn't have a format property in the current model
+        // Default to Double for all number schemas
+        return "Double"
 
-        // Properties
-        for (propertyName, propertySchema) in objectSchema.properties.sorted(by: { $0.key < $1.key }) {
-            if config.includeDocComments, let description = propertySchema.description {
-                definition += "    /// \(description)\n"
+    case .integer(let integerSchema):
+        if let format = integerSchema.format {
+            switch format {
+            case "int32":
+                return "Int32"
+            case "int64":
+                return "Int64"
+            default:
+                return "Int"
             }
-
-            let isRequired = objectSchema.required.contains(propertyName)
-            let propertyType = determineSwiftType(for: propertySchema, named: "\(name)\(propertyName.capitalized)")
-            let optionalMark = isRequired ? "" : "?"
-
-            definition += "    public var \(propertyName): \(propertyType)\(optionalMark)\n"
+        } else {
+            return "Int"
         }
 
-        // Initializer
-        definition += "\n    public init("
-        let initParams = objectSchema.properties.sorted(by: { $0.key < $1.key }).map { propertyName, propertySchema in
-            let isRequired = objectSchema.required.contains(propertyName)
-            let propertyType = determineSwiftType(for: propertySchema, named: "\(name)\(propertyName.capitalized)")
-            let optionalMark = isRequired ? "" : "?"
-            let defaultValue = isRequired ? "" : " = nil"
-            return "\(propertyName): \(propertyType)\(optionalMark)\(defaultValue)"
-        }.joined(separator: ", ")
-        definition += "\(initParams)) {\n"
+    case .boolean:
+        return "Bool"
 
-        for (propertyName, _) in objectSchema.properties.sorted(by: { $0.key < $1.key }) {
-            definition += "        self.\(propertyName) = \(propertyName)\n"
+    case .array(let arraySchema):
+        let itemType = determineSwiftType(for: arraySchema.items, named: "\(name)Item")
+        return "[\(itemType)]"
+
+    case .object:
+        return name
+
+    case .reference(let reference):
+        let refComponents = reference.ref.components(separatedBy: "/")
+        return refComponents.last ?? reference.ref
+
+    case .allOf:
+        return name // Composite type
+
+    case .anyOf, .oneOf:
+        if config.typeFormat == .enumsForDiscriminator {
+            return name // Enum with associated values
+        } else {
+            return name // Protocol with conforming types
         }
 
-        definition += "    }\n"
-        definition += "}"
+    case .not:
+        return "Not\(name)" // Rare case
+    }
+}
 
-        return definition
+/// Generates a Swift type definition for an OpenAPI schema
+/// - Parameters:
+///   - schema: The OpenAPI schema
+///   - name: The name of the schema
+/// - Returns: A string containing the Swift type definition
+private func generateSwiftTypeDefinition(for schema: JSONSchema, named name: String) -> String {
+    switch schema {
+    case .object(let objectSchema):
+        return generateSwiftStructOrClass(for: objectSchema, named: name)
+
+    case .array(let arraySchema):
+        return "typealias \(name) = [\(determineSwiftType(for: arraySchema.items, named: "\(name)Item"))]"
+
+    case .allOf(let schemas):
+        return generateCompositeType(for: schemas, named: name)
+
+    case .oneOf(let schemas), .anyOf(let schemas):
+        if config.typeFormat == .enumsForDiscriminator {
+            return generateEnumType(for: schemas, named: name)
+        } else {
+            return generateProtocolWithTypes(for: schemas, named: name)
+        }
+
+    case .string(let stringSchema):
+        // StringSchema doesn't have an enum property in the current model
+        // Default to String for all string schemas
+        return "// \(name) is mapped to a primitive Swift type: \(determineSwiftType(for: schema, named: name))"
+
+    default:
+        return "// \(name) is mapped to a primitive Swift type: \(determineSwiftType(for: schema, named: name))"
+    }
+}
+
+/// Generates a Swift struct or class for an OpenAPI object schema
+/// - Parameters:
+///   - objectSchema: The OpenAPI object schema
+///   - name: The name of the schema
+/// - Returns: A string containing the Swift struct or class definition
+private func generateSwiftStructOrClass(for objectSchema: ObjectSchema, named name: String) -> String {
+    let typeKeyword = config.typeFormat == .structs ? "struct" : "class"
+    var definition = ""
+
+    if config.includeDocComments, let description = objectSchema.description {
+        definition += "/// \(description)\n"
     }
 
+    definition += "\(typeKeyword) \(name): Codable {\n"
+
+    // Properties
+    for (propertyName, propertySchema) in objectSchema.properties.sorted(by: { $0.key < $1.key }) {
+        if config.includeDocComments, let description = propertySchema.description {
+            definition += "    /// \(description)\n"
+        }
+
+        let isRequired = objectSchema.required.contains(propertyName)
+        let propertyType = determineSwiftType(for: propertySchema, named: "\(name)\(propertyName.capitalized)")
+        let optionalMark = isRequired ? "" : "?"
+
+        definition += "    public var \(propertyName): \(propertyType)\(optionalMark)\n"
+    }
+
+    // Initializer
+    definition += "\n    public init("
+    let initParams = objectSchema.properties.sorted(by: { $0.key < $1.key }).map { propertyName, propertySchema in
+        let isRequired = objectSchema.required.contains(propertyName)
+        let propertyType = determineSwiftType(for: propertySchema, named: "\(name)\(propertyName.capitalized)")
+        let optionalMark = isRequired ? "" : "?"
+        let defaultValue = isRequired ? "" : " = nil"
+        return "\(propertyName): \(propertyType)\(optionalMark)\(defaultValue)"
+    }.joined(separator: ", ")
+    definition += "\(initParams)) {\n"
+
+    for (propertyName, _) in objectSchema.properties.sorted(by: { $0.key < $1.key }) {
+        definition += "        self.\(propertyName) = \(propertyName)\n"
+    }
+
+    definition += "    }"
+
+    // CodingKeys enum if we have properties with special characters
+    let needsCodingKeys = objectSchema.properties.keys.contains { $0.contains("-") || $0.contains(" ") || $0.contains(".") }
+    if needsCodingKeys {
+        definition += "\n\n    private enum CodingKeys: String, CodingKey {\n"
+        for propertyName in objectSchema.properties.keys.sorted() {
+            if propertyName.contains("-") || propertyName.contains(" ") || propertyName.contains(".") {
+                let safeName = propertyName
+                    .replacingOccurrences(of: "-", with: "_")
+                    .replacingOccurrences(of: " ", with: "_")
+                    .replacingOccurrences(of: ".", with: "_")
+                definition += "        case \(safeName) = \"\(propertyName)\"\n"
+            } else {
+                definition += "        case \(propertyName)\n"
+            }
+        }
+        definition += "    }"
+    }
+
+    // ObjectSchema doesn't have an example property in the current model
+    // Skip example generation for now
+    // If you need to add example support, extend the ObjectSchema struct accordingly
     /// Generates a Swift composite type for an OpenAPI allOf schema
     /// - Parameters:
     ///   - schemas: The OpenAPI schemas to compose
@@ -208,6 +506,9 @@ public struct SwiftOpenAPIIntegration {
 
                     definition += "    public var \(propertyName): \(propertyType)\n"
                 }
+            } else if case .reference(let reference) = schema {
+                let refName = reference.ref.components(separatedBy: "/").last ?? reference.ref
+                definition += "    // Including properties from \(refName)\n"
             }
         }
 
@@ -229,6 +530,114 @@ public struct SwiftOpenAPIIntegration {
             let associatedType = determineSwiftType(for: schema, named: "\(name)\(caseName.capitalized)")
 
             definition += "    case \(caseName)(\(associatedType))\n"
+        }
+
+        // Add Codable conformance
+        definition += "\n    // Encoding and decoding implementation\n"
+        definition += "    private enum CodingKeys: String, CodingKey {\n"
+        definition += "        case type\n"
+        definition += "        case value\n"
+        definition += "    }\n\n"
+
+        // Add init(from:) method
+        definition += "    public init(from decoder: Decoder) throws {\n"
+        definition += "        let container = try decoder.container(keyedBy: CodingKeys.self)\n"
+        definition += "        let type = try container.decode(String.self, forKey: .type)\n\n"
+        definition += "        switch type {\n"
+
+        for (index, _) in schemas.enumerated() {
+            let caseName = "case\(index + 1)"
+            let associatedType = determineSwiftType(for: schemas[index], named: "\(name)\(caseName.capitalized)")
+
+            definition += "        case \"\(caseName)\":\n"
+            definition += "            let value = try container.decode(\(associatedType).self, forKey: .value)\n"
+            definition += "            self = .\(caseName)(value)\n"
+        }
+
+        definition += "        default:\n"
+        definition += "            throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: \"Unknown type\")\n"
+        definition += "        }\n"
+        definition += "    }\n\n"
+
+        // Add encode(to:) method
+        definition += "    public func encode(to encoder: Encoder) throws {\n"
+        definition += "        var container = encoder.container(keyedBy: CodingKeys.self)\n\n"
+        definition += "        switch self {\n"
+
+        for (index, _) in schemas.enumerated() {
+            let caseName = "case\(index + 1)"
+
+            definition += "        case .\(caseName)(let value):\n"
+            definition += "            try container.encode(\"\(caseName)\", forKey: .type)\n"
+            definition += "            try container.encode(value, forKey: .value)\n"
+        }
+
+        definition += "        }\n"
+        definition += "    }\n"
+
+        definition += "}"
+        return definition
+    }
+
+    /// Generates a Swift protocol with conforming types for an OpenAPI oneOf or anyOf schema
+    /// - Parameters:
+    ///   - schemas: The OpenAPI schemas for which to create conforming types
+    ///   - name: The name of the protocol
+    /// - Returns: A string containing the Swift protocol and conforming types
+    private func generateProtocolWithTypes(for schemas: [JSONSchema], named name: String) -> String {
+        var definition = "/// A protocol that represents a union of multiple types\n"
+        definition += "protocol \(name): Codable {\n"
+        definition += "    // Common properties and methods would go here\n"
+        definition += "}\n\n"
+
+        // Generate conforming types
+        for (index, schema) in schemas.enumerated() {
+            let typeName = "\(name)Type\(index + 1)"
+
+            definition += "// A type that conforms to \(name)\n"
+
+            if case .object(let objectSchema) = schema {
+                definition += generateSwiftStructOrClass(for: objectSchema, named: typeName)
+            } else if case .reference(let reference) = schema {
+                let refName = reference.ref.components(separatedBy: "/").last ?? reference.ref
+                definition += "// \(typeName) would conform to \(name) and adopt \(refName) properties\n"
+            } else {
+                definition += "struct \(typeName): \(name) {\n"
+                definition += "    // Properties specific to this type would go here\n"
+                definition += "}\n"
+            }
+
+            definition += "\n// Add conformance to \(name)\n"
+            definition += "extension \(typeName): \(name) {}\n\n"
+        }
+
+        return definition
+    }
+
+    /// Generates a Swift enum for string constants from an OpenAPI enum
+    /// - Parameters:
+    ///   - values: The string enum values
+    ///   - name: The name of the enum
+    /// - Returns: A string containing the Swift enum definition
+    private func generateStringEnumType(values: [String], named name: String) -> String {
+        var definition = "/// String enum representing the possible values\n"
+        definition += "enum \(name): String, Codable {\n"
+
+        for value in values {
+            let rawValue = value
+            let safeCaseName = value
+                .replacingOccurrences(of: "-", with: "_")
+                .replacingOccurrences(of: " ", with: "_")
+                .replacingOccurrences(of: ".", with: "_")
+
+            // If the case name starts with a number, prefix it with an underscore
+            let caseName = safeCaseName.first?.isNumber == true ? "_\(safeCaseName)" : safeCaseName
+
+            if caseName != rawValue {
+                definition += "    case \(caseName) = \"\(rawValue)\"\n"
+            } else {
+                definition += "    case \(caseName)\n"
+            }
         }
 
         definition += "}"

@@ -143,7 +143,7 @@ public struct DocCCatalogGenerator {
                     if case .reference(let reference) = propertySchema {
                         if reference.ref == "#/components/schemas/\(schemaName)" {
                             references[name, default: []].append(propertyName)
-
+                        }
                     }
 
                     // Check for arrays of references
@@ -151,8 +151,8 @@ public struct DocCCatalogGenerator {
                         if case .reference(let reference) = arraySchema.items {
                             if reference.ref == "#/components/schemas/\(schemaName)" {
                                 references[name, default: []].append(propertyName)
-    
-
+                            }
+                        }
                     }
                 }
             }
@@ -322,8 +322,7 @@ public struct DocCCatalogGenerator {
 
                         if let description = parameter.description {
                             content += "\(description)\n\n"
-
-
+                        }
                     }
 
                     // Examples are not supported in the current MediaType model
@@ -333,122 +332,189 @@ public struct DocCCatalogGenerator {
                         content += formatExample(example)
                     } */
                 }
-            }
 
-            // Add responses section
-            if !operation.responses.isEmpty {
-                content += "## Responses\n\n"
+                // Add responses section
+                if !operation.responses.isEmpty {
+                    content += "## Responses\n\n"
 
-                for (statusCode, response) in operation.responses.sorted(by: { $0.key < $1.key }) {
-                    content += "### \(statusCode)\n\n"
-                    content += "\(response.description)\n\n"
+                    for (statusCode, response) in operation.responses.sorted(by: { $0.key < $1.key }) {
+                        content += "### \(statusCode)\n\n"
+                        content += "\(response.description)\n\n"
 
-                    if let contentDict = response.content {
-                        for (mediaType, mediaTypeContent) in contentDict {
-                            content += "#### Media Type: \(mediaType)\n\n"
+                        if let contentDict = response.content {
+                            for (mediaType, mediaTypeContent) in contentDict {
+                                content += "#### Media Type: \(mediaType)\n\n"
 
-                            switch mediaTypeContent.schema {
-                            case .reference(let reference):
-                                let schemaName = reference.ref.components(separatedBy: "/").last ?? reference.ref
-                                content += "**Schema: ``\(schemaName)``**\n\n"
-
-                                // If possible, resolve the reference and add brief information
-                                if let resolvedSchema = resolveReference(reference.ref, in: document) {
-                                    content += "Summary of `\(schemaName)`:\n\n"
-                                    if let description = resolvedSchema.description {
-                                        content += "\(description)\n\n"
-                                    }
-                                }
-
-                            case .array(let arraySchema):
-                                content += "**Schema type: Array**\n\n"
-                                content += "Items type: "
-
-                                switch arraySchema.items {
+                                switch mediaTypeContent.schema {
                                 case .reference(let reference):
-                                    let refName = reference.ref.components(separatedBy: "/").last ?? reference.ref
-                                    content += "``\(refName)``\n\n"
+                                    let schemaName = reference.ref.components(separatedBy: "/").last ?? reference.ref
+                                    content += "**Schema: ``\(schemaName)``**\n\n"
 
-                                    // If possible, add brief info about the referenced type
+                                    // If possible, resolve the reference and add brief information
                                     if let resolvedSchema = resolveReference(reference.ref, in: document) {
-                                        content += "Summary of `\(refName)`:\n\n"
+                                        content += "Summary of `\(schemaName)`:\n\n"
                                         if let description = resolvedSchema.description {
                                             content += "\(description)\n\n"
                                         }
                                     }
 
-                                case .string:
-                                    content += "string\n\n"
-                                case .number:
-                                    content += "number\n\n"
-                                case .integer:
-                                    content += "integer\n\n"
-                                case .boolean:
-                                    content += "boolean\n\n"
-                                case .array:
-                                    content += "array (nested)\n\n"
+                                case .array(let arraySchema):
+                                    content += "**Schema type: Array**\n\n"
+                                    content += "Items type: "
+
+                                    switch arraySchema.items {
+                                    case .reference(let reference):
+                                        let refName = reference.ref.components(separatedBy: "/").last ?? reference.ref
+                                        content += "``\(refName)``\n\n"
+
+                                        // If possible, add brief info about the referenced type
+                                        if let resolvedSchema = resolveReference(reference.ref, in: document) {
+                                            content += "Summary of `\(refName)`:\n\n"
+                                            if let description = resolvedSchema.description {
+                                                content += "\(description)\n\n"
+                                            }
+                                        }
+
+                                    case .string:
+                                        content += "string\n\n"
+                                    case .number:
+                                        content += "number\n\n"
+                                    case .integer:
+                                        content += "integer\n\n"
+                                    case .boolean:
+                                        content += "boolean\n\n"
+                                    case .array:
+                                        content += "array (nested)\n\n"
+                                    case .object:
+                                        content += "object\n\n"
+                                    case .allOf, .anyOf, .oneOf, .not:
+                                        content += "complex type\n\n"
+                                    }
+
                                 case .object:
-                                    content += "object\n\n"
-                                case .allOf, .anyOf, .oneOf, .not:
-                                    content += "complex type\n\n"
-                                }
+                                    content += "**Schema type: Object**\n\n"
 
-                            case .object:
-                                content += "**Schema type: Object**\n\n"
-
-                                if case .object(let objectSchema) = mediaTypeContent.schema, !objectSchema.properties.isEmpty {
-                                    content += "Properties:\n\n"
-                                    for (propName, propSchema) in objectSchema.properties.sorted(by: { $0.key < $1.key }) {
-                                        if case .reference(let reference) = propSchema {
-                                            let refName = reference.ref.components(separatedBy: "/").last ?? reference.ref
-                                            content += "- `\(propName)`: ``\(refName)``\n"
-                                        } else {
-                                            content += "- `\(propName)`: \(describeType(propSchema))\n"
+                                    if case .object(let objectSchema) = mediaTypeContent.schema, !objectSchema.properties.isEmpty {
+                                        content += "Properties:\n\n"
+                                        for (propName, propSchema) in objectSchema.properties.sorted(by: { $0.key < $1.key }) {
+                                            if case .reference(let reference) = propSchema {
+                                                let refName = reference.ref.components(separatedBy: "/").last ?? reference.ref
+                                                content += "- `\(propName)`: ``\(refName)``\n"
+                                            } else {
+                                                content += "- `\(propName)`: \(describeType(propSchema))\n"
+                                            }
                                         }
                                     }
+
+                                    content += "\n"
+
+                                default:
+                                    content += "**Schema type: \(describeType(mediaTypeContent.schema))**\n\n"
                                 }
 
-                                content += "\n"
+                                // Examples are not supported in the current MediaType model
+                                /* if let examples = mediaTypeContent.examples {
+                                    content += formatExamples(examples: examples)
+                                } else if let example = mediaTypeContent.example {
+                                    content += formatExample(example)
+                                } */
+                            }
+                        }
+                    }
+                }
 
-                            default:
-                                content += "**Schema type: \(describeType(mediaTypeContent.schema))**\n\n"
+                // Add security information if available
+                if let security = operation.security, !security.isEmpty {
+                    content += "## Security\n\n"
+
+                    for securityRequirement in security {
+                        for (scheme, scopes) in securityRequirement {
+                            content += "### \(scheme)\n\n"
+
+                            if !scopes.isEmpty {
+                                content += "Required scopes:\n\n"
+                                for scope in scopes {
+                                    content += "- \(scope)\n"
+                                }
                             }
 
-                            // Examples are not supported in the current MediaType model
-                            /* if let examples = mediaTypeContent.examples {
-                                content += formatExamples(examples: examples)
-                            } else if let example = mediaTypeContent.example {
-                                content += formatExample(example)
-                            } */
+                            content += "\n"
                         }
+                    }
+                }
+
+                // Write the file
+                try content.write(to: filePath, atomically: true, encoding: .utf8)
+            }
+        }
+    }
+
+    // Implement missing generateSchemaDocumentationFiles method
+    private func generateSchemaDocumentationFiles(document: Document, catalogDirectory: URL) throws {
+        // Create the directory for schema documentation
+        let schemasDirectory = catalogDirectory.appendingPathComponent("Schemas")
+        try FileManager.default.createDirectory(at: schemasDirectory, withIntermediateDirectories: true)
+
+        // Generate a file for each schema
+        guard let components = document.components, let schemas = components.schemas else {
+            return // No schemas to document
+        }
+
+        for (name, schema) in schemas {
+            let filePath = schemasDirectory.appendingPathComponent("\(name).md")
+
+            var content = "# \(name)\n\n"
+
+            if let description = schema.description {
+                content += "\(description)\n\n"
+            }
+
+            // Add schema type information
+            content += "**Type: \(getSchemaType(schema))**\n\n"
+
+            // Add properties section for object schemas
+            if case .object(let objectSchema) = schema {
+                content += "## Properties\n\n"
+
+                for (propertyName, propertySchema) in objectSchema.properties.sorted(by: { $0.key < $1.key }) {
+                    content += "### \(propertyName)\n\n"
+
+                    if let description = propertySchema.description {
+                        content += "\(description)\n\n"
+                    }
+
+                    let isRequired = objectSchema.required.contains(propertyName)
+                    content += "**Type: \(describeType(propertySchema))**\n\n"
+                    content += "**Required: \(isRequired ? "Yes" : "No")**\n\n"
+
+                    // Add examples if they exist and includeExamples is true
+                    if includeExamples, let example = getSchemaExample(propertySchema) {
+                        content += formatExample(example)
                     }
                 }
             }
 
-            // Security is not supported in the current Operation model
-            /* if let security = operation.security, !security.isEmpty {
-                content += "## Security\n\n"
+            // Add related schemas section (schemas that reference this one)
+            let referencingSchemas = findReferencesToSchema(name, in: document)
+            if !referencingSchemas.isEmpty {
+                content += "## Referenced By\n\n"
 
-                for securityRequirement in security {
-                    for (scheme, scopes) in securityRequirement {
-                        content += "### \(scheme)\n\n"
-
-                        if !scopes.isEmpty {
-                            content += "Required scopes:\n\n"
-                            for scope in scopes {
-                                content += "- \(scope)\n"
-                            }
-                        }
-
-                        content += "\n"
+                for (schemaName, properties) in referencingSchemas.sorted(by: { $0.key < $1.key }) {
+                    content += "- ``\(schemaName)``"
+                    if !properties.isEmpty {
+                        content += " (properties: \(properties.joined(separator: ", ")))"
                     }
+                    content += "\n"
                 }
-            } */
+
+                content += "\n"
+            }
 
             // Write the file
             try content.write(to: filePath, atomically: true, encoding: .utf8)
         }
     }
+
     private func describeType(_ schema: JSONSchema) -> String {
         switch schema {
         case .string:
@@ -536,13 +602,6 @@ public struct DocCCatalogGenerator {
 
         return "## Example\n\n```json\n\(formatValue(example))\n```\n\n"
     }
-}
-
-// Helper function to get example from schema if available
-private func getSchemaExample(_ schema: JSONSchema) -> Any? {
-    // This would need to be implemented based on the actual schema structure
-    // For now, return nil as examples aren't directly accessible in the current model
-    return nil
 }
 
 // Helper function to get example from schema if available
