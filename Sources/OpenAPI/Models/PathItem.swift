@@ -17,6 +17,12 @@ public struct PathItem {
     /// The parameters that apply to all operations
     public let parameters: [Parameter]?
     
+    /// A description of the path
+    public let description: String?
+    
+    /// The extensions for this object
+    public let extensions: [String: Any]?
+    
     /// Creates a new path item
     /// - Parameters:
     ///   - get: The HTTP GET operation
@@ -24,18 +30,24 @@ public struct PathItem {
     ///   - put: The HTTP PUT operation
     ///   - delete: The HTTP DELETE operation
     ///   - parameters: The parameters that apply to all operations
+    ///   - description: A description of the path
+    ///   - extensions: The extensions for this object
     public init(
         get: Operation? = nil,
         post: Operation? = nil,
         put: Operation? = nil,
         delete: Operation? = nil,
-        parameters: [Parameter]? = nil
+        parameters: [Parameter]? = nil,
+        description: String? = nil,
+        extensions: [String: Any]? = nil
     ) {
         self.get = get
         self.post = post
         self.put = put
         self.delete = delete
         self.parameters = parameters
+        self.description = description
+        self.extensions = extensions
     }
     
     /// Returns the operation for the given HTTP method

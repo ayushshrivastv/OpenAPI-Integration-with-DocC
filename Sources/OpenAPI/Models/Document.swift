@@ -44,19 +44,25 @@ public struct Info {
     /// The API description
     public let description: String?
     
+    /// The extensions for this object
+    public let extensions: [String: Any]?
+    
     /// Creates new API metadata
     /// - Parameters:
     ///   - title: The API title
     ///   - version: The API version
     ///   - description: The API description
+    ///   - extensions: The extensions for this object
     public init(
         title: String,
         version: String,
-        description: String? = nil
+        description: String? = nil,
+        extensions: [String: Any]? = nil
     ) {
         self.title = title
         self.version = version
         self.description = description
+        self.extensions = extensions
     }
 }
 

@@ -2,7 +2,7 @@
 
 The project aims to bridge the gap between OpenAPI specifications and Swift's DocC documentation framework by developing a tool that automates the generation of DocC documentation from OpenAPI files.
 
-![Screenshot 2025-04-20 at 8 42 01 PM](https://github.com/user-attachments/assets/453e95be-141e-422b-b53d-67834d3413aa)
+![Screenshot 2025-04-20 at 8 42 01 PM](https://github.com/user-attachments/assets/453e95be-141e-422b-b53d-67834d3413aa)
 
 ## Project Structure
 
@@ -22,6 +22,7 @@ The project is organized into several modules:
 - Provide a consistent documentation experience for Swift developers
 - Support for documenting endpoints, schemas, parameters, and more
 - Debug and analyze symbol graphs for troubleshooting
+- Automatically generate DocC catalogs (.docc) from OpenAPI specifications
 
 ## Getting Started
 
@@ -41,22 +42,69 @@ swift build
 
 ### Usage
 
-1. Convert your OpenAPI specification to a SymbolGraph:
+This tool provides multiple ways to work with OpenAPI and DocC:
+
+#### Option 1: Quick Start with All-in-One Script
+
+For the easiest experience, use our all-in-one script to generate DocC documentation from an OpenAPI specification:
 
 ```bash
-swift run openapi-to-symbolgraph Examples/api.yaml --output-path api.symbolgraph.json
+./scripts/generate-openapi-docc.sh path/to/your/api.yaml
 ```
 
-2. Generate the documentation using our helper script:
+This script:
+1. Generates a DocC catalog from your OpenAPI specification
+2. Runs the DocC compiler to generate HTML documentation
+3. Gives you instructions for viewing the documentation
+
+Advanced options:
 
 ```bash
-./scripts/build-docs.sh
+./scripts/generate-openapi-docc.sh --module-name YourAPIName --base-url https://api.example.com path/to/your/api.yaml
 ```
 
-Or manually with DocC:
+Run with `--help` to see all available options.
+
+#### Option 2: Step-by-Step Process
+
+If you prefer more control, you can use the individual commands:
+
+1. Convert your OpenAPI specification to a DocC catalog:
 
 ```bash
-xcrun docc convert YourAPI.docc --fallback-display-name YourAPI --fallback-bundle-identifier com.example.YourAPI --fallback-bundle-version 1.0.0 --additional-symbol-graph-dir ./ --output-path ./docs
+swift run openapi-tool to-docc path/to/your/api.yaml --output-directory ./output
+```
+
+2. Generate the documentation using DocC:
+
+```bash
+xcrun docc convert output/YourAPI.docc --fallback-display-name YourAPI --fallback-bundle-identifier com.example.YourAPI --fallback-bundle-version 1.0.0 --output-path ./docs
+```
+
+#### Option 3: SymbolGraph Generation Only
+
+If you only need the SymbolGraph file (for use with other tools):
+
+```bash
+swift run openapi-tool to-symbolgraph path/to/your/api.yaml --output-path api.symbolgraph.json
+```
+
+## Generated Documentation Structure
+
+The tool generates a DocC catalog with the following structure:
+
+```
+YourAPI.docc/
+├── YourAPI.md                  # Root documentation file
+├── YourAPI.symbols.json        # Symbol graph file
+├── Endpoints/                  # Documentation for each API endpoint
+│   ├── endpointA.md
+│   ├── endpointB.md
+│   └── ...
+└── Schemas/                    # Documentation for data models
+    ├── SchemaA.md
+    ├── SchemaB.md
+    └── ...
 ```
 
 ## Symbol Graph Debug Tool
@@ -131,8 +179,20 @@ Check out the `DocsExample` directory for a working example of a REST API docume
 
 1. The OpenAPI specification is parsed using `OpenAPIKit`
 2. The specification is converted to a SymbolGraph, which is the format DocC uses for documentation
-3. DocC processes the SymbolGraph and generates the documentation
-4. The documentation can be served as a static website or deployed to GitHub Pages
+3. A DocC catalog (.docc) is generated with Markdown files for each endpoint and schema
+4. DocC processes the catalog and generates the documentation
+5. The documentation can be served as a static website or deployed to GitHub Pages
+
+## Integration with Swift OpenAPI Generator (Stretch Goal)
+
+We're working on integrating this tool with [Swift OpenAPI Generator](https://github.com/apple/swift-openapi-generator) to automatically generate documentation during code generation.
+
+## VS Code Extension for Live Preview (Stretch Goal)
+
+We're developing a Visual Studio Code extension that will:
+1. Watch for changes to OpenAPI files
+2. Automatically convert them to DocC documentation
+3. Provide a live preview of the documentation in VS Code
 
 ## GitHub Pages Deployment
 

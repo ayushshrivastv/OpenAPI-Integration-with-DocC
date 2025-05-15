@@ -52,8 +52,8 @@ let package = Package(
         .target(
             name: "Integration",
             dependencies: [
-                "OpenAPI", 
-                "DocC", 
+                "OpenAPI",
+                "DocC",
                 "Core",
                 .product(name: "SymbolKit", package: "swift-docc-symbolkit")
             ],
@@ -63,8 +63,8 @@ let package = Package(
         .target(
             name: "OpenAPItoSymbolGraph",
             dependencies: [
-                "OpenAPI", 
-                "DocC", 
+                "OpenAPI",
+                "DocC",
                 "Integration",
                 "Core",
                 .product(name: "SymbolKit", package: "swift-docc-symbolkit")
@@ -75,7 +75,8 @@ let package = Package(
                 "Utils/README.md",
                 "Utils/DocC/README.md",
                 "Mapping/README.md"
-            ]
+            ],
+            sources: [".", "Utils", "Utils/DocC", "Mapping"]
         ),
         .executableTarget(
             name: "CLI",
@@ -98,9 +99,9 @@ let package = Package(
         .testTarget(
             name: "OpenAPItoSymbolGraphTests",
             dependencies: [
-                "OpenAPI", 
-                "DocC", 
-                "Integration", 
+                "OpenAPI",
+                "DocC",
+                "Integration",
                 "OpenAPItoSymbolGraph",
                 "Core",
                 "CLI",
