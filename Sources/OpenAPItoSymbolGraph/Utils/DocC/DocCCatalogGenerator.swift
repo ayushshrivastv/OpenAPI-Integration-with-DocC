@@ -550,14 +550,16 @@ public struct DocCCatalogGenerator {
     }
 
     /// Extracts and formats examples for documentation
-    private func formatExamples(examples: [String: OpenAPIKit.Example]?) -> String {
+    private func formatExamples(examples: [String: OpenAPIKit.OpenAPI.Example]?) -> String {
         guard let examples = examples, !examples.isEmpty else {
             return ""
         }
 
         var result = "## Examples\n\n"
 
-        for (name, example) in examples {
+        for (name, apiExample) in examples {
+            // Convert to our compatible Example type
+            let example = OpenAPIKit.OpenAPI.Example(from: apiExample)
             result += "### \(name)\n\n"
 
             if let summary = example.summary {
