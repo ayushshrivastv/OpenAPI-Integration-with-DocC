@@ -1,0 +1,824 @@
+openapi: 3.0.3
+info:
+  title: Rich Example API
+  description: An API with rich examples to showcase the OpenAPI to DocC integration tool
+  version: 1.0.0
+  contact:
+    name: API Support
+    url: https://example.com/support
+    email: support@example.com
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://sandbox.example.com/v1
+    description: Sandbox server for testing
+
+tags:
+  - name: products
+    description: Operations related to products
+  - name: orders
+    description: Operations related to orders
+  - name: users
+    description: Operations related to users
+
+paths:
+  /products:
+    get:
+      summary: List all products
+      description: Returns a list of products, optionally filtered by category or search term
+      operationId: listProducts
+      tags:
+        - products
+      parameters:
+        - name: category
+          in: query
+          description: Filter products by category ID
+          schema:
+            type: integer
+        - name: search
+          in: query
+          description: Search term to filter products by name or description
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              examples:
+                electronics:
+                  summary: Electronic products
+                  value:
+                    - id: 1
+                      name: Laptop
+                      description: Powerful laptop for developers
+                      price: 1299.99
+                      category:
+                        id: 1
+                        name: Electronics
+                      attributes:
+                        - name: Processor
+                          value: Intel i7
+                        - name: RAM
+                          value: 16GB
+                      tags: [laptop, computer, electronics]
+                      inStock: true
+                      images:
+                        - url: https://example.com/images/laptop-1.jpg
+                          altText: Laptop front view
+                    - id: 2
+                      name: Smartphone
+                      description: Latest smartphone with advanced features
+                      price: 799.99
+                      category:
+                        id: 1
+                        name: Electronics
+                      attributes:
+                        - name: Screen
+                          value: 6.5 inch
+                        - name: Storage
+                          value: 128GB
+                      tags: [smartphone, phone, electronics]
+                      inStock: true
+                      images:
+                        - url: https://example.com/images/phone-1.jpg
+                          altText: Smartphone front view
+                books:
+                  summary: Book products
+                  value:
+                    - id: 3
+                      name: Programming Guide
+                      description: Comprehensive programming book
+                      price: 49.99
+                      category:
+                        id: 2
+                        name: Books
+                      attributes:
+                        - name: Pages
+                          value: 450
+                        - name: Format
+                          value: Paperback
+                      tags: [programming, books, education]
+                      inStock: true
+                      images:
+                        - url: https://example.com/images/book-1.jpg
+                          altText: Book cover
+
+  /products/{productId}:
+    get:
+      summary: Get product by ID
+      description: Returns a single product by its ID
+      operationId: getProduct
+      tags:
+        - products
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                id: 1
+                name: Laptop
+                description: Powerful laptop for developers
+                price: 1299.99
+                category:
+                  id: 1
+                  name: Electronics
+                attributes:
+                  - name: Processor
+                    value: Intel i7
+                  - name: RAM
+                    value: 16GB
+                tags: [laptop, computer, electronics]
+                inStock: true
+                images:
+                  - url: https://example.com/images/laptop-1.jpg
+                    altText: Laptop front view
+                  - url: https://example.com/images/laptop-2.jpg
+                    altText: Laptop side view
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 404
+                message: Product not found
+
+  /orders:
+    post:
+      summary: Create a new order
+      description: Creates a new order for the authenticated user
+      operationId: createOrder
+      tags:
+        - orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+            example:
+              products:
+                - productId: 1
+                  quantity: 2
+                - productId: 3
+                  quantity: 1
+              shippingAddress:
+                street: 123 Main St
+                city: Anytown
+                state: CA
+                zipCode: 12345
+                country: USA
+              paymentMethod:
+                type: creditCard
+                cardNumber: "4111111111111111"
+                expirationMonth: 12
+                expirationYear: 2025
+                cvv: "123"
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+              example:
+                id: 1001
+                createdAt: "2023-04-15T10:30:00Z"
+                status: PENDING
+                total: 2649.97
+                products:
+                  - product:
+                      id: 1
+                      name: Laptop
+                      price: 1299.99
+                    quantity: 2
+                  - product:
+                      id: 3
+                      name: Programming Guide
+                      price: 49.99
+                    quantity: 1
+                shippingAddress:
+                  street: 123 Main St
+                  city: Anytown
+                  state: CA
+                  zipCode: 12345
+                  country: USA
+                payment:
+                  method: creditCard
+                  amount: 2649.97
+                  status: AUTHORIZED
+                shipping:
+                  method: standard
+                  cost: 0
+                  estimatedDelivery: "2023-04-22T00:00:00Z"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 400
+                message: Invalid request format
+
+  /users/{userId}:
+    get:
+      summary: Get user profile
+      description: Returns a user profile by user ID
+      operationId: getUserProfile
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: 100
+                username: johndoe
+                email: johndoe@example.com
+                firstName: John
+                lastName: Doe
+                role: customer
+                createdAt: "2022-01-10T08:15:30Z"
+                address:
+                  street: 123 Main St
+                  city: Anytown
+                  state: CA
+                  zipCode: 12345
+                  country: USA
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 404
+                message: User not found
+
+components:
+  schemas:
+    Product:
+      type: object
+      description: A product available in the store
+      required:
+        - id
+        - name
+        - price
+        - category
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the product
+          example: 42
+        name:
+          type: string
+          description: Name of the product
+          example: Wireless Headphones
+        description:
+          type: string
+          description: Detailed description of the product
+          example: High-quality wireless headphones with noise cancellation
+        price:
+          type: number
+          format: float
+          description: Current price of the product
+          example: 129.99
+        category:
+          $ref: '#/components/schemas/Category'
+        attributes:
+          type: array
+          description: List of product attributes
+          items:
+            $ref: '#/components/schemas/Attribute'
+        tags:
+          type: array
+          description: Tags associated with the product
+          items:
+            type: string
+          example: [electronics, audio, wireless]
+        inStock:
+          type: boolean
+          description: Whether the product is currently in stock
+          example: true
+        images:
+          type: array
+          description: Product images
+          items:
+            $ref: '#/components/schemas/Image'
+      example:
+        id: 1
+        name: Laptop
+        description: Powerful laptop for developers
+        price: 1299.99
+        category:
+          id: 1
+          name: Electronics
+        attributes:
+          - name: Processor
+            value: Intel i7
+          - name: RAM
+            value: 16GB
+        tags: [laptop, computer, electronics]
+        inStock: true
+        images:
+          - url: https://example.com/images/laptop-1.jpg
+            altText: Laptop front view
+
+    Category:
+      type: object
+      description: A product category
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the category
+          example: 5
+        name:
+          type: string
+          description: Name of the category
+          example: Electronics
+        parent:
+          $ref: '#/components/schemas/Category'
+          description: Parent category, if any
+      example:
+        id: 2
+        name: Laptops
+        parent:
+          id: 1
+          name: Electronics
+
+    Attribute:
+      type: object
+      description: A product attribute
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          description: Name of the attribute
+          example: Color
+        value:
+          type: string
+          description: Value of the attribute
+          example: Blue
+      example:
+        name: Processor
+        value: Intel i7
+
+    Image:
+      type: object
+      description: An image associated with a product
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL of the image
+          example: https://example.com/images/product-1.jpg
+        altText:
+          type: string
+          description: Alternative text for the image
+          example: Front view of the product
+      example:
+        url: https://example.com/images/headphones-1.jpg
+        altText: Headphones front view
+
+    OrderRequest:
+      type: object
+      description: Request to create a new order
+      required:
+        - products
+        - shippingAddress
+      properties:
+        products:
+          type: array
+          description: Products to order
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
+      example:
+        products:
+          - productId: 1
+            quantity: 2
+          - productId: 3
+            quantity: 1
+        shippingAddress:
+          street: 123 Main St
+          city: Anytown
+          state: CA
+          zipCode: 12345
+          country: USA
+        paymentMethod:
+          type: creditCard
+          cardNumber: "4111111111111111"
+          expirationMonth: 12
+          expirationYear: 2025
+          cvv: "123"
+
+    OrderItem:
+      type: object
+      description: An item in an order
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          type: integer
+          description: ID of the product
+          example: 42
+        quantity:
+          type: integer
+          description: Quantity of the product
+          minimum: 1
+          example: 2
+      example:
+        productId: 1
+        quantity: 2
+
+    Order:
+      type: object
+      description: A customer order
+      required:
+        - id
+        - createdAt
+        - status
+        - total
+        - products
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the order
+          example: 1001
+        createdAt:
+          type: string
+          format: date-time
+          description: Date and time when the order was created
+          example: "2023-04-15T10:30:00Z"
+        status:
+          type: string
+          description: Status of the order
+          enum: [PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED]
+          example: PENDING
+        total:
+          type: number
+          format: float
+          description: Total amount of the order
+          example: 2649.97
+        products:
+          type: array
+          description: Products in the order
+          items:
+            $ref: '#/components/schemas/OrderProduct'
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+      example:
+        id: 1001
+        createdAt: "2023-04-15T10:30:00Z"
+        status: PENDING
+        total: 2649.97
+        products:
+          - product:
+              id: 1
+              name: Laptop
+              price: 1299.99
+            quantity: 2
+          - product:
+              id: 3
+              name: Programming Guide
+              price: 49.99
+            quantity: 1
+        shippingAddress:
+          street: 123 Main St
+          city: Anytown
+          state: CA
+          zipCode: 12345
+          country: USA
+        payment:
+          method: creditCard
+          amount: 2649.97
+          status: AUTHORIZED
+        shipping:
+          method: standard
+          cost: 0
+          estimatedDelivery: "2023-04-22T00:00:00Z"
+
+    OrderProduct:
+      type: object
+      description: A product in an order with its quantity
+      required:
+        - product
+        - quantity
+      properties:
+        product:
+          $ref: '#/components/schemas/ProductSummary'
+        quantity:
+          type: integer
+          description: Quantity of the product
+          minimum: 1
+          example: 2
+      example:
+        product:
+          id: 1
+          name: Laptop
+          price: 1299.99
+        quantity: 2
+
+    ProductSummary:
+      type: object
+      description: A summary of a product
+      required:
+        - id
+        - name
+        - price
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the product
+          example: 42
+        name:
+          type: string
+          description: Name of the product
+          example: Wireless Headphones
+        price:
+          type: number
+          format: float
+          description: Price of the product
+          example: 129.99
+      example:
+        id: 1
+        name: Laptop
+        price: 1299.99
+
+    Address:
+      type: object
+      description: A physical address
+      required:
+        - street
+        - city
+        - state
+        - zipCode
+        - country
+      properties:
+        street:
+          type: string
+          description: Street address
+          example: 123 Main St
+        city:
+          type: string
+          description: City
+          example: Anytown
+        state:
+          type: string
+          description: State or province
+          example: CA
+        zipCode:
+          type: string
+          description: Postal or ZIP code
+          example: 12345
+        country:
+          type: string
+          description: Country
+          example: USA
+      example:
+        street: 123 Main St
+        city: Anytown
+        state: CA
+        zipCode: 12345
+        country: USA
+
+    PaymentMethod:
+      type: object
+      description: Payment method details
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          description: Type of payment method
+          enum: [creditCard, paypal, bankTransfer]
+          example: creditCard
+        cardNumber:
+          type: string
+          description: Credit card number (only for credit card payments)
+          example: "4111111111111111"
+        expirationMonth:
+          type: integer
+          description: Expiration month (only for credit card payments)
+          minimum: 1
+          maximum: 12
+          example: 12
+        expirationYear:
+          type: integer
+          description: Expiration year (only for credit card payments)
+          minimum: 2020
+          example: 2025
+        cvv:
+          type: string
+          description: CVV code (only for credit card payments)
+          example: "123"
+      example:
+        type: creditCard
+        cardNumber: "4111111111111111"
+        expirationMonth: 12
+        expirationYear: 2025
+        cvv: "123"
+
+    Payment:
+      type: object
+      description: Payment information
+      required:
+        - method
+        - amount
+        - status
+      properties:
+        method:
+          type: string
+          description: Payment method used
+          example: creditCard
+        amount:
+          type: number
+          format: float
+          description: Amount paid
+          example: 2649.97
+        status:
+          type: string
+          description: Status of the payment
+          enum: [PENDING, AUTHORIZED, COMPLETED, FAILED, REFUNDED]
+          example: AUTHORIZED
+        transactionId:
+          type: string
+          description: Payment transaction ID
+          example: "txn_1234567890"
+      example:
+        method: creditCard
+        amount: 2649.97
+        status: AUTHORIZED
+        transactionId: "txn_1234567890"
+
+    Shipping:
+      type: object
+      description: Shipping information
+      required:
+        - method
+        - cost
+      properties:
+        method:
+          type: string
+          description: Shipping method
+          enum: [standard, express, overnight]
+          example: standard
+        cost:
+          type: number
+          format: float
+          description: Shipping cost
+          example: 0
+        carrier:
+          type: string
+          description: Shipping carrier
+          example: UPS
+        trackingNumber:
+          type: string
+          description: Tracking number
+          example: "1Z999AA10123456784"
+        estimatedDelivery:
+          type: string
+          format: date-time
+          description: Estimated delivery date and time
+          example: "2023-04-22T00:00:00Z"
+      example:
+        method: standard
+        cost: 0
+        carrier: UPS
+        trackingNumber: "1Z999AA10123456784"
+        estimatedDelivery: "2023-04-22T00:00:00Z"
+
+    User:
+      type: object
+      description: A user of the system
+      required:
+        - id
+        - username
+        - email
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user
+          example: 100
+        username:
+          type: string
+          description: Username
+          example: johndoe
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: johndoe@example.com
+        firstName:
+          type: string
+          description: First name
+          example: John
+        lastName:
+          type: string
+          description: Last name
+          example: Doe
+        role:
+          type: string
+          description: User role
+          enum: [customer, admin, staff]
+          example: customer
+        createdAt:
+          type: string
+          format: date-time
+          description: Date and time when the user was created
+          example: "2022-01-10T08:15:30Z"
+        address:
+          $ref: '#/components/schemas/Address'
+      example:
+        id: 100
+        username: johndoe
+        email: johndoe@example.com
+        firstName: John
+        lastName: Doe
+        role: customer
+        createdAt: "2022-01-10T08:15:30Z"
+        address:
+          street: 123 Main St
+          city: Anytown
+          state: CA
+          zipCode: 12345
+          country: USA
+
+    Error:
+      type: object
+      description: Error response
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: Invalid request format
+        details:
+          type: array
+          description: Additional error details
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: Field with the error
+                example: email
+              error:
+                type: string
+                description: Error description
+                example: Invalid email format
+      example:
+        code: 400
+        message: Invalid request format
+        details:
+          - field: email
+            error: Invalid email format

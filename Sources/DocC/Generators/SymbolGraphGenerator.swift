@@ -2,6 +2,18 @@ import Foundation
 import OpenAPI
 import SymbolKit
 
+// Helper function to safely get vendor extensions from different types
+private func getVendorExtension(key: String, from object: Any) -> Any? {
+    // Use reflection to check for extensions property
+    if let mirror = Mirror(reflecting: object).children.first(where: { $0.label == "extensions" }) {
+        if let extensions = mirror.value as? [String: Any] {
+            return extensions[key]
+        }
+    }
+    
+    return nil
+}
+
 /// A generator that converts OpenAPI documents to DocC symbol graphs
 public struct SymbolGraphGenerator {
     /// The name to use for the module
@@ -232,12 +244,12 @@ public struct SymbolGraphGenerator {
                 SymbolKit.SymbolGraph.LineList.Line(text: description, range: nil)
             ]
             // Add examples if present and enabled
-            if includeExamples, let extensions = operation.extensions, let example = extensions["x-example"] as? String {
+            if includeExamples, let example = getVendorExtension(key: "x-example", from: operation) as? String {
                 lines.append(SymbolKit.SymbolGraph.LineList.Line(text: "Example:", range: nil))
                 lines.append(SymbolKit.SymbolGraph.LineList.Line(text: example, range: nil))
             }
             docComment = SymbolKit.SymbolGraph.LineList(lines)
-        } else if includeExamples, let extensions = operation.extensions, let example = extensions["x-example"] as? String {
+        } else if includeExamples, let example = getVendorExtension(key: "x-example", from: operation) as? String {
             let lines: [SymbolKit.SymbolGraph.LineList.Line] = [
                 SymbolKit.SymbolGraph.LineList.Line(text: "Example:", range: nil),
                 SymbolKit.SymbolGraph.LineList.Line(text: example, range: nil)
@@ -289,12 +301,12 @@ public struct SymbolGraphGenerator {
                 SymbolKit.SymbolGraph.LineList.Line(text: description, range: nil)
             ]
             // Add examples if present and enabled
-            if includeExamples, let extensions = parameter.extensions, let example = extensions["x-example"] as? String {
+            if includeExamples, let example = getVendorExtension(key: "x-example", from: parameter) as? String {
                 lines.append(SymbolKit.SymbolGraph.LineList.Line(text: "Example:", range: nil))
                 lines.append(SymbolKit.SymbolGraph.LineList.Line(text: example, range: nil))
             }
             docComment = SymbolKit.SymbolGraph.LineList(lines)
-        } else if includeExamples, let extensions = parameter.extensions, let example = extensions["x-example"] as? String {
+        } else if includeExamples, let example = getVendorExtension(key: "x-example", from: parameter) as? String {
             let lines: [SymbolKit.SymbolGraph.LineList.Line] = [
                 SymbolKit.SymbolGraph.LineList.Line(text: "Example:", range: nil),
                 SymbolKit.SymbolGraph.LineList.Line(text: example, range: nil)
@@ -339,7 +351,7 @@ public struct SymbolGraphGenerator {
             SymbolKit.SymbolGraph.LineList.Line(text: response.description, range: nil)
         ]
         // Add examples if present and enabled
-        if includeExamples, let extensions = response.extensions, let example = extensions["x-example"] as? String {
+        if includeExamples, let example = getVendorExtension(key: "x-example", from: response) as? String {
             lines.append(SymbolKit.SymbolGraph.LineList.Line(text: "Example:", range: nil))
             lines.append(SymbolKit.SymbolGraph.LineList.Line(text: example, range: nil))
         }
@@ -385,12 +397,12 @@ public struct SymbolGraphGenerator {
                 SymbolKit.SymbolGraph.LineList.Line(text: description, range: nil)
             ]
             // Add examples if present and enabled
-            if includeExamples, let extensions = schema.extensions, let example = extensions["x-example"] as? String {
+            if includeExamples, let example = getVendorExtension(key: "x-example", from: schema) as? String {
                 lines.append(SymbolKit.SymbolGraph.LineList.Line(text: "Example:", range: nil))
                 lines.append(SymbolKit.SymbolGraph.LineList.Line(text: example, range: nil))
             }
             docComment = SymbolKit.SymbolGraph.LineList(lines)
-        } else if includeExamples, let extensions = schema.extensions, let example = extensions["x-example"] as? String {
+        } else if includeExamples, let example = getVendorExtension(key: "x-example", from: schema) as? String {
             let lines: [SymbolKit.SymbolGraph.LineList.Line] = [
                 SymbolKit.SymbolGraph.LineList.Line(text: "Example:", range: nil),
                 SymbolKit.SymbolGraph.LineList.Line(text: example, range: nil)

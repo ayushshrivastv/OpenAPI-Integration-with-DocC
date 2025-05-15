@@ -63,8 +63,7 @@ public struct OpenAPItoSymbolGraph {
         let generator = DocCCatalogGenerator(
             moduleName: moduleName,
             baseURL: baseURL,
-            outputDirectory: outputDirectory,
-            includeExamples: includeExamples
+            outputDirectory: outputDirectory
         )
 
         return try generator.generateCatalog(from: document, overwrite: overwrite)
