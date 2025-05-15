@@ -1,0 +1,174 @@
+openapi: 3.0.3
+info:
+  title: Test API with Security Schemes
+  description: A test API to verify our OpenAPI-to-DocC integration fixes
+  version: 1.0.0
+  contact:
+    name: Test User
+    email: test@example.com
+servers:
+  - url: https://api.example.com/v1
+    description: Production API Server
+paths:
+  /users:
+    get:
+      summary: List all users
+      description: Returns a list of all users the authenticated user has access to
+      operationId: listUsers
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of users to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 50
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      description: Returns details of a specific user
+      operationId: getUserById
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to retrieve
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT-based authentication
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key authentication
+    oauth2Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://auth.example.com/authorize
+          scopes:
+            read:users: Read users information
+            write:users: Modify users information
+        authorizationCode:
+          authorizationUrl: https://auth.example.com/authorize
+          tokenUrl: https://auth.example.com/token
+          scopes:
+            read:users: Read users information
+            write:users: Modify users information
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the user
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "user@example.com"
+        name:
+          type: string
+          description: User's full name
+          example: "John Doe"
+        role:
+          type: string
+          description: User's role in the system
+          enum:
+            - admin
+            - user
+            - guest
+          example: "user"
+        status:
+          type: string
+          description: User's status
+          enum:
+            - active
+            - inactive
+            - suspended
+          example: "active"
+        createdAt:
+          type: string
+          format: date-time
+          description: When the user was created
+          example: "2023-01-01T00:00:00Z"
+      example:
+        id: "123e4567-e89b-12d3-a456-426614174000"
+        email: "user@example.com"
+        name: "John Doe"
+        role: "user"
+        status: "active"
+        createdAt: "2023-01-01T00:00:00Z"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Error code
+          example: 404
+        message:
+          type: string
+          description: Error message
+          example: "User not found"
+      example:
+        code: 404
+        message: "User not found"

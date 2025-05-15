@@ -4,16 +4,16 @@ import Foundation
 public struct Document {
     /// The OpenAPI version
     public let openapi: String
-    
+
     /// The API metadata
     public let info: Info
-    
+
     /// The available paths
     public let paths: [String: PathItem]
-    
+
     /// The reusable components
     public let components: Components?
-    
+
     /// Creates a new OpenAPI document
     /// - Parameters:
     ///   - openapi: The OpenAPI version
@@ -37,16 +37,16 @@ public struct Document {
 public struct Info {
     /// The API title
     public let title: String
-    
+
     /// The API version
     public let version: String
-    
+
     /// The API description
     public let description: String?
-    
+
     /// The extensions for this object
     public let extensions: [String: Any]?
-    
+
     /// Creates new API metadata
     /// - Parameters:
     ///   - title: The API title
@@ -70,19 +70,25 @@ public struct Info {
 public struct Components {
     /// The reusable schemas
     public let schemas: [String: JSONSchema]?
-    
+
     /// The reusable parameters
     public let parameters: [String: Parameter]?
-    
+
+    /// The reusable security schemes
+    public let securitySchemes: [String: SecurityScheme]?
+
     /// Creates new reusable components
     /// - Parameters:
     ///   - schemas: The reusable schemas
     ///   - parameters: The reusable parameters
+    ///   - securitySchemes: The reusable security schemes
     public init(
         schemas: [String: JSONSchema]? = nil,
-        parameters: [String: Parameter]? = nil
+        parameters: [String: Parameter]? = nil,
+        securitySchemes: [String: SecurityScheme]? = nil
     ) {
         self.schemas = schemas
         self.parameters = parameters
+        self.securitySchemes = securitySchemes
     }
 }

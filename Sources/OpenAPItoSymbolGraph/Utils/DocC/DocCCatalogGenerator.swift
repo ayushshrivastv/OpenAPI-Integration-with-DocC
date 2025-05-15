@@ -550,7 +550,7 @@ public struct DocCCatalogGenerator {
     }
 
     /// Extracts and formats examples for documentation
-    private func formatExamples(examples: [String: Example]?) -> String {
+    private func formatExamples(examples: [String: OpenAPIKit.Example]?) -> String {
         guard let examples = examples, !examples.isEmpty else {
             return ""
         }
@@ -606,9 +606,26 @@ public struct DocCCatalogGenerator {
 
 // Helper function to get example from schema if available
 private func getSchemaExample(_ schema: JSONSchema) -> Any? {
-    // This would need to be implemented based on the actual schema structure
-    // For now, return nil as examples aren't directly accessible in the current model
-    return nil
+    switch schema {
+    case .string(let stringSchema):
+        return stringSchema.example
+    case .number(let numberSchema):
+        return numberSchema.example
+    case .integer(let integerSchema):
+        return integerSchema.example
+    case .boolean(let booleanSchema):
+        return booleanSchema.example
+    case .array(let arraySchema):
+        return arraySchema.example
+    case .object(let objectSchema):
+        return objectSchema.example
+    case .reference(let reference):
+        // No direct example available for references
+        return nil
+    case .allOf, .anyOf, .oneOf, .not:
+        // These complex types don't have direct examples
+        return nil
+    }
 }
 
 /// Errors that can occur during catalog generation
